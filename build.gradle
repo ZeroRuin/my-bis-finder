@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+repositories {
+    mavenLocal()
+
+    maven {
+        url = 'https://repo.runelite.net'
+        content {
+            includeGroupByRegex("net\\.runelite.*")
+        }
+    }
+
+    mavenCentral()
+}
+
+def runeLiteVersion = 'latest.release'
+def pluginMainClass = 'com.personalbis.PersonalBisPluginTest'
+
+dependencies {
+    compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
+    testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
+    testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+}
+
+group = 'com.personalbis'
+version = '0.9.0-alpha50.4.50.84'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(11)
+}
+
+tasks.withType(JavaExec).configureEach {
+    enableAssertions = true
+}
+
+tasks.register('run', JavaExec) {
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = pluginMainClass
+    args '--developer-mode', '--debug'
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+        downloadSources = true
+    }
+}
+
+tasks.register('mechanicsSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Runs My BiS Finder passive weapon-mechanics regression checks without launching RuneLite.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.MechanicsSelfTest'
+    enableAssertions = true
+}

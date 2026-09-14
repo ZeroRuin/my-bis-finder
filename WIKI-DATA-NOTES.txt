@@ -1,0 +1,16 @@
+My BiS Finder offline Wiki data pack
+
+The bundled equipment and monster records are derived from Old School RuneScape
+Wiki data and are included for offline loadout calculation. No live Wiki requests
+occur at runtime.
+
+Bundled records:
+equipment: 5436
+monsters: 2860
+spells: 61
+
+See src/main/resources/wiki-data/manifest.json for the recorded source
+description, record counts and SHA-256 hashes used to identify the bundled
+dataset. Before Plugin Hub submission, replace the current "user-supplied"
+source description with the exact upstream revision/export date and its
+applicable attribution details.

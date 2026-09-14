@@ -1,0 +1,15 @@
+{
+  "packVersion": "0.5.0-alpha2",
+  "mode": "bundled-offline",
+  "source": "user-supplied OSRS Wiki DPS Calculator generated JSON datasets",
+  "counts": {
+    "equipment": 5436,
+    "monsters": 2860,
+    "spells": 61
+  },
+  "sha256": {
+    "equipment.json": "a9aa4d7be4002bfa897a7eae2ba26ad83d1a92ce31258fdd147e478e56ce5756",
+    "monsters.json": "5419520721e4f1f6b4ee78f857f295de9203f42b10f3c9a1aabaa82f8be3a8a6",
+    "spells.json": "40f6920c4cf0493e57c7b6c819c3215c550adc353ed88676297f6bf794c99083"
+  }
+}
