@@ -38,6 +38,7 @@ public final class WikiEquipmentEngine {
  private static final Map<Integer,Integer> CANONICAL=new HashMap<>();
  private static final Map<Integer,List<Integer>> AMMO=new HashMap<>();
  private static final Map<Integer,WikiEquipment> EQUIPMENT=new HashMap<>();
+ private static boolean initialized;
  private static final Set<Integer> TOA=new HashSet<>(Arrays.asList(
   11789,11790,11791,11792,11793,11794,11795,11796,11797,11798,11799,
   11778,11779,11780,11719,11721,11724,11725,11726,11730,11732,11733,
@@ -48,7 +49,9 @@ public final class WikiEquipmentEngine {
   for(String x:specData){int k=x.lastIndexOf(':');specs.put(x.substring(0,k),Integer.parseInt(x.substring(k+1)));} WEAPON_SPEC_COSTS=Collections.unmodifiableMap(specs);
   GAUNTLET_EQUIPMENT_IDS=Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(23861,23862,23863,23864,23886,23887,23888,23889,23890,23891,23892,23893,23894,23895,23896,23897,23898,23899,23900,23901,23902,23903)));
   CORRUPTED_GAUNTLET_EQUIPMENT_IDS=Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(23820,23821,23822,23823,23840,23841,23842,23843,23844,23845,23846,23847,23848,23849,23850,23851,23852,23853,23854,23855,23856,23857)));
-  Gson g=new Gson();
+ }
+ public static synchronized void initialize(Gson g){
+  if(initialized)return;
   try {
    Type at=new TypeToken<Map<String,List<Integer>>>(){}.getType();
    Map<String,List<Integer>> aliases=g.fromJson(new InputStreamReader(WikiEquipmentEngine.class.getResourceAsStream("/wiki-data/equipment-aliases.json"),StandardCharsets.UTF_8),at);
@@ -59,6 +62,7 @@ public final class WikiEquipmentEngine {
    Type et=new TypeToken<List<WikiEquipment>>(){}.getType();
    List<WikiEquipment> eq=g.fromJson(new InputStreamReader(WikiEquipmentEngine.class.getResourceAsStream("/wiki-data/equipment.json"),StandardCharsets.UTF_8),et);
    for(WikiEquipment w:eq) if(!EQUIPMENT.containsKey(w.id)||empty(EQUIPMENT.get(w.id).version)) EQUIPMENT.put(w.id,w);
+   initialized=true;
   } catch(Exception ex){ throw new ExceptionInInitializerError(ex); }
  }
  private WikiEquipmentEngine(){}
