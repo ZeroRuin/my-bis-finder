@@ -2,6 +2,7 @@ package com.personalbis.wiki;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.personalbis.WikiEquipmentEngine;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
@@ -27,6 +28,7 @@ public class WikiDataPack
     public WikiDataPack(Gson gson)
     {
         this.gson = gson;
+        WikiEquipmentEngine.initialize(gson);
         reload();
     }
 
