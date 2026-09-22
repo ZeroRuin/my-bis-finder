@@ -209,12 +209,25 @@ public class PersonalBisBankFilter
     @Subscribe(priority = -1)
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
-        if (!active || event.getParam1() != InterfaceID.Bankmain.ITEMS)
+        if (!active)
         {
             return;
         }
 
         Widget widget = event.getWidget();
+        if (isNativeBankNavigation(widget, event.getParam1()))
+        {
+            // Restore the ordinary bank before RuneLite/Jagex handles the same
+            // tab or search click. Do not consume the event.
+            deactivateOnClientThread();
+            return;
+        }
+
+        if (event.getParam1() != InterfaceID.Bankmain.ITEMS)
+        {
+            return;
+        }
+
         if (widget == null || widget.getItemId() < 0)
         {
             return;
@@ -237,6 +250,27 @@ public class PersonalBisBankFilter
         {
             menu.setParam0(realIndex);
         }
+    }
+
+    private boolean isNativeBankNavigation(Widget widget, int packedId)
+    {
+        if (isBankNavigationId(packedId)) return true;
+
+        Widget current = widget;
+        for (int depth = 0; current != null && depth < 5; depth++)
+        {
+            int parentId = current.getParentId();
+            if (isBankNavigationId(current.getId()) || isBankNavigationId(parentId)) return true;
+            current = parentId < 0 ? null : client.getWidget(parentId);
+        }
+        return false;
+    }
+
+    private static boolean isBankNavigationId(int id)
+    {
+        return id == InterfaceID.Bankmain.SEARCH
+            || id == InterfaceID.Bankmain.SEARCH_GRAPHIC
+            || id == InterfaceID.Bankmain.TABS;
     }
 
     private void layoutSections(Widget itemContainer)

@@ -1,7 +1,9 @@
 package com.personalbis;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Item;
@@ -59,5 +61,47 @@ public class BankScanner
         }
 
         return result;
+    }
+
+    /**
+     * Builds the ownership pool used by the equipment optimisers. The bank
+     * snapshot remains the source of truth for the Recommended bank view, but
+     * worn and carried items are still owned and must be eligible gear.
+     */
+    public List<BankItem> scanOwnedGear(List<BankItem> bankSnapshot)
+    {
+        Map<Integer, BankItem> owned = new LinkedHashMap<>();
+        if (bankSnapshot != null)
+        {
+            for (BankItem item : bankSnapshot)
+            {
+                merge(owned, item.getItemId(), item.getQuantity(), item.getName());
+            }
+        }
+        appendContainer(owned, client.getItemContainer(InventoryID.INV));
+        appendContainer(owned, client.getItemContainer(InventoryID.WORN));
+        return new ArrayList<>(owned.values());
+    }
+
+    private void appendContainer(Map<Integer, BankItem> owned, ItemContainer container)
+    {
+        if (container == null) return;
+        for (Item item : container.getItems())
+        {
+            if (item == null || item.getId() <= 0 || item.getQuantity() <= 0) continue;
+            ItemComposition definition = client.getItemDefinition(item.getId());
+            String name = definition.getName();
+            merge(owned, item.getId(), item.getQuantity(), name == null ? "" : name);
+        }
+    }
+
+    private static void merge(Map<Integer, BankItem> owned, int itemId, int quantity, String name)
+    {
+        if (itemId <= 0 || quantity <= 0) return;
+        BankItem previous = owned.get(itemId);
+        int total = quantity + (previous == null ? 0 : previous.getQuantity());
+        String resolvedName = name == null || name.isEmpty()
+            ? (previous == null ? "" : previous.getName()) : name;
+        owned.put(itemId, new BankItem(itemId, total, resolvedName));
     }
 }

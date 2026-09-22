@@ -6,7 +6,8 @@ levels, selected target and Slayer task.
 ## Features
 
 - Finds the highest-DPS owned Melee, Ranged and Magic loadouts for a selected target.
-- Uses the player's bank, combat levels, quest and prayer unlocks, and Slayer task.
+- Uses the player's bank, equipped gear, inventory, combat levels, quest and
+  prayer unlocks, and Slayer task.
 - Supports target-specific equipment requirements, weapon passives, ammunition,
   elemental weaknesses and multi-hit weapons.
 - Adds a native bank view for the selected loadout and recommended supplies.
@@ -17,9 +18,11 @@ levels, selected target and Slayer task.
 
 1. Open your bank so My BiS Finder can read the items owned by the logged-in account.
 2. Select a target, or enable **Load Slayer Task**.
-3. Choose an attack style to display the best owned loadout for that style.
-4. Use the highlighted **BEST** style for the highest calculated sustained DPS.
-5. Open the My BiS Finder bank view to gather the recommended gear and supplies.
+3. Click **Generate Loadout** to calculate and cache every attack style.
+4. Choose an attack style to display its generated gear and bank layout; switching
+   styles reuses the cached results without rerunning the optimisers.
+5. Use the highlighted **BEST** style for the highest calculated sustained DPS.
+6. Open the My BiS Finder bank view to gather the recommended gear and supplies.
 
 ## Privacy
 
@@ -36,6 +39,27 @@ suite before publishing a change.
 
 Plugin source is provided under the BSD 2-Clause License. Details for the bundled
 offline data pack are recorded in `WIKI-DATA-NOTES.txt` and its manifest.
+
+## r0.9.0-alpha50.4.50.86
+
+- Moves **Generate Loadout** directly after target selection and calculates all
+  five attack styles in one explicit background run.
+- Makes style switching display the cached gear and update the bank layout
+  without requiring another Generate Loadout action.
+- Shows bank placeholders in combat-style gear sections when the real item is
+  equipped or carried, while Recommended supplies still require positive bank
+  ownership.
+- Automatically closes the My BiS bank layout when a normal bank tab or bank
+  search control is selected.
+
+## r0.9.0-alpha50.4.50.85
+
+- Includes equipped items and inventory items in the owned-gear pool while
+  retaining the placeholder-free bank snapshot for the Recommended view.
+- Restores a manual **Generate Loadout** button so target, style, bank, stat and
+  Slayer events no longer launch optimisation automatically.
+- Prompts the player to open their bank when Generate Loadout is used before a
+  bank snapshot has been captured.
 
 ## r0.9.0-alpha50.4.50.84
 

@@ -12,6 +12,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -24,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -118,6 +121,8 @@ public class PersonalBisPanel extends PluginPanel
     private JPanel chooseStylePanel;
     private JLabel monsterCountLabel;
     private JPanel validationSection;
+    private final JButton generateLoadoutButton = osrsButton("Generate Loadout");
+    private final JLabel generateMessage = new JLabel(" ", SwingConstants.CENTER);
     private final JLabel loadoutHeading = new JLabel("Your best loadout");
     private AttackStyle calculatedBestStyle;
     private boolean targetExplicitlySelected;
@@ -125,6 +130,8 @@ public class PersonalBisPanel extends PluginPanel
     private boolean styleExplicitlySelected;
     private boolean populatingTargets;
     private boolean filteringTargets;
+    private boolean loadoutsGenerated;
+    private boolean loadoutReady;
 
     private List<BankItem> cachedBank = Collections.emptyList();
     private String lastSlayerTask;
@@ -323,10 +330,11 @@ public class PersonalBisPanel extends PluginPanel
                     styleExplicitlySelected = false;
                     calculatedBestStyle = null;
                     clearStyleSelection();
+                    invalidateOptimizerCache();
+                    markLoadoutStale("");
                     updateProgressiveVisibility();
                 }
             }
-            refreshRecommendationsAsync();
         });
         slayerTask.addActionListener(e ->
         {
@@ -342,7 +350,7 @@ public class PersonalBisPanel extends PluginPanel
             clientThread.invokeLater(() ->
             {
                 updateSlayerTask();
-                refreshRecommendationsAsync();
+                SwingUtilities.invokeLater(() -> markLoadoutStale(""));
             });
         });
         content.add(targetCard);
@@ -359,6 +367,17 @@ monsterInfo.setFont(FontManager.getRunescapeSmallFont());
         monsterInfo.setForeground(OSRS_CREAM);
         monsterInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
 content.add(Box.createVerticalStrut(5));
+
+        generateLoadoutButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        generateLoadoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        generateLoadoutButton.addActionListener(e -> generateLoadouts());
+        content.add(generateLoadoutButton);
+        generateMessage.setFont(FontManager.getRunescapeSmallFont());
+        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        generateMessage.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        content.add(generateMessage);
+        content.add(Box.createVerticalStrut(4));
 
         attackStyleHeading = sectionLabel("Attack style");
         attackStyleHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -391,6 +410,7 @@ content.add(Box.createVerticalStrut(5));
         styles.add(styleTile(ranged,3));
         styles.add(styleTile(magic,4));
         stylesPanel = styles;
+        setStyleControlsEnabled(false);
         content.add(styles);
         content.add(Box.createVerticalStrut(4));
 
@@ -584,8 +604,14 @@ content.add(Box.createVerticalStrut(5));
     private ImageIcon attackStyleIcon(String label)
     {
         String name=label==null?"":label.toLowerCase();
-        java.net.URL url=PersonalBisPanel.class.getResource("/attack-styles/"+name+".png");
-        return url==null?null:new ImageIcon(url);
+        try (InputStream in=PersonalBisPanel.class.getResourceAsStream("/attack-styles/"+name+".png"))
+        {
+            return in==null?null:new ImageIcon(ImageIO.read(in));
+        }
+        catch (IOException ex)
+        {
+            return null;
+        }
     }
 
     private void styleRadio(JRadioButton radio)
@@ -731,7 +757,7 @@ content.add(Box.createVerticalStrut(5));
         boolean loggedIn=client.getGameState()==GameState.LOGGED_IN;
         boolean targetReady=loggedIn && targetExplicitlySelected && monsterBox.getSelectedItem() instanceof MonsterDefinition;
         boolean stylesReady=RecommendationReadiness.stylesVisible(targetReady);
-        boolean resultsReady=RecommendationReadiness.resultsVisible(targetReady,bankChecked,styleExplicitlySelected);
+        boolean resultsReady=RecommendationReadiness.resultsVisible(targetReady,bankChecked,styleExplicitlySelected) && loadoutReady;
         if(targetCard!=null)targetCard.setVisible(loggedIn);
         if(monsterCountLabel!=null){
             monsterCountLabel.setVisible(loggedIn);
@@ -739,9 +765,11 @@ content.add(Box.createVerticalStrut(5));
         }
         if(loggedOutPanel!=null)loggedOutPanel.setVisible(!loggedIn);
         if(noTargetPanel!=null)noTargetPanel.setVisible(loggedIn&&!targetReady);
-        if(chooseStylePanel!=null)chooseStylePanel.setVisible(stylesReady&&!styleExplicitlySelected);
+        if(chooseStylePanel!=null)chooseStylePanel.setVisible(stylesReady&&loadoutsGenerated&&!styleExplicitlySelected);
         if (attackStyleHeading != null) attackStyleHeading.setVisible(stylesReady);
         if (stylesPanel != null) stylesPanel.setVisible(stylesReady);
+        generateLoadoutButton.setVisible(targetReady && !loadoutsGenerated);
+        generateMessage.setVisible(targetReady);
         if (gearSection != null) gearSection.setVisible(resultsReady);
         if (validationSection != null) validationSection.setVisible(resultsReady);
         content.revalidate();
@@ -761,19 +789,64 @@ content.add(Box.createVerticalStrut(5));
 
     private void selectStyle(AttackStyle style)
     {
+        if (!loadoutsGenerated) return;
         selectedStyle = style;
         styleExplicitlySelected = true;
         loadoutHeading.setText("Your best loadout ("+displayAttackStyle(style)+")");
         updateStyleHighlight();
 
-        // Style selection alone must not imply that the bank has been loaded.
-        // Owned-gear recommendations become available only after refreshBankItems().
-        SwingUtilities.invokeLater(this::updateProgressiveVisibility);
-        if (bankChecked)
+        loadoutReady = false;
+        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setText("Loading " + displayAttackStyle(style) + " loadout...");
+        updateProgressiveVisibility();
+        refreshRecommendationsAsync(false);
+    }
+
+    private void generateLoadouts()
+    {
+        if (!bankChecked)
         {
-            refreshRecommendationsAsync();
-            if (bankFilter.isActive()) bankFilter.refreshLayout();
+            generateMessage.setText("Please open your bank and try again.");
+            generateMessage.setForeground(Color.RED);
+            return;
         }
+        if (!targetExplicitlySelected || !(monsterBox.getSelectedItem() instanceof MonsterDefinition))
+        {
+            generateMessage.setText("Choose a target first.");
+            generateMessage.setForeground(Color.RED);
+            return;
+        }
+        styleExplicitlySelected = false;
+        clearStyleSelection();
+        loadoutsGenerated = false;
+        loadoutReady = false;
+        generateLoadoutButton.setEnabled(false);
+        setStyleControlsEnabled(false);
+        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setText("Generating all attack styles...");
+        updateProgressiveVisibility();
+        refreshRecommendationsAsync(true);
+    }
+
+    private void markLoadoutStale(String message)
+    {
+        calculationGeneration.incrementAndGet();
+        loadoutsGenerated = false;
+        loadoutReady = false;
+        generateLoadoutButton.setEnabled(true);
+        setStyleControlsEnabled(false);
+        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setText(message == null || message.isEmpty() ? " " : message);
+        SwingUtilities.invokeLater(this::updateProgressiveVisibility);
+    }
+
+    private void setStyleControlsEnabled(boolean enabled)
+    {
+        slash.setEnabled(enabled);
+        stab.setEnabled(enabled);
+        crush.setEnabled(enabled);
+        ranged.setEnabled(enabled);
+        magic.setEnabled(enabled);
     }
 
     private void updateStyleHighlight()
@@ -884,15 +957,15 @@ content.add(Box.createVerticalStrut(5));
             {
                 applyMonsterFilter();
             }
-            refreshRecommendationsAsync();
         });
     }
 
     public void updatePlayerStats()
     {
-        invalidateOptimizerCache();
         account.refresh();
-        refreshRecommendationsAsync();
+        // Stat/XP events may fire repeatedly during ordinary combat. Refresh the
+        // account snapshot for the next manual run without invalidating the five
+        // generated style results or launching another optimisation pass.
     }
 
     private void updateAccountText()
@@ -923,7 +996,8 @@ content.add(Box.createVerticalStrut(5));
                 {
                     bankFilter.refreshLayout();
                 }
-                refreshRecommendationsAsync();
+                invalidateOptimizerCache();
+                markLoadoutStale("Bank loaded — click Generate Loadout.");
             });
         });
     }
@@ -994,20 +1068,20 @@ content.add(Box.createVerticalStrut(5));
         if (task == null ? lastSlayerTask != null : !task.equals(lastSlayerTask))
         {
             updateSlayerTask();
-            if (slayerTargetMode) refreshRecommendationsAsync();
+            if (slayerTargetMode) SwingUtilities.invokeLater(() -> markLoadoutStale("Slayer task changed — generate the loadout again."));
         }
     }
 
-    private void refreshRecommendationsAsync()
+    private void refreshRecommendationsAsync(boolean calculateAllStyles)
     {
         final long generation=calculationGeneration.incrementAndGet();
-        clientThread.invokeLater(() -> captureAndCalculate(generation));
+        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles));
     }
 
-    private void captureAndCalculate(long generation)
+    private void captureAndCalculate(long generation, boolean calculateAllStyles)
     {
         if (client.getGameState() != GameState.LOGGED_IN) return;
-        if (!targetExplicitlySelected || !bankChecked || !styleExplicitlySelected)
+        if (!targetExplicitlySelected || !bankChecked || (!calculateAllStyles && !styleExplicitlySelected))
         {
             SwingUtilities.invokeLater(this::updateProgressiveVisibility);
             return;
@@ -1025,10 +1099,13 @@ content.add(Box.createVerticalStrut(5));
             });
             return;
         }
+        // Recommended remains bank-only (and therefore placeholder-free), while
+        // loadout ownership also includes items currently worn or carried.
         final List<BankItem> bankSnapshot=new ArrayList<>(cachedBank);
+        final List<BankItem> ownedGearSnapshot=bankScanner.scanOwnedGear(bankSnapshot);
         final Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot=new EnumMap<>(AttackStyle.class);
         for(AttackStyle style:AttackStyle.values())
-            rankedSnapshot.put(style,intelligence.rank(bankSnapshot,style,slayerMode));
+            rankedSnapshot.put(style,intelligence.rank(ownedGearSnapshot,style,slayerMode));
         final AttackStyle requestedStyle=selectedStyle;
         final boolean requestedSlayerMode=slayerMode;
 
@@ -1039,7 +1116,7 @@ content.add(Box.createVerticalStrut(5));
         final List<EquipmentCandidate> syntheticBoltValidationAmmo = new ArrayList<>();
         if (requestedStyle == AttackStyle.RANGED)
         {
-            List<BankItem> validationBank = new ArrayList<>(bankSnapshot);
+            List<BankItem> validationBank = new ArrayList<>(ownedGearSnapshot);
             int[] enchantedBoltIds = {9236,9237,9238,9239,9240,9241,9242,9243,9244,9245};
             String[] enchantedBoltNames = {"Opal bolts (e)","Jade bolts (e)","Pearl bolts (e)","Topaz bolts (e)","Sapphire bolts (e)","Emerald bolts (e)","Ruby bolts (e)","Diamond bolts (e)","Dragonstone bolts (e)","Onyx bolts (e)"};
             Set<Integer> presentBoltIds = new HashSet<>();
@@ -1060,7 +1137,7 @@ content.add(Box.createVerticalStrut(5));
         final Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> syntheticMeleeRanked = new EnumMap<>(AttackStyle.class);
         if (requestedStyle == AttackStyle.MELEE_STAB || requestedStyle == AttackStyle.MELEE_SLASH || requestedStyle == AttackStyle.MELEE_CRUSH)
         {
-            List<BankItem> validationBank = new ArrayList<>(bankSnapshot);
+            List<BankItem> validationBank = new ArrayList<>(ownedGearSnapshot);
             int[] weaponIds = {22978,29589,19675,25979,27291,25981,26219,22324,11902,20727,4587,4151,13263,22325,28338,24417,28997,4747,29084,29889,6523};
             String[] weaponNames = {"Dragon hunter lance","Emberlight","Arclight","Keris partisan","Keris partisan of the sun","Keris partisan of breaching","Osmumten's fang","Ghrazi rapier","Leaf-bladed sword","Leaf-bladed battleaxe","Dragon scimitar","Abyssal whip","Abyssal bludgeon","Scythe of Vitur","Soulreaper axe","Inquisitor's mace","Dual macuahuitl","Torag's hammers","Sulphur blades","Glacial temotli","Toktz-xil-ak","Colossal blade","Barronite mace","Granite hammer"};
             Set<Integer> present = new HashSet<>();
@@ -1081,13 +1158,15 @@ content.add(Box.createVerticalStrut(5));
                 syntheticMeleeRanked.put(ms, intelligence.rank(validationBank, ms, requestedSlayerMode));
         }
 
-        final String cacheKey=optimizerCacheKey(monster,bankSnapshot,requestedSlayerMode);
-        optimizerExecutor.execute(() -> calculateRecommendations(generation,bankSnapshot,rankedSnapshot,monster,requestedStyle,requestedSlayerMode,cacheKey,syntheticBoltValidationAmmo,syntheticMeleeRanked));
+        final String cacheKey=calculateAllStyles
+            ? optimizerCacheKey(monster,ownedGearSnapshot,requestedSlayerMode)
+            : optimizerCacheKey;
+        optimizerExecutor.execute(() -> calculateRecommendations(generation,ownedGearSnapshot,bankSnapshot,rankedSnapshot,monster,requestedStyle,requestedSlayerMode,calculateAllStyles,cacheKey,syntheticBoltValidationAmmo,syntheticMeleeRanked));
     }
 
-    private void calculateRecommendations(long generation,List<BankItem> bankSnapshot,
+    private void calculateRecommendations(long generation,List<BankItem> ownedGearSnapshot,List<BankItem> bankSnapshot,
         Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot,
-        MonsterDefinition monster,AttackStyle requestedStyle,boolean requestedSlayerMode,String cacheKey,
+        MonsterDefinition monster,AttackStyle requestedStyle,boolean requestedSlayerMode,boolean calculateAllStyles,String cacheKey,
         List<EquipmentCandidate> syntheticBoltValidationAmmo,
         Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> syntheticMeleeRanked)
     {
@@ -1124,9 +1203,7 @@ content.add(Box.createVerticalStrut(5));
         // Optimise every style here; cached reports still make subsequent switches cheap.
         for (AttackStyle style : AttackStyle.values())
         {
-            // Calculate the selected style immediately. Other styles are evaluated
-            // when selected, avoiding a multi-second all-style sweep on first load.
-            if (style != requestedStyle) continue;
+            if (!calculateAllStyles && style != requestedStyle) continue;
             final long styleStartedNanos = System.nanoTime();
             final Map<EquipmentSlot,List<EquipmentCandidate>> ranked = rankedSnapshot.get(style);
             if (style == requestedStyle) selectedRanked = ranked;
@@ -1171,7 +1248,7 @@ content.add(Box.createVerticalStrut(5));
                 selectedStyleCacheHit = mr != null;
                 if (mr == null)
                 {
-                    mr = magicOptimizer.optimizeWithReportRanked(bankSnapshot, ranked, monster, requestedSlayerMode);
+                    mr = magicOptimizer.optimizeWithReportRanked(ownedGearSnapshot, ranked, monster, requestedSlayerMode);
                     cachedMagicReports.put(style, mr);
                 }
                 magicReports.put(style, mr);
@@ -1192,14 +1269,19 @@ content.add(Box.createVerticalStrut(5));
         // otherwise the sole selected style would inevitably (and incorrectly) win.
         final AttackStyle resultBestStyle=cachedBestStyleIfComplete();
 
-        // Bank mode follows the explicit sidebar choice: show only that style plus Recommended.
+        // Bank mode follows the explicit sidebar choice. Style sections may use
+        // zero-quantity placeholders for gear that is currently worn or carried;
+        // the separate Recommended supply section remains positive-bank-owned only.
         List<AttackStyle> bankStyles=new ArrayList<>();
         bankStyles.add(requestedStyle);
         Map<AttackStyle,List<Integer>> selectedBankRecommendations=new EnumMap<>(AttackStyle.class);
         List<Integer> selectedIds=styleRecommendations.get(requestedStyle);
         if(selectedIds==null)selectedIds=new ArrayList<>();
-        selectedBankRecommendations.put(requestedStyle,selectedIds);
-        Set<Integer> selectedRecommendedIds=new HashSet<>(selectedIds);
+        Set<Integer> bankOwnedIds=new HashSet<>();
+        for(BankItem item:bankSnapshot)bankOwnedIds.add(item.getItemId());
+        selectedBankRecommendations.put(requestedStyle,new ArrayList<>(selectedIds));
+        Set<Integer> selectedRecommendedIds=new HashSet<>();
+        for(Integer id:selectedIds)if(bankOwnedIds.contains(id))selectedRecommendedIds.add(id);
         final List<RecommendedSupply> resultSupplies=SimpleSupplyRecommender.recommend(
             requestedStyle, magicLoads.get(requestedStyle), rangedLoads.get(requestedStyle), bankSnapshot, monster, account.real(Skill.PRAYER));
         clientThread.invokeLater(() -> {
@@ -1739,10 +1821,17 @@ content.add(Box.createVerticalStrut(5));
             }
             loadoutValidation.setText(validation.toString().trim());
             loadoutValidation.setCaretPosition(0);
+            loadoutsGenerated=true;
+            loadoutReady=styleExplicitlySelected;
+            generateLoadoutButton.setEnabled(true);
+            setStyleControlsEnabled(true);
+            generateMessage.setForeground(OSRS_CREAM);
+            generateMessage.setText(styleExplicitlySelected ? " " : "Loadouts ready — choose an attack style.");
+            updateProgressiveVisibility();
             status.setText(monsterDatabase.getAll().size()+" unique monster variants  •  "+bankSnapshot.size()+" bank items"+(selectedCombat==null?"":"  •  melee validation alpha7"));
         });
-        if(resultBestStyle==null)
-            optimizerExecutor.execute(() -> calculateMissingBestStyles(generation,cacheKey,bankSnapshot,
+        if(!calculateAllStyles && resultBestStyle==null)
+            optimizerExecutor.execute(() -> calculateMissingBestStyles(generation,cacheKey,ownedGearSnapshot,
                 rankedSnapshot,monster,requestedSlayerMode));
     }
 
