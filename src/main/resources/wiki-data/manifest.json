@@ -1,6 +1,7 @@
 {
   "packVersion": "0.5.0-alpha2",
   "mode": "bundled-offline",
+  "dataSnapshotDate": "2026-09-13",
   "source": "user-supplied OSRS Wiki DPS Calculator generated JSON datasets",
   "counts": {
     "equipment": 5436,

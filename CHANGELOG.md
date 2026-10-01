@@ -6,6 +6,8 @@
   this dedicated changelog.
 - Adds a public AI-development and resource-use disclosure explaining that Wiki
   data is bundled, calculations run locally, and releases are tested and reviewed.
+- Publishes the 13 September 2026 date of the bundled equipment and monster data
+  snapshot.
 
 ## r0.9.0-alpha50.4.50.86
 

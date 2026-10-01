@@ -43,6 +43,10 @@ services while RuneLite is running. Wiki-derived equipment, monster, spell and
 ammunition data is bundled with the plugin, and all loadout calculations run
 locally.
 
+The bundled equipment and monster data snapshot was last refreshed on
+**13 September 2026**. See the [data notes](https://github.com/ZeroRuin/my-bis-finder/blob/main/WIKI-DATA-NOTES.txt)
+for record counts and snapshot details.
+
 Releases are reviewed, tested and submitted by the maintainer. Mechanics changes
 are covered by the project's regression suite and remain subject to RuneLite's
 Plugin Hub review process.

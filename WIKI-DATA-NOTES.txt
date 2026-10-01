@@ -9,8 +9,10 @@ equipment: 5436
 monsters: 2860
 spells: 61
 
+The bundled equipment and monster snapshot was last refreshed on 13 September
+2026. This is the local dataset snapshot date and does not imply that every
+upstream Wiki record was changed on that date.
+
 See src/main/resources/wiki-data/manifest.json for the recorded source
 description, record counts and SHA-256 hashes used to identify the bundled
-dataset. Before Plugin Hub submission, replace the current "user-supplied"
-source description with the exact upstream revision/export date and its
-applicable attribution details.
+dataset.
