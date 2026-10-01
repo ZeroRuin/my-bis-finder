@@ -4,7 +4,8 @@
 
 - Moves the detailed release history out of the Plugin Hub description and into
   this dedicated changelog.
-- Adds a public disclosure that AI coding tools assisted development.
+- Adds a public AI-development and resource-use disclosure explaining that Wiki
+  data is bundled, calculations run locally, and releases are tested and reviewed.
 
 ## r0.9.0-alpha50.4.50.86
 

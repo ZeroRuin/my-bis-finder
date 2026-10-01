@@ -35,10 +35,17 @@ The project targets Java 11 and RuneLite `latest.release`. Run the plugin throug
 the Gradle `run` task and execute `mechanicsSelfTest` for the mechanics regression
 suite before publishing a change.
 
-## Development disclosure
+## AI development and resource-use disclosure
 
 My BiS Finder was developed with substantial assistance from AI coding tools.
-Releases are reviewed, tested and submitted by the maintainer.
+The plugin does not make live requests to the OSRS Wiki or other external data
+services while RuneLite is running. Wiki-derived equipment, monster, spell and
+ammunition data is bundled with the plugin, and all loadout calculations run
+locally.
+
+Releases are reviewed, tested and submitted by the maintainer. Mechanics changes
+are covered by the project's regression suite and remain subject to RuneLite's
+Plugin Hub review process.
 
 ## Licence and data
 
