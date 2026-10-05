@@ -104,7 +104,6 @@ public class PersonalBisPanel extends PluginPanel
     private final JLabel slayerItemWarning = new JLabel();
     private final JTextArea loadoutValidation = new JTextArea();
     private final JLabel[] gear = new JLabel[EquipmentSlot.values().length];
-    private final long[] gearImageGeneration = new long[EquipmentSlot.values().length];
     private final JLabel prayerIcon = new JLabel("", JLabel.CENTER);
     private final JRadioButton slash = new JRadioButton("Slash");
     private final JRadioButton stab = new JRadioButton("Stab");
@@ -1352,7 +1351,6 @@ content.add(Box.createVerticalStrut(5));
                 JLabel label=gear[i];
                 if (best==null)
                 {
-                    gearImageGeneration[i]++;
                     label.setText("—");
                     label.setIcon(null);
                     label.setToolTipText(slot.getDisplayName()+": no item selected");
@@ -1361,26 +1359,8 @@ content.add(Box.createVerticalStrut(5));
                 {
                     label.setText("");
                     label.setIcon(null);
-                    final int slotIndex = i;
                     final int requestedItemId = best.getItem().getItemId();
-                    final long requestGeneration = ++gearImageGeneration[slotIndex];
-                    // AsyncBufferedImage.addTo accepts Swing components directly.
-                    // Attach it to a temporary JLabel so its async repaint/update lifecycle
-                    // is used, while guarding the real gear slot against stale refreshes.
-                    final JLabel imageLoader = new JLabel();
-                    itemManager.getImage(requestedItemId, 1, false).addTo(imageLoader);
-                    SwingUtilities.invokeLater(() -> {
-                        if (gearImageGeneration[slotIndex] == requestGeneration)
-                        {
-                            label.setIcon(imageLoader.getIcon());
-                            // If RuneLite is still loading, attach the real label too; its
-                            // generation guard is rechecked on the next panel refresh.
-                            if (label.getIcon() == null)
-                            {
-                                itemManager.getImage(requestedItemId, 1, false).addTo(label);
-                            }
-                        }
-                    });
+                    itemManager.getImage(requestedItemId, 1, false).addTo(label);
                     String tip=slot.getDisplayName()+": "+best.getItem().getName()+" — "+best.getRequirementResult().getMessage();
                     if(selectedCombat!=null) tip+=String.format(" | setup DPS %.3f | accuracy %.1f%% | max hit %d",selectedCombat.getDps(),selectedCombat.getAccuracy()*100,selectedCombat.getMaxHit());
                     else if(uiRanged!=null) tip+=String.format(" | setup DPS %.3f | accuracy %.1f%% | max hit %d",uiRanged.getDps(),uiRanged.getAccuracy()*100,uiRanged.getMaxHit());
