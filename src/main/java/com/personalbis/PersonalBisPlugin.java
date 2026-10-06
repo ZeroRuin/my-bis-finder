@@ -116,13 +116,9 @@ public class PersonalBisPlugin extends Plugin
     {
         if (event.getContainerId() == InventoryID.BANK)
         {
-            // Opening/loading the bank establishes the recommendation snapshot.
-            // While the Personal BiS bank view is active, withdrawals/deposits must
-            // remain native and must not rerun the optimiser on every quantity change.
-            if (!bankFilter.isActive())
-            {
-                panel.refreshBankItems();
-            }
+            // Keep ownership current without discarding generated loadouts or
+            // rerunning the optimiser. Recalculation remains a manual action.
+            panel.refreshBankItems();
         }
     }
 

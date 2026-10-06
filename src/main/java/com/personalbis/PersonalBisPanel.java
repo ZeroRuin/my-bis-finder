@@ -767,7 +767,8 @@ content.add(Box.createVerticalStrut(5));
         if(chooseStylePanel!=null)chooseStylePanel.setVisible(stylesReady&&loadoutsGenerated&&!styleExplicitlySelected);
         if (attackStyleHeading != null) attackStyleHeading.setVisible(stylesReady);
         if (stylesPanel != null) stylesPanel.setVisible(stylesReady);
-        generateLoadoutButton.setVisible(targetReady && !loadoutsGenerated);
+        generateLoadoutButton.setText(loadoutsGenerated ? "Regenerate Loadout" : "Generate Loadout");
+        generateLoadoutButton.setVisible(targetReady);
         generateMessage.setVisible(targetReady);
         if (gearSection != null) gearSection.setVisible(resultsReady);
         if (validationSection != null) validationSection.setVisible(resultsReady);
@@ -815,6 +816,7 @@ content.add(Box.createVerticalStrut(5));
             generateMessage.setForeground(Color.RED);
             return;
         }
+        invalidateOptimizerCache();
         styleExplicitlySelected = false;
         clearStyleSelection();
         loadoutsGenerated = false;
@@ -976,28 +978,19 @@ content.add(Box.createVerticalStrut(5));
 
     public void refreshBankItems()
     {
-        invalidateOptimizerCache();
         // ItemContainerChanged runs on RuneLite's client thread. Keep this path to
-        // a lightweight immutable bank snapshot so opening the OSRS bank is not
-        // blocked by BiS optimisation or Swing layout work.
+        // a lightweight immutable ownership snapshot. Existing generated loadouts
+        // remain available until the player deliberately regenerates them.
         cachedBank = bankScanner.scan();
         bankChecked = true;
 
         SwingUtilities.invokeLater(() ->
         {
             updateProgressiveVisibility();
-
-            // Let the bank-opening event finish before Personal BiS performs its
-            // expensive recommendation pass.
-            SwingUtilities.invokeLater(() ->
+            if (bankFilter.isActive())
             {
-                if (bankFilter.isActive())
-                {
-                    bankFilter.refreshLayout();
-                }
-                invalidateOptimizerCache();
-                markLoadoutStale("Bank loaded — click Generate Loadout.");
-            });
+                bankFilter.refreshLayout();
+            }
         });
     }
 

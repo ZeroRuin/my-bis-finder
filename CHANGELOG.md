@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.2
+
+- Keeps generated loadouts and all cached attack styles intact when the bank is
+  opened, closed or changed; bank events update ownership for the next run.
+- Keeps the action visible as **Regenerate Loadout** after a completed run, with
+  cache invalidation occurring only when the player deliberately regenerates.
+
 ## 0.9.1
 
 - Moves the detailed release history out of the Plugin Hub description and into
