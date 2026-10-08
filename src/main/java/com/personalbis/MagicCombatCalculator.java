@@ -28,14 +28,15 @@ public class MagicCombatCalculator {
   HitDistribution.AttackDistribution magicAttack=WikiPlayerVsNpcCalc.magicFinalDistribution(magicDamage.minHit,max,acc,brimstoneAccuracy,m,gear.values(),spell);
   double expectedHit=WikiPlayerVsNpcCalc.expectedDamage(magicAttack);
   double dps=expectedHit/(ticks*.6);
+  double ttk=ExpectedKillTime.seconds(magicAttack,m==null?1:Math.max(1,m.getHitpoints()),ticks);
   max=magicAttack.max();
   // All Magic is corpbane in the Wiki calculator, so Corp applies no reduction here.
-  if(!WikiTargetEligibility.magicCanDamage(m) || !LeafyTargetRules.magicCanDamage(m,spell)){max=0;dps=0.0;}
+  if(!WikiTargetEligibility.magicCanDamage(m) || !LeafyTargetRules.magicCanDamage(m,spell)){max=0;dps=0.0;ttk=Double.POSITIVE_INFINITY;}
   StringBuilder note=new StringBuilder();
   if(weakness>0)note.append("Weakness: ").append(spell.element()).append(" +").append(m.getWeaknessSeverity()).append("% accuracy/damage");
   String wn=MagicWeaponEffects.note(weaponName,spell,m);if(!wn.isEmpty()){if(note.length()>0)note.append(" | ");note.append(wn);}
   String cn=MagicSpellCompatibility.note(weaponName,spell);if(!cn.isEmpty()){if(note.length()>0)note.append(" | ");note.append(cn);} if(!tome.note.isEmpty()){if(note.length()>0)note.append(" | ");note.append(tome.note);} if(!amulet.note.isEmpty()){if(note.length()>0)note.append(" | ");note.append(amulet.note);} if(!loadout.note.isEmpty()){if(note.length()>0)note.append(" | ");note.append(loadout.note);}
-  return new MagicCombatResult(dps,acc,max,roll,dr,bonus,md,pn,spell.name,note.toString(),eff,ticks,preTransformMax);
+  return new MagicCombatResult(dps,ttk,acc,max,roll,dr,bonus,md,pn,spell.name,note.toString(),eff,ticks,preTransformMax);
  }
  public MagicCombatResult calculatePowered(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,PoweredStaff staff,boolean task){
   int bonus=0; double md=0; boolean slayer=false;
@@ -59,15 +60,16 @@ public class MagicCombatCalculator {
   HitDistribution.AttackDistribution poweredAttack=WikiPlayerVsNpcCalc.magicFinalDistribution(magicDamage.minHit,max,acc,brimstoneAccuracy,m,gear.values(),null);
   int poweredTicks=WikiAttackSpeedRules.attackTicks(staff.speed,staff.label,m);
   double dps=WikiPlayerVsNpcCalc.dps(poweredAttack,poweredTicks); max=poweredAttack.max();
+  double ttk=ExpectedKillTime.seconds(poweredAttack,m==null?1:Math.max(1,m.getHitpoints()),poweredTicks);
   boolean ratBoneAllowed=!"Bone staff".equals(staff.label)||(m!=null&&m.hasAttribute("rat"));
-  if(!WikiTargetEligibility.magicCanDamage(m) || !LeafyTargetRules.poweredMagicCanDamage(m) || !ratBoneAllowed){max=0;dps=0.0;}
+  if(!WikiTargetEligibility.magicCanDamage(m) || !LeafyTargetRules.poweredMagicCanDamage(m) || !ratBoneAllowed){max=0;dps=0.0;ttk=Double.POSITIVE_INFINITY;}
   String poweredNote;
   if(shadow)poweredNote="Shadow: 3x equipment Magic attack/damage (outside ToA), damage cap 100%, 5t";
   else if("Eye of ayak".equals(staff.label))poweredNote="Eye of ayak: built-in spell, 3t; Soul Rend special not included in sustained DPS";
   else if("Bone staff".equals(staff.label)) poweredNote="Bone staff: powered ratbane spell, +10 max vs rats; "+poweredTicks+"t";
   else poweredNote="Powered staff: built-in spell, "+poweredTicks+"t";
   if(!loadout.note.isEmpty())poweredNote+=" | "+loadout.note;
- return new MagicCombatResult(dps,acc,max,roll,dr,bonus,md,pn,staff.label,poweredNote,eff,poweredTicks,preTransformMax);
+ return new MagicCombatResult(dps,ttk,acc,max,roll,dr,bonus,md,pn,staff.label,poweredNote,eff,poweredTicks,preTransformMax);
  }
 
  private static boolean hasItem(Map<EquipmentSlot,EquipmentCandidate> gear,String name){

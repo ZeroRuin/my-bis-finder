@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.9.3 — Time-to-Kill Update
+
+### New
+- Optimises final Melee, Ranged and Magic loadouts for the lowest expected
+  time to kill (TTK), rather than ranking final choices by sustained DPS alone.
+- Displays estimated TTK alongside sustained DPS in loadout summaries.
+- Calculates TTK from attack damage distributions, accounting for misses,
+  overkill, multi-hit damage and supported target damage transformations.
+- Models Ruby bolts (e) Blood Forfeit damage as enemy HP decreases; offers
+  an optional checkbox to exclude Ruby bolts (e) from calculations.
+
+### Improved
+- Speeds up exact TTK calculations by caching reusable damage distributions
+  and reusing Ruby bolt damage calculations across HP buckets.
+- Shows clearer first-use instructions with the bank button and loadout steps.
+- Detects Ruby bolts (e) in the bank, inventory and equipped ammunition.
+- Simplifies the Ruby bolts (e) checkbox explanation and presentation.
+- Shows generation timing information to assist with performance diagnostics.
+- Retains sustained DPS for tie-breaking and candidate pruning.
+
+
+## 0.9.3-test
+
+- Adds distribution-based expected time-to-kill for finite monster HP.
+- Uses expected TTK for exact finalist, weapon, stance and attack-style ranking
+  while retaining DPS for the broad performance-sensitive search stages.
+- Models Ruby bolt Blood Forfeit from the target's remaining HP during TTK.
+- Displays estimated TTK alongside sustained DPS in the loadout summary.
+- Caches equivalent TTK calculations and uses an exact linear-distribution fast
+  path without reducing the optimizer's equipment coverage.
+- Reuses identical Ruby-bolt distributions across five-HP ranges and above its
+  100-damage cap, preserving exact Blood Forfeit results with less rebuilding.
+- Builds each Ruby-bolt candidate's ordinary crossbow distribution once before
+  applying its exact remaining-HP proc states.
+- Replaces the initial hint with a concise target, generation and bank-withdrawal
+  guide using the actual My BiS bank icon.
+- Shows temporary end-to-end and per-style generation timing in the sidebar for test builds.
+- Adds an **Include Ruby bolts (e)** option only when they are present in the bank,
+  allowing faster generation when exact Blood Forfeit comparisons are unnecessary.
+
 ## 0.9.2
 
 - Keeps generated loadouts and all cached attack styles intact when the bank is

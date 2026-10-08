@@ -91,15 +91,15 @@ public class MagicLoadoutOptimizer {
        effect.accuracy,effect.damage));
      comps.add(new MagicLoadoutComparison(
        family+" | "+wn,familyBest.getSpell().name,familyBest.getResult()));
-     if(weaponBest==null||FinalLoadoutSelection.better(
-       familyBest.getResult().getDps(),weaponBest.getResult().getDps()))weaponBest=familyBest;
+     if(weaponBest==null||FinalLoadoutSelection.betterTtk(
+       familyBest.getResult().getExpectedTtkSeconds(),familyBest.getResult().getDps(),weaponBest.getResult().getExpectedTtkSeconds(),weaponBest.getResult().getDps()))weaponBest=familyBest;
     }
    }
    if(weaponBest!=null
-      &&(global==null||FinalLoadoutSelection.better(
-        weaponBest.getResult().getDps(),global.getResult().getDps())))global=weaponBest;
+      &&(global==null||FinalLoadoutSelection.betterTtk(
+        weaponBest.getResult().getExpectedTtkSeconds(),weaponBest.getResult().getDps(),global.getResult().getExpectedTtkSeconds(),global.getResult().getDps())))global=weaponBest;
   }
-  comps.sort((a,b)->Double.compare(b.getResult().getDps(),a.getResult().getDps()));
+  comps.sort((a,b)->FinalLoadoutSelection.compareTtk(a.getResult().getExpectedTtkSeconds(),a.getResult().getDps(),b.getResult().getExpectedTtkSeconds(),b.getResult().getDps()));
   return new MagicOptimizationReport(global,comps,audit);
  }
 
@@ -111,7 +111,7 @@ public class MagicLoadoutOptimizer {
    if(powered!=null&&account.real(Skill.MAGIC)>=powered.minLevel){
     MagicCombatResult r=calc.calculatePowered(gear,m,powered,task);
     MagicSpell pseudo=new MagicSpell(powered.label,powered.minLevel,powered.baseMaxHit(account.boosted(Skill.MAGIC)));
-    if(best==null||FinalLoadoutSelection.better(r.getDps(),best.getResult().getDps()))
+    if(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps()))
      best=new OptimizedMagicLoadout(gear,r,pseudo);
     continue;
    }
@@ -136,7 +136,7 @@ public class MagicLoadoutOptimizer {
      continue;
     }
     MagicCombatResult r=calc.calculate(gear,m,sp,task);
-    if(best==null||FinalLoadoutSelection.better(r.getDps(),best.getResult().getDps()))
+    if(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps()))
      best=new OptimizedMagicLoadout(gear,r,sp);
    }
   }
@@ -174,9 +174,9 @@ public class MagicLoadoutOptimizer {
     MagicCombatResult r=powered!=null
       ?calc.calculatePowered(trial,m,powered,task)
       :calc.calculate(trial,m,best.getSpell(),task);
-    if(r==null||Double.compare(r.getDps(),current.getDps())<0)continue;
-    if(chosen==null||FinalLoadoutSelection.better(r.getDps(),chosenResult.getDps())
-      ||(Double.compare(r.getDps(),chosenResult.getDps())==0&&c.getPrayer()>chosen.getPrayer())){
+    if(r==null||FinalLoadoutSelection.betterTtk(current.getExpectedTtkSeconds(),current.getDps(),r.getExpectedTtkSeconds(),r.getDps()))continue;
+    if(chosen==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),chosenResult.getExpectedTtkSeconds(),chosenResult.getDps())
+      ||(Double.compare(r.getExpectedTtkSeconds(),chosenResult.getExpectedTtkSeconds())==0&&c.getPrayer()>chosen.getPrayer())){
      chosen=c;chosenResult=r;
     }
    }

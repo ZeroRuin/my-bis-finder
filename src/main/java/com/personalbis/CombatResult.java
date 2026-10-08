@@ -3,6 +3,7 @@ package com.personalbis;
 public final class CombatResult
 {
     private final double dps;
+    private final double expectedTtkSeconds;
     private final double accuracy;
     private final int maxHit;
     private final int attackRoll;
@@ -21,7 +22,17 @@ public final class CombatResult
         int attackBonus, int strengthBonus, int attackSpeed, int effectiveAttack, int effectiveStrength,
         MeleeStance stance, MeleePrayer prayer, int preWeaponAttackRoll, int preWeaponMaxHit)
     {
-        this.dps=dps; this.accuracy=accuracy; this.maxHit=maxHit; this.attackRoll=attackRoll;
+        this(dps,Double.POSITIVE_INFINITY,accuracy,maxHit,attackRoll,defenceRoll,attackBonus,
+            strengthBonus,attackSpeed,effectiveAttack,effectiveStrength,stance,prayer,
+            preWeaponAttackRoll,preWeaponMaxHit);
+    }
+
+    public CombatResult(double dps, double expectedTtkSeconds, double accuracy, int maxHit,
+        int attackRoll, int defenceRoll, int attackBonus, int strengthBonus, int attackSpeed,
+        int effectiveAttack, int effectiveStrength, MeleeStance stance, MeleePrayer prayer,
+        int preWeaponAttackRoll, int preWeaponMaxHit)
+    {
+        this.dps=dps; this.expectedTtkSeconds=expectedTtkSeconds; this.accuracy=accuracy; this.maxHit=maxHit; this.attackRoll=attackRoll;
         this.defenceRoll=defenceRoll; this.attackBonus=attackBonus; this.strengthBonus=strengthBonus;
         this.attackSpeed=attackSpeed; this.effectiveAttack=effectiveAttack; this.effectiveStrength=effectiveStrength;
         this.stance=stance; this.prayer=prayer;
@@ -29,6 +40,7 @@ public final class CombatResult
     }
 
     public double getDps(){return dps;}
+    public double getExpectedTtkSeconds(){return expectedTtkSeconds;}
     public double getAccuracy(){return accuracy;}
     public int getMaxHit(){return maxHit;}
     public int getAttackRoll(){return attackRoll;}

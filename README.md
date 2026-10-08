@@ -1,28 +1,52 @@
 # My BiS Finder
 
-Account-aware best-in-slot gear planner for RuneLite using the player's bank,
-levels, selected target and Slayer task.
+My BiS Finder analyses your banked, equipped and inventory gear to find the fastest
+expected time-to-kill (TTK) loadout for your chosen target in Old School RuneScape.
+
+Using your available equipment, combat levels, unlocked content and target-specific
+combat mechanics, the plugin calculates and recommends effective Melee, Ranged and
+Magic setups to help you defeat enemies as quickly as possible.
 
 ## Features
 
-- Finds the highest-DPS owned Melee, Ranged and Magic loadouts for a selected target.
-- Uses the player's bank, equipped gear, inventory, combat levels, quest and
-  prayer unlocks, and Slayer task.
-- Supports target-specific equipment requirements, weapon passives, ammunition,
-  elemental weaknesses and multi-hit weapons.
-- Adds a native bank view for the selected loadout and recommended supplies.
-- Uses an offline OSRS Wiki-derived equipment and monster data pack; it makes no
-  live Wiki requests during play.
+- **Fastest Time-to-Kill Loadouts** — Compares owned Melee, Ranged and Magic
+  setups to recommend the lowest estimated kill time for the selected target.
+- **Owned Gear Detection** — Uses bank, inventory and equipped items to build
+  loadouts from gear you already own.
+- **Target-Specific Calculations** — Accounts for enemy defence, weaknesses,
+  immunities, damage mechanics and equipment requirements.
+- **Advanced Combat Mechanics** — Models weapon passives, enchanted ammunition,
+  elemental weaknesses and multi-hit attacks.
+- **Slayer Task Integration** — Select a target using your current Slayer task
+  and apply relevant Slayer equipment bonuses.
+- **Account-Aware Recommendations** — Considers combat levels, quest requirements
+  and unlocked prayers.
+- **Attack Style Comparison** — Calculates Melee, Ranged and Magic loadouts and
+  lets you switch between cached results without recalculating.
+- **Bank Loadout Integration** — Provides a dedicated bank view for finding
+  recommended equipment and supplies.
+- **Loadout Statistics** — Shows estimated TTK, sustained DPS and combat statistics.
+- **Offline Calculations** — Uses bundled OSRS Wiki-derived equipment and monster
+  data, with no live Wiki requests during play.
 
 ## Using the plugin
 
-1. Open your bank so My BiS Finder can read the items owned by the logged-in account.
-2. Select a target, or enable **Load Slayer Task**.
-3. Click **Generate Loadout** to calculate and cache every attack style.
-4. Choose an attack style to display its generated gear and bank layout; switching
-   styles reuses the cached results without rerunning the optimisers.
-5. Use the highlighted **BEST** style for the highest calculated sustained DPS.
-6. Open the My BiS Finder bank view to gather the recommended gear and supplies.
+1. **Scan Your Bank** — Open your bank once to capture owned items. Inventory
+   and equipped items are also considered.
+2. **Select Your Target** — Choose a monster, or enable **Load Slayer Task** to
+   select your current Slayer target.
+3. **Generate Your Loadout** — Click **Generate Loadout** to calculate all
+   supported attack styles.
+4. **Choose Your Attack Style** — Select Slash, Stab, Crush, Ranged or Magic.
+   The **BEST** indicator highlights the style with the lowest estimated TTK.
+5. **Review Your Loadout** — Check the recommended equipment, estimated TTK,
+   DPS and other combat statistics.
+6. **Gear Up at the Bank** — Open your bank and click the My BiS Finder button
+   in the upper-right corner to view your recommended gear and supplies.
+
+![My BiS Finder button in the Bank of Gielinor interface](docs/bank-ui-button.png)
+
+*The My BiS Finder button appears in the upper-right corner of the bank interface.*
 
 ## Privacy
 

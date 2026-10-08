@@ -1,5 +1,6 @@
 package com.personalbis;
 import java.util.Map;
+import java.util.HashMap;
 import javax.inject.Inject;
 import net.runelite.api.Skill;
 public class RangedCombatCalculator {
@@ -8,7 +9,7 @@ public class RangedCombatCalculator {
  public RangedCombatResult calculate(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
   RangedCombatResult best=null;
   for(RangedStance st:RangedStance.values())for(RangedPrayer p:prayers()){
-   RangedCombatResult r=calculate(gear,m,task,st,p); if(best==null||r.getDps()>best.getDps())best=r;
+   RangedCombatResult r=calculate(gear,m,task,st,p); if(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getExpectedTtkSeconds(),best.getDps()))best=r;
   } return best;
  }
  public RangedCombatResult calculate(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task,RangedStance st,RangedPrayer p){
@@ -44,11 +45,22 @@ public class RangedCombatCalculator {
   EquipmentCandidate ammo=gear.get(EquipmentSlot.AMMO);
   HitDistribution.AttackDistribution rangedDist=WikiPlayerVsNpcCalc.rangedFinalDistribution(
       weapon,ammo,m,level,max,acc,account.isKandarinHardCompleted(),gear.values());
+  final int normalMax=max;
   double expectedDamage=WikiPlayerVsNpcCalc.expectedDamage(rangedDist);
   double dps=WikiPlayerVsNpcCalc.dps(rangedDist,actualSpeed);
+  int targetHp=m==null?1:Math.max(1,m.getHitpoints());
+  boolean ruby=ammo!=null&&ammo.getItem()!=null&&ammo.getItem().getName().toLowerCase().contains("ruby");
+  Map<Integer,HitDistribution.AttackDistribution> hpDists=ruby?new HashMap<>():null;
+  HitDistribution rubyBase=ruby?WikiPlayerVsNpcCalc.rangedRubyBaseDistribution(
+      m,level,normalMax,acc,account.isKandarinHardCompleted()):null;
+  double ttk=ruby
+      ?ExpectedKillTime.seconds(targetHp,actualSpeed,hp->hpDists.computeIfAbsent(EnchantedBoltEffects.rubyHpBucket(hp),key->
+          WikiPlayerVsNpcCalc.rangedRubyFinalDistributionAtHp(rubyBase,weapon,ammo,m,
+              account.isKandarinHardCompleted(),key)))
+      :ExpectedKillTime.seconds(rangedDist,targetHp,actualSpeed);
   max=rangedDist.max();
-  if(!WikiTargetEligibility.rangedCanDamage(m) || !LeafyTargetRules.rangedCanDamage(m,ammo) || !MeleeWeaponEffects.ratBoneCanDamage(weapon,m)){max=0;dps=0.0;}
-  return new RangedCombatResult(dps,acc,max,roll,defRoll,atk,str,actualSpeed,eff,dmgEff,st,p);
+  if(!WikiTargetEligibility.rangedCanDamage(m) || !LeafyTargetRules.rangedCanDamage(m,ammo) || !MeleeWeaponEffects.ratBoneCanDamage(weapon,m)){max=0;dps=0.0;ttk=Double.POSITIVE_INFINITY;}
+  return new RangedCombatResult(dps,ttk,acc,max,roll,defRoll,atk,str,actualSpeed,eff,dmgEff,st,p);
  }
  private RangedPrayer[] prayers(){int x=account.real(Skill.PRAYER);
   if(x>=74 && account.isRigourUnlocked())return new RangedPrayer[]{RangedPrayer.NONE,RangedPrayer.RIGOUR};

@@ -24,7 +24,8 @@ public class MeleeCombatCalculator
             for (MeleePrayer prayer : availablePrayers())
             {
             CombatResult result = calculateForStance(gear, style, monster, onSlayerTask, stance, prayer);
-            if (best == null || result.getDps() > best.getDps())
+            if (best == null || FinalLoadoutSelection.betterTtk(
+                result.getExpectedTtkSeconds(),result.getDps(),best.getExpectedTtkSeconds(),best.getDps()))
             {
                 best = result;
             }
@@ -216,6 +217,8 @@ public class MeleeCombatCalculator
         attackDist=WikiPlayerVsNpcCalc.applyCorp(attackDist,monster,weapon,style);
         attackDist=WikiPlayerVsNpcCalc.finalDistribution(attackDist,monster,style,weapon,null,false);
         double dps=WikiPlayerVsNpcCalc.expectedDamage(attackDist)/seconds;
+        int targetHp=monster==null?1:Math.max(1,monster.getHitpoints());
+        double ttk=ExpectedKillTime.seconds(attackDist,targetHp,speed);
         displayedMaxHit=attackDist.max();
 
         // Soulreaper is stateful: production ranking starts at zero stacks, then
@@ -240,23 +243,24 @@ public class MeleeCombatCalculator
                 if(stacks==5) potentialMax=soulDist.max();
             }
             displayedMaxHit=potentialMax;
-            int targetHp=monster==null?1:Math.max(1,monster.getHitpoints());
             dps=SoulreaperAxeEffects.rampDps(stackEv,targetHp,seconds);
+            ttk=ExpectedKillTime.approximateSeconds(targetHp,dps);
         }
 
 
         // Kurasks/Turoths calculate an ordinary accuracy roll for unsupported weapons,
         // but the hit itself is ineffective. Preserve accuracy/roll diagnostics while
         // forcing damage to zero so the optimizer cannot recommend an unusable weapon.
-        if (VampyreTargetRules.tier2HalfDamage(gear,weapon,monster)) { displayedMaxHit/=2; dps/=2.0; }
-        if (VampyreTargetRules.tier2SilverCap10(gear,weapon,monster)) { displayedMaxHit=Math.min(displayedMaxHit,10); dps=accuracy*MeleeWeaponEffects.successfulHitAverage(displayedMaxHit)/seconds; }
+        if (VampyreTargetRules.tier2HalfDamage(gear,weapon,monster)) { displayedMaxHit/=2; dps/=2.0; ttk=ExpectedKillTime.approximateSeconds(targetHp,dps); }
+        if (VampyreTargetRules.tier2SilverCap10(gear,weapon,monster)) { displayedMaxHit=Math.min(displayedMaxHit,10); dps=accuracy*MeleeWeaponEffects.successfulHitAverage(displayedMaxHit)/seconds; ttk=ExpectedKillTime.approximateSeconds(targetHp,dps); }
         if (!WikiTargetEligibility.meleeCanDamage(monster,weapon) || !LeafyTargetRules.meleeCanDamage(monster,weapon) || !MeleeWeaponEffects.ratBoneCanDamage(weapon,monster) || !VampyreTargetRules.canDamageMelee(gear,weapon,monster))
         {
             displayedMaxHit=0;
             dps=0.0;
+            ttk=Double.POSITIVE_INFINITY;
         }
 
-        return new CombatResult(dps,accuracy,displayedMaxHit,attackRoll,defenceRoll,
+        return new CombatResult(dps,ttk,accuracy,displayedMaxHit,attackRoll,defenceRoll,
             attackBonus,strBonus,speed,effAtk,effStr,stance,prayer,preWeaponAttackRoll,preWeaponMaxHit);
     }
 

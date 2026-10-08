@@ -62,9 +62,9 @@ public class RangedLoadoutOptimizer {
    EquipmentCandidate ammo=one.getLoadedAmmo()!=null?one.getLoadedAmmo():one.getItems().get(EquipmentSlot.AMMO);
    comps.add(new RangedWeaponComparison(w.getItem().getName(),ammo==null?RangedAmmoRules.ammoDisplay(w):ammo.getItem().getName(),RangedAmmoRules.weaponAmmo(w),RangedAmmoRules.defenceClass(w),
     ammo==null?"":EnchantedBoltEffects.effectLabel(ammo),one.getResult(),gearSummary(one.getItems()),one.getItems()));
-   if(best==null||FinalLoadoutSelection.better(one.getResult().getDps(),best.getResult().getDps()))best=one;
+   if(best==null||FinalLoadoutSelection.betterTtk(one.getResult().getExpectedTtkSeconds(),one.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps()))best=one;
   }
-  comps.sort((a,z)->Double.compare(z.getResult().getDps(),a.getResult().getDps()));
+  comps.sort((a,z)->FinalLoadoutSelection.compareTtk(a.getResult().getExpectedTtkSeconds(),a.getResult().getDps(),z.getResult().getExpectedTtkSeconds(),z.getResult().getDps()));
   return new RangedOptimizationReport(best,comps);
   } finally {
    long total=System.nanoTime()-profile.started;
@@ -106,8 +106,8 @@ public class RangedLoadoutOptimizer {
     if(!RangedAmmoRules.compatible(weapon,ammo))continue;
     Profile p=activeProfile.get(); if(p!=null)p.ammoBranches++;
     OptimizedRangedLoadout one=optimizeWeaponAmmo(ranked,weapon,ammo,m,task,requiredEquipment);
-    if(one!=null&&(best==null||FinalLoadoutSelection.better(one.getResult().getDps(),best.getResult().getDps())
-      ||(Double.compare(one.getResult().getDps(),best.getResult().getDps())==0&&prayerBonus(one.getItems())>prayerBonus(best.getItems()))))best=one;
+    if(one!=null&&(best==null||FinalLoadoutSelection.betterTtk(one.getResult().getExpectedTtkSeconds(),one.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())
+      ||(Double.compare(one.getResult().getExpectedTtkSeconds(),best.getResult().getExpectedTtkSeconds())==0&&prayerBonus(one.getItems())>prayerBonus(best.getItems()))))best=one;
    }
    return best;
   }
@@ -166,8 +166,8 @@ public class RangedLoadoutOptimizer {
   int finalists=Math.min(EXACT_FINALISTS,beam.size());
   Profile prof=activeProfile.get(); long finalStart=System.nanoTime(); if(prof!=null)prof.finalStates+=finalists;
   for(int i=0;i<finalists;i++){Map<EquipmentSlot,EquipmentCandidate>g=beam.get(i);RangedCombatResult r=exactCached(g,m,task);
-   if(r!=null&&Double.isFinite(r.getDps())&&(best==null||FinalLoadoutSelection.better(r.getDps(),best.getResult().getDps())
-    ||(Double.compare(r.getDps(),best.getResult().getDps())==0&&prayerBonus(g)>prayerBonus(best.getItems()))))best=new OptimizedRangedLoadout(g,r);}
+   if(r!=null&&Double.isFinite(r.getDps())&&(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())
+    ||(Double.compare(r.getExpectedTtkSeconds(),best.getResult().getExpectedTtkSeconds())==0&&prayerBonus(g)>prayerBonus(best.getItems()))))best=new OptimizedRangedLoadout(g,r);}
   if(prof!=null)prof.finalNanos+=System.nanoTime()-finalStart;
   long completionStart=System.nanoTime();
   OptimizedRangedLoadout completed=completeNeutralSlots(best,ranked,weapon,m,task);
@@ -208,9 +208,9 @@ public class RangedLoadoutOptimizer {
     Map<EquipmentSlot,EquipmentCandidate> trial=new EnumMap<>(gear);trial.put(slot,c);
     Profile prof=activeProfile.get(); if(prof!=null)prof.completionTrials++;
     RangedCombatResult r=exactCached(trial,m,task);
-    if(r==null||Double.compare(r.getDps(),current.getDps())<0)continue;
-    if(chosen==null||FinalLoadoutSelection.better(r.getDps(),chosenResult.getDps())
-      ||(Double.compare(r.getDps(),chosenResult.getDps())==0&&c.getPrayer()>chosen.getPrayer())){
+    if(r==null||FinalLoadoutSelection.betterTtk(current.getExpectedTtkSeconds(),current.getDps(),r.getExpectedTtkSeconds(),r.getDps()))continue;
+    if(chosen==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),chosenResult.getExpectedTtkSeconds(),chosenResult.getDps())
+      ||(Double.compare(r.getExpectedTtkSeconds(),chosenResult.getExpectedTtkSeconds())==0&&c.getPrayer()>chosen.getPrayer())){
      chosen=c;chosenResult=r;
     }
    }

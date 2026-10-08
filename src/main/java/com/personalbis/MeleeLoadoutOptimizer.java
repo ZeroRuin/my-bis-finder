@@ -94,11 +94,11 @@ public class MeleeLoadoutOptimizer
                 comparisons.add(new WeaponComparison(weapon.getItem().getName(),weaponBest));
                 if(weapon.getItem().getName().toLowerCase().contains("keris"))
                     audit.add(weaponAudit("KERIS",weapon,weaponBest,monster,onSlayerTask));
-                if(best==null||FinalLoadoutSelection.better(weaponBest.getResult().getDps(),best.getResult().getDps())) best=weaponBest;
+                if(best==null||FinalLoadoutSelection.betterTtk(weaponBest.getResult().getExpectedTtkSeconds(),weaponBest.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())) best=weaponBest;
             }
         }
 
-        comparisons.sort((a,b)->Double.compare(b.getResult().getDps(),a.getResult().getDps()));
+        comparisons.sort((a,b)->FinalLoadoutSelection.compareTtk(a.getResult().getExpectedTtkSeconds(),a.getResult().getDps(),b.getResult().getExpectedTtkSeconds(),b.getResult().getDps()));
         for(int i=0;i<Math.min(6,comparisons.size());i++)
             audit.add(weaponAudit("TOP"+(i+1), findWeapon(weapons,comparisons.get(i).getWeaponName()), comparisons.get(i).getLoadout(),monster,onSlayerTask));
         return new MeleeOptimizationReport(best,comparisons,audit);
@@ -154,8 +154,8 @@ public class MeleeLoadoutOptimizer
         for(Map<EquipmentSlot,EquipmentCandidate> g:beam)
         {
             CombatResult r=calculateCached(g,style,monster,onSlayerTask,context);
-            if(best==null||FinalLoadoutSelection.better(r.getDps(),best.getResult().getDps())
-                ||(Double.compare(r.getDps(),best.getResult().getDps())==0
+            if(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())
+                ||(Double.compare(r.getExpectedTtkSeconds(),best.getResult().getExpectedTtkSeconds())==0
                    && prayerBonus(g)>prayerBonus(best.getItems())))
                 best=new OptimizedLoadout(style,g,r);
         }
@@ -196,10 +196,10 @@ public class MeleeLoadoutOptimizer
                 CombatResult r=calculateCached(trial,style,monster,onSlayerTask,context);
 
                 // Never sacrifice the offensive result merely to make the grid full.
-                if(Double.compare(r.getDps(),current.getDps())<0)continue;
+                if(FinalLoadoutSelection.betterTtk(current.getExpectedTtkSeconds(),current.getDps(),r.getExpectedTtkSeconds(),r.getDps()))continue;
                 if(chosen==null
-                    || FinalLoadoutSelection.better(r.getDps(),chosenResult.getDps())
-                    || (Double.compare(r.getDps(),chosenResult.getDps())==0
+                    || FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),chosenResult.getExpectedTtkSeconds(),chosenResult.getDps())
+                    || (Double.compare(r.getExpectedTtkSeconds(),chosenResult.getExpectedTtkSeconds())==0
                         && c.getPrayer()>chosen.getPrayer()))
                 {
                     chosen=c;

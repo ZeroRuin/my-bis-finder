@@ -50,12 +50,21 @@ public final class EnchantedBoltEffects {
 
  /** Wiki Ruby stage after Corp division: Blood Forfeit remains full damage against Corp. */
  public static HitDistribution applyRubyAfterCorp(HitDistribution dist, EquipmentCandidate ammo, MonsterDefinition m, boolean kandarinHard){
+  return applyRubyAfterCorp(dist,ammo,m,kandarinHard,m==null?0:m.getHitpoints());
+ }
+ public static HitDistribution applyRubyAfterCorp(HitDistribution dist, EquipmentCandidate ammo, MonsterDefinition m, boolean kandarinHard, int currentHp){
   if(dist==null||m==null||!enchanted(ammo)) return dist;
   String n=ammo.getItem().getName().toLowerCase();
   if(!n.contains("ruby")) return dist;
   double p=proc(.06,kandarinHard);
-  int effect=(int)Math.min(100.0,Math.floor(m.getHitpoints()*.20));
+  int effect=(int)Math.min(100.0,Math.floor(Math.max(0,currentHp)*.20));
   return replaceIndependent(dist,p,effect).flatten();
+ }
+
+ /** HP values in the same bucket produce the identical Blood Forfeit damage. */
+ public static int rubyHpBucket(int currentHp){
+  int hp=Math.max(0,currentHp);
+  return hp>=500?500:(hp/5)*5;
  }
 
  private static HitDistribution bonusDamage(HitDistribution base,double chance,int bonus,boolean accurateOnly){

@@ -271,6 +271,36 @@ public final class WikiPlayerVsNpcCalc {
             monster, AttackStyle.RANGED, weapon, null, false);
     }
 
+    /** Ranged distribution at a specific remaining HP, used by finite-fight Ruby TTK. */
+    public static HitDistribution.AttackDistribution rangedFinalDistributionAtHp(
+        EquipmentCandidate weapon, EquipmentCandidate ammo, MonsterDefinition monster, int rangedLevel,
+        int normalMax, double accuracy, boolean kandarinHard,
+        java.util.Collection<EquipmentCandidate> gear, int currentHp) {
+        if(ammo!=null&&ammo.getItem()!=null&&ammo.getItem().getName().toLowerCase().contains("ruby")) {
+            return rangedRubyFinalDistributionAtHp(rangedRubyBaseDistribution(monster,rangedLevel,normalMax,accuracy,kandarinHard),
+                weapon,ammo,monster,kandarinHard,currentHp);
+        }
+        HitDistribution.AttackDistribution attacker=rangedAttacker(
+            weapon,ammo,monster,rangedLevel,normalMax,accuracy,kandarinHard,gear);
+        return finalDistribution(attacker,monster,AttackStyle.RANGED,weapon,null,false);
+    }
+
+    /** Static ordinary-hit portion reused by every remaining-HP Ruby-bolt state. */
+    public static HitDistribution rangedRubyBaseDistribution(MonsterDefinition monster,int rangedLevel,
+        int normalMax,double accuracy,boolean kandarinHard) {
+        HitDistribution base=EnchantedBoltEffects.preAccurateZeroDistribution(
+            null,monster,rangedLevel,normalMax,accuracy,kandarinHard).accurateZeroToOne();
+        return CorporealBeastRules.isCorp(monster)?base.transform(HitDistribution.divide(2,0)).flatten():base;
+    }
+
+    public static HitDistribution.AttackDistribution rangedRubyFinalDistributionAtHp(HitDistribution base,
+        EquipmentCandidate weapon,EquipmentCandidate ammo,MonsterDefinition monster,boolean kandarinHard,int currentHp) {
+        HitDistribution ruby=EnchantedBoltEffects.applyRubyAfterCorp(base,ammo,monster,kandarinHard,currentHp);
+        HitDistribution.AttackDistribution attacker=new HitDistribution.AttackDistribution(
+            java.util.Collections.singletonList(ruby.flatten()));
+        return finalDistribution(attacker,monster,AttackStyle.RANGED,weapon,null,false);
+    }
+
     private static boolean isChargedTonalztics(EquipmentCandidate weapon) {
         return weapon!=null&&weapon.getItem()!=null&&weapon.getItem().getItemId()==28922;
     }

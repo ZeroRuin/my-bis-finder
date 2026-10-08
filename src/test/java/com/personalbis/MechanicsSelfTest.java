@@ -951,6 +951,29 @@ public final class MechanicsSelfTest
         no("alpha46.2 lower DPS cannot replace winner",FinalLoadoutSelection.better(6.10,6.25));
         no("alpha46.2 NaN cannot become winner",FinalLoadoutSelection.better(Double.NaN,6.25));
 
+        HitDistribution.AttackDistribution guaranteedTen=new HitDistribution.AttackDistribution(
+            Collections.singletonList(HitDistribution.single(10,true)));
+        near("0.9.3 finite HP overkill TTK",ExpectedKillTime.seconds(guaranteedTen,25,4),7.2);
+        HitDistribution.AttackDistribution halfHit=new HitDistribution.AttackDistribution(
+            Collections.singletonList(HitDistribution.linear(.5,10,10)));
+        near("0.9.3 miss probability TTK",ExpectedKillTime.seconds(halfHit,10,4),4.8);
+        HitDistribution.AttackDistribution twoSplats=new HitDistribution.AttackDistribution(Arrays.asList(
+            HitDistribution.single(5,true),HitDistribution.single(5,true)));
+        near("0.9.3 multi-hit attack TTK",ExpectedKillTime.seconds(twoSplats,10,4),2.4);
+        HitDistribution.AttackDistribution modernLinear=new HitDistribution.AttackDistribution(
+            Collections.singletonList(HitDistribution.linear(.5,0,2).accurateZeroToOne()));
+        near("0.9.3 modern linear fast-path TTK",ExpectedKillTime.seconds(modernLinear,2,4),8.0);
+        yes("0.9.3 Ruby TTK HP buckets preserve proc damage",
+            EnchantedBoltEffects.rubyHpBucket(1)==0
+            &&EnchantedBoltEffects.rubyHpBucket(4)==0
+            &&EnchantedBoltEffects.rubyHpBucket(5)==5
+            &&EnchantedBoltEffects.rubyHpBucket(9)==5
+            &&EnchantedBoltEffects.rubyHpBucket(499)==495
+            &&EnchantedBoltEffects.rubyHpBucket(500)==500
+            &&EnchantedBoltEffects.rubyHpBucket(750)==500);
+        yes("0.9.3 lower TTK outranks higher DPS",
+            FinalLoadoutSelection.betterTtk(2.4,4.0,3.0,30.0));
+
         EquipmentCandidate oneHand=weapon("Rune crossbow");
         EquipmentCandidate twoHand=twoHandedWeapon("Twisted bow");
         EquipmentCandidate shield=slotItem("Dragonfire shield",EquipmentSlot.SHIELD);
@@ -1110,7 +1133,7 @@ public final class MechanicsSelfTest
         no("alpha48.8 unknown weapon category fails closed",MeleeAttackStyleResolver.supports(categorizedWeapon("Unknown","Mystery"),AttackStyle.MELEE_CRUSH));
         System.out.println("PASS  alpha48.8 melee attack-interface eligibility audit");
         yes("alpha48.8.1 neutral-slot completion hook present",MeleeOptimizerRegression48_8_1.neutralCompletionPresent());
-        yes("alpha48.8.1 neutral-slot completion forbids DPS loss",MeleeOptimizerRegression48_8_1.neverSacrificesDps());
+        yes("0.9.3 neutral-slot completion forbids TTK regression",MeleeOptimizerRegression48_8_1.neverWorsensTtk());
         System.out.println("PASS  alpha48.8.1 complete neutral-slot fallback audit");
         near("alpha48.8.4 successful-hit average max34",
             MeleeWeaponEffects.successfulHitAverage(34),17.0+1.0/35.0);

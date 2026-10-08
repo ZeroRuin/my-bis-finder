@@ -120,6 +120,11 @@ public class PersonalBisPlugin extends Plugin
             // rerunning the optimiser. Recalculation remains a manual action.
             panel.refreshBankItems();
         }
+        else if (event.getContainerId() == InventoryID.INV
+            || event.getContainerId() == InventoryID.WORN)
+        {
+            panel.refreshRubyBoltOwnership();
+        }
     }
 
     @Subscribe

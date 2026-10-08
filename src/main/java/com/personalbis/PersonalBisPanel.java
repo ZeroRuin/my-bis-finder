@@ -10,6 +10,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -122,6 +123,8 @@ public class PersonalBisPanel extends PluginPanel
     private JPanel validationSection;
     private final JButton generateLoadoutButton = osrsButton("Generate Loadout");
     private final JLabel generateMessage = new JLabel(" ", SwingConstants.CENTER);
+    private final JCheckBox includeRubyBolts = new JCheckBox("Include Ruby bolts (e)",true);
+    private final JTextArea rubyBoltNote = new JTextArea("    - Increases calculation time.");
     private final JLabel loadoutHeading = new JLabel("Your best loadout");
     private AttackStyle calculatedBestStyle;
     private boolean targetExplicitlySelected;
@@ -133,9 +136,11 @@ public class PersonalBisPanel extends PluginPanel
     private boolean loadoutReady;
 
     private List<BankItem> cachedBank = Collections.emptyList();
+    private volatile boolean ownedHasRubyBolts;
     private String lastSlayerTask;
     private volatile boolean slayerMode;
     private volatile boolean slayerTargetMode;
+    private volatile boolean includeRubyBoltsEnabled=true;
     private AttackStyle selectedStyle = AttackStyle.MELEE_SLASH;
     private final ExecutorService optimizerExecutor = Executors.newSingleThreadExecutor(r -> {
         Thread t=new Thread(r,"personal-bis-optimizer"); t.setDaemon(true); return t;
@@ -164,7 +169,7 @@ public class PersonalBisPanel extends PluginPanel
         k.append(monster == null ? -1 : monster.getId())
             .append('|').append(monster == null ? 1 : monster.getSize())
             .append('|').append(monster == null ? "" : monster.getVersion())
-            .append('|').append(slayer);
+            .append('|').append(slayer).append('|').append(includeRubyBoltsEnabled);
         Skill[] combatSkills = {Skill.ATTACK, Skill.STRENGTH, Skill.DEFENCE, Skill.RANGED, Skill.MAGIC, Skill.PRAYER, Skill.HITPOINTS};
         for (Skill skill : combatSkills)
             k.append('|').append(account.real(skill)).append('/').append(account.boosted(skill));
@@ -243,11 +248,11 @@ public class PersonalBisPanel extends PluginPanel
         targetCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 126));
 
         monsterCountLabel = new JLabel("Monsters loading...");
-        monsterCountLabel.setFont(FontManager.getRunescapeSmallFont());
+        monsterCountLabel.setFont(FontManager.getRunescapeFont());
         monsterCountLabel.setForeground(OSRS_CREAM);
         monsterCountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         content.add(monsterCountLabel);
-        content.add(Box.createVerticalStrut(4));
+        content.add(Box.createVerticalStrut(8));
 
         GridBagConstraints targetGbc = new GridBagConstraints();
         targetGbc.gridx = 0;
@@ -362,21 +367,48 @@ public class PersonalBisPanel extends PluginPanel
         resultTitle.setFont(FontManager.getRunescapeBoldFont().deriveFont(15f));
         resultTitle.setForeground(OSRS_GREEN);
         resultTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-monsterInfo.setFont(FontManager.getRunescapeSmallFont());
+monsterInfo.setFont(FontManager.getRunescapeFont());
         monsterInfo.setForeground(OSRS_CREAM);
         monsterInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
 content.add(Box.createVerticalStrut(5));
+
+        styleCheck(includeRubyBolts);
+        includeRubyBolts.setFont(FontManager.getRunescapeBoldFont());
+        includeRubyBolts.setOpaque(false);
+        includeRubyBolts.setBorderPainted(false);
+        includeRubyBolts.setMargin(new Insets(0,0,0,0));
+        includeRubyBolts.setBorder(BorderFactory.createEmptyBorder(2,0,2,0));
+        includeRubyBolts.setAlignmentX(Component.LEFT_ALIGNMENT);
+        includeRubyBolts.setMaximumSize(includeRubyBolts.getPreferredSize());
+        includeRubyBolts.addActionListener(e -> {
+            includeRubyBoltsEnabled=includeRubyBolts.isSelected();
+            updateRubyBoltUi();
+            invalidateOptimizerCache();
+            if(loadoutsGenerated)markLoadoutStale("Ruby bolt setting changed — regenerate the loadout.");
+        });
+        updateRubyBoltUi();
+        rubyBoltNote.setEditable(false);
+        rubyBoltNote.setFocusable(false);
+        rubyBoltNote.setOpaque(false);
+        rubyBoltNote.setLineWrap(true);
+        rubyBoltNote.setWrapStyleWord(true);
+        rubyBoltNote.setRows(2);
+        rubyBoltNote.setFont(FontManager.getRunescapeFont());
+        rubyBoltNote.setForeground(OSRS_CREAM); rubyBoltNote.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rubyBoltNote.setBorder(BorderFactory.createEmptyBorder(0,0,2,0));
+        rubyBoltNote.setMaximumSize(new Dimension(Integer.MAX_VALUE,rubyBoltNote.getPreferredSize().height));
+        content.add(includeRubyBolts); content.add(rubyBoltNote); content.add(Box.createVerticalStrut(5));
 
         generateLoadoutButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         generateLoadoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
         generateLoadoutButton.addActionListener(e -> generateLoadouts());
         content.add(generateLoadoutButton);
-        generateMessage.setFont(FontManager.getRunescapeSmallFont());
+        generateMessage.setFont(FontManager.getRunescapeFont());
         generateMessage.setForeground(OSRS_CREAM);
         generateMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
-        generateMessage.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+        generateMessage.setMaximumSize(new Dimension(Integer.MAX_VALUE, 54));
         content.add(generateMessage);
-        content.add(Box.createVerticalStrut(4));
+        content.add(Box.createVerticalStrut(8));
 
         attackStyleHeading = sectionLabel("Attack style");
         attackStyleHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -411,7 +443,7 @@ content.add(Box.createVerticalStrut(5));
         stylesPanel = styles;
         setStyleControlsEnabled(false);
         content.add(styles);
-        content.add(Box.createVerticalStrut(4));
+        content.add(Box.createVerticalStrut(8));
 
         JSeparator sep = new JSeparator();
         sep.setForeground(OSRS_BORDER);
@@ -439,7 +471,7 @@ content.add(Box.createVerticalStrut(5));
         for (EquipmentSlot slot : EquipmentSlot.values())
         {
             JLabel label = new JLabel("—", JLabel.CENTER);
-            label.setFont(FontManager.getRunescapeSmallFont());
+            label.setFont(FontManager.getRunescapeFont());
             label.setForeground(OSRS_CREAM);
             label.setOpaque(true);
             label.setBackground(new Color(38, 38, 38));
@@ -483,7 +515,7 @@ content.add(Box.createVerticalStrut(5));
         validationCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 165));
         validationCard.add(sectionLabel("Loadout stats"));
         slayerItemWarning.setForeground(Color.RED);
-        slayerItemWarning.setFont(FontManager.getRunescapeSmallFont());
+        slayerItemWarning.setFont(FontManager.getRunescapeFont());
         slayerItemWarning.setAlignmentX(Component.LEFT_ALIGNMENT);
         slayerItemWarning.setVisible(false);
         validationCard.add(slayerItemWarning);
@@ -505,7 +537,7 @@ content.add(Box.createVerticalStrut(5));
         content.add(validationCard);
         updateProgressiveVisibility();
 
-        status.setFont(FontManager.getRunescapeSmallFont());
+        status.setFont(FontManager.getRunescapeFont());
         status.setForeground(OSRS_CREAM);
         status.setBorder(new EmptyBorder(8, 2, 4, 2));
         status.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -560,7 +592,7 @@ content.add(Box.createVerticalStrut(5));
             protected JButton createArrowButton()
             {
                 JButton b = new JButton("▼");
-                b.setFont(FontManager.getRunescapeSmallFont());
+                b.setFont(FontManager.getRunescapeFont());
                 b.setForeground(OSRS_GOLD);
                 b.setBackground(ColorScheme.DARK_GRAY_COLOR);
                 b.setBorder(new EmptyBorder(0, 4, 0, 4));
@@ -578,6 +610,11 @@ content.add(Box.createVerticalStrut(5));
         check.setFocusPainted(false);
         check.setOpaque(true);
         check.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
+    }
+
+    private void updateRubyBoltUi()
+    {
+        includeRubyBolts.setForeground(includeRubyBolts.isSelected() ? OSRS_GREEN : OSRS_CREAM);
     }
 
     private void updateSlayerUiState()
@@ -719,6 +756,24 @@ content.add(Box.createVerticalStrut(5));
         }
     }
 
+    private String displayTtk(double seconds)
+    {
+        if(!Double.isFinite(seconds))return "—";
+        if(seconds<60.0)return String.format(java.util.Locale.ROOT,"%.1fs",seconds);
+        return String.format(java.util.Locale.ROOT,"%dm %.1fs",(int)(seconds/60.0),seconds%60.0);
+    }
+
+    private String timingMessage(long totalMillis,Map<AttackStyle,Long> styles)
+    {
+        return String.format(java.util.Locale.ROOT,
+            "<html><div style='text-align:center'>Ready in %.2fs<br>Stab %.2f • Slash %.2f • Crush %.2f<br>Ranged %.2f • Magic %.2f</div></html>",
+            totalMillis/1000.0,styles.getOrDefault(AttackStyle.MELEE_STAB,0L)/1000.0,
+            styles.getOrDefault(AttackStyle.MELEE_SLASH,0L)/1000.0,
+            styles.getOrDefault(AttackStyle.MELEE_CRUSH,0L)/1000.0,
+            styles.getOrDefault(AttackStyle.RANGED,0L)/1000.0,
+            styles.getOrDefault(AttackStyle.MAGIC,0L)/1000.0);
+    }
+
     private void clearStyleSelection()
     {
         slash.setSelected(false); stab.setSelected(false); crush.setSelected(false);
@@ -734,18 +789,51 @@ content.add(Box.createVerticalStrut(5));
         JLabel h=new JLabel(heading,SwingConstants.CENTER);
         h.setFont(FontManager.getRunescapeBoldFont().deriveFont(15f));
         h.setForeground(OSRS_GOLD); h.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JLabel b=new JLabel("<html><div style='text-align:center;width:205px'>"+body+"</div></html>",SwingConstants.CENTER);
+        JLabel b=new JLabel("<html><div style='text-align:center;width:180px'>"+body+"</div></html>",SwingConstants.CENTER);
         b.setFont(FontManager.getRunescapeFont()); b.setForeground(OSRS_CREAM); b.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createVerticalStrut(20)); panel.add(h); panel.add(Box.createVerticalStrut(8)); panel.add(b); panel.add(Box.createVerticalStrut(20));
         return panel;
     }
 
+    private JPanel onboardingPanel()
+    {
+        JPanel panel=osrsCard();
+        panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE,180));
+        JLabel heading=new JLabel("How to use",SwingConstants.CENTER);
+        heading.setFont(FontManager.getRunescapeBoldFont().deriveFont(15f));
+        heading.setForeground(OSRS_GOLD); heading.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(Box.createVerticalStrut(20)); panel.add(heading); panel.add(Box.createVerticalStrut(8));
+        panel.add(onboardingLine("1. Select a target"));
+        panel.add(onboardingLine("2. Generate the loadout"));
+        JPanel bankLine=new JPanel(new FlowLayout(FlowLayout.CENTER,3,0)); bankLine.setOpaque(false);
+        bankLine.add(onboardingLine("3. Open your bank and click"));
+        try(InputStream in=PersonalBisPanel.class.getResourceAsStream("/personal-bis-icon.png"))
+        {
+            if(in!=null)bankLine.add(new JLabel(new ImageIcon(ImageIO.read(in).getScaledInstance(18,18,Image.SCALE_SMOOTH))));
+        }
+        catch(IOException ignored){}
+        bankLine.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bankLine.setMaximumSize(new Dimension(Integer.MAX_VALUE,bankLine.getPreferredSize().height));
+        panel.add(bankLine);
+        panel.add(onboardingLine("for quick withdrawal.")); panel.add(Box.createVerticalStrut(20));
+        return panel;
+    }
+
+    private JLabel onboardingLine(String text)
+    {
+        JLabel line=new JLabel(text,SwingConstants.CENTER);
+        line.setFont(FontManager.getRunescapeFont()); line.setForeground(OSRS_CREAM);
+        line.setAlignmentX(Component.CENTER_ALIGNMENT);
+        return line;
+    }
+
     private void ensureStatePanels()
     {
         if(loggedOutPanel==null){
-            loggedOutPanel=messagePanel("🔒  Log in to begin","Log in to RuneScape to search monsters, scan your bank and find your best gear.");
-            noTargetPanel=messagePanel("Select a target","Search for a monster above to see attack styles, gear and analysis.");
-            chooseStylePanel=messagePanel("Choose an attack style","Select Stab, Slash, Crush, Ranged or Magic to show your best gear and analysis.");
+            loggedOutPanel=messagePanel("🔒  Log in to begin","Log in to search monsters, scan your bank and find your best gear.");
+            noTargetPanel=onboardingPanel();
+            chooseStylePanel=messagePanel("Choose an attack style","Select Stab, Slash, Crush, Ranged or Magic to view your best gear.");
             content.add(loggedOutPanel); content.add(noTargetPanel); content.add(chooseStylePanel);
         }
     }
@@ -767,6 +855,8 @@ content.add(Box.createVerticalStrut(5));
         if(chooseStylePanel!=null)chooseStylePanel.setVisible(stylesReady&&loadoutsGenerated&&!styleExplicitlySelected);
         if (attackStyleHeading != null) attackStyleHeading.setVisible(stylesReady);
         if (stylesPanel != null) stylesPanel.setVisible(stylesReady);
+        boolean showRuby=targetReady&&ownedHasRubyBolts;
+        includeRubyBolts.setVisible(showRuby); rubyBoltNote.setVisible(showRuby);
         generateLoadoutButton.setText(loadoutsGenerated ? "Regenerate Loadout" : "Generate Loadout");
         generateLoadoutButton.setVisible(targetReady);
         generateMessage.setVisible(targetReady);
@@ -860,7 +950,7 @@ content.add(Box.createVerticalStrut(5));
             boolean selected=button.isSelected();
             boolean best=calculatedBestStyle==styles[i];
             button.setForeground(best ? OSRS_GREEN : (selected ? OSRS_GOLD : OSRS_CREAM));
-            button.setFont((selected||best) ? FontManager.getRunescapeBoldFont() : FontManager.getRunescapeSmallFont());
+            button.setFont((selected||best) ? FontManager.getRunescapeBoldFont() : FontManager.getRunescapeFont());
             button.setBackground(selected ? new Color(67, 58, 38) : (best ? new Color(39, 58, 39) : new Color(38, 38, 38)));
             if(bestStyleBadges[i]!=null)bestStyleBadges[i].setText(best?"BEST":" ");
             Container tile=button.getParent();
@@ -982,6 +1072,7 @@ content.add(Box.createVerticalStrut(5));
         // a lightweight immutable ownership snapshot. Existing generated loadouts
         // remain available until the player deliberately regenerates them.
         cachedBank = bankScanner.scan();
+        ownedHasRubyBolts = hasRubyBolts(bankScanner.scanOwnedGear(cachedBank));
         bankChecked = true;
 
         SwingUtilities.invokeLater(() ->
@@ -992,6 +1083,31 @@ content.add(Box.createVerticalStrut(5));
                 bankFilter.refreshLayout();
             }
         });
+    }
+
+    private boolean hasRubyBolts(List<BankItem> items)
+    {
+        if (items == null) return false;
+        for (BankItem item : items)
+        {
+            if (item != null && item.getQuantity() > 0 && rubyBoltItem(item)) return true;
+        }
+        return false;
+    }
+
+    /** Refresh carried/worn ownership on the client thread, without rescanning the bank. */
+    public void refreshRubyBoltOwnership()
+    {
+        boolean updated = hasRubyBolts(bankScanner.scanOwnedGear(cachedBank));
+        if (updated == ownedHasRubyBolts) return;
+        ownedHasRubyBolts = updated;
+        SwingUtilities.invokeLater(this::updateProgressiveVisibility);
+    }
+
+    private boolean rubyBoltItem(BankItem item)
+    {
+        return item!=null&&item.getName()!=null
+            &&item.getName().toLowerCase(java.util.Locale.ROOT).contains("ruby bolts (e)");
     }
 
     public void updateSlayerTask()
@@ -1095,9 +1211,13 @@ content.add(Box.createVerticalStrut(5));
         // loadout ownership also includes items currently worn or carried.
         final List<BankItem> bankSnapshot=new ArrayList<>(cachedBank);
         final List<BankItem> ownedGearSnapshot=bankScanner.scanOwnedGear(bankSnapshot);
+        final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
         final Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot=new EnumMap<>(AttackStyle.class);
-        for(AttackStyle style:AttackStyle.values())
-            rankedSnapshot.put(style,intelligence.rank(ownedGearSnapshot,style,slayerMode));
+        for(AttackStyle style:AttackStyle.values()){
+            List<BankItem> styleBank=ownedGearSnapshot;
+            if(style==AttackStyle.RANGED&&!includeRuby){styleBank=new ArrayList<>(ownedGearSnapshot);styleBank.removeIf(this::rubyBoltItem);}
+            rankedSnapshot.put(style,intelligence.rank(styleBank,style,slayerMode));
+        }
         final AttackStyle requestedStyle=selectedStyle;
         final boolean requestedSlayerMode=slayerMode;
 
@@ -1114,12 +1234,13 @@ content.add(Box.createVerticalStrut(5));
             Set<Integer> presentBoltIds = new HashSet<>();
             for (BankItem bi : validationBank) presentBoltIds.add(bi.getItemId());
             for (int i=0;i<enchantedBoltIds.length;i++)
-                if (!presentBoltIds.contains(enchantedBoltIds[i]))
+                if ((includeRuby||enchantedBoltIds[i]!=9242)&&!presentBoltIds.contains(enchantedBoltIds[i]))
                     validationBank.add(new BankItem(enchantedBoltIds[i],1,enchantedBoltNames[i]));
             List<EquipmentCandidate> ammoChoices = intelligence.rank(validationBank, AttackStyle.RANGED, requestedSlayerMode).get(EquipmentSlot.AMMO);
             if (ammoChoices != null)
                 for (EquipmentCandidate ammo : ammoChoices)
-                    if (!ammo.getRequirementResult().isBlocked() && EnchantedBoltEffects.enchanted(ammo))
+                    if (!ammo.getRequirementResult().isBlocked() && EnchantedBoltEffects.enchanted(ammo)
+                        &&(includeRuby||!ammo.getItem().getName().toLowerCase(java.util.Locale.ROOT).contains("ruby")))
                         syntheticBoltValidationAmmo.add(ammo);
             syntheticBoltValidationAmmo.sort(Comparator.comparing(a -> a.getItem().getName()));
         }
@@ -1379,6 +1500,7 @@ content.add(Box.createVerticalStrut(5));
             if (selectedCombat != null)
             {
                 summary.append(String.format("DPS: %.4f%n", selectedCombat.getDps()));
+                summary.append("Estimated TTK: ").append(displayTtk(selectedCombat.getExpectedTtkSeconds())).append(System.lineSeparator());
                 summary.append(String.format("Max Hit: %d%n", selectedCombat.getMaxHit()));
                 summary.append(String.format("Accuracy: %.2f%%%n", selectedCombat.getAccuracy() * 100.0));
                 summary.append(String.format("Style: %s%n", selectedCombat.getStance()));
@@ -1387,6 +1509,7 @@ content.add(Box.createVerticalStrut(5));
             else if (uiRanged != null)
             {
                 summary.append(String.format("DPS: %.4f%n", uiRanged.getDps()));
+                summary.append("Estimated TTK: ").append(displayTtk(uiRanged.getExpectedTtkSeconds())).append(System.lineSeparator());
                 summary.append(String.format("Max Hit: %d%n", uiRanged.getMaxHit()));
                 summary.append(String.format("Accuracy: %.2f%%%n", uiRanged.getAccuracy() * 100.0));
                 summary.append(String.format("Style: %s%n", uiRanged.getStance()));
@@ -1395,6 +1518,7 @@ content.add(Box.createVerticalStrut(5));
             else if (uiMagic != null)
             {
                 summary.append(String.format("DPS: %.4f%n", uiMagic.getDps()));
+                summary.append("Estimated TTK: ").append(displayTtk(uiMagic.getExpectedTtkSeconds())).append(System.lineSeparator());
                 summary.append(String.format("Max Hit: %d%n", uiMagic.getMaxHit()));
                 summary.append(String.format("Accuracy: %.2f%%%n", uiMagic.getAccuracy() * 100.0));
                 summary.append(String.format("Style: %s%n", uiMagic.getSpell()));
@@ -1799,7 +1923,7 @@ content.add(Box.createVerticalStrut(5));
             generateLoadoutButton.setEnabled(true);
             setStyleControlsEnabled(true);
             generateMessage.setForeground(OSRS_CREAM);
-            generateMessage.setText(styleExplicitlySelected ? " " : "Loadouts ready — choose an attack style.");
+            generateMessage.setText(calculateAllStyles?timingMessage(calculationMillis,optimizerStageMillis):" ");
             updateProgressiveVisibility();
             status.setText(monsterDatabase.getAll().size()+" unique monster variants  •  "+bankSnapshot.size()+" bank items"+(selectedCombat==null?"":"  •  melee validation alpha7"));
         });
@@ -1813,26 +1937,26 @@ content.add(Box.createVerticalStrut(5));
         Map<AttackStyle,Double> scores=new EnumMap<>(AttackStyle.class);
         for(AttackStyle style:AttackStyle.values())
         {
-            double dps=0.0;
+            double ttk=Double.POSITIVE_INFINITY;
             if(style==AttackStyle.MELEE_STAB||style==AttackStyle.MELEE_SLASH||style==AttackStyle.MELEE_CRUSH)
             {
                 MeleeOptimizationReport report=cachedMeleeReports.get(style);
                 if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null)dps=report.getBest().getResult().getDps();
+                if(report.getBest()!=null&&report.getBest().getResult()!=null)ttk=report.getBest().getResult().getExpectedTtkSeconds();
             }
             else if(style==AttackStyle.RANGED)
             {
                 RangedOptimizationReport report=cachedRangedReports.get(style);
                 if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null)dps=report.getBest().getResult().getDps();
+                if(report.getBest()!=null&&report.getBest().getResult()!=null)ttk=report.getBest().getResult().getExpectedTtkSeconds();
             }
             else
             {
                 MagicOptimizationReport report=cachedMagicReports.get(style);
                 if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null)dps=report.getBest().getResult().getDps();
+                if(report.getBest()!=null&&report.getBest().getResult()!=null)ttk=report.getBest().getResult().getExpectedTtkSeconds();
             }
-            scores.put(style,dps);
+            scores.put(style,Double.isFinite(ttk)?-ttk:Double.NEGATIVE_INFINITY);
         }
         return BestStyleSelection.best(scores);
     }

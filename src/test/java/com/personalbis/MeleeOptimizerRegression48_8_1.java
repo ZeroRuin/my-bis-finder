@@ -25,9 +25,9 @@ final class MeleeOptimizerRegression48_8_1
         return s.contains("completeNeutralSlots(best,ranked,style,monster,onSlayerTask,weapon,context)");
     }
 
-    static boolean neverSacrificesDps()
+    static boolean neverWorsensTtk()
     {
         String s=source();
-        return s.contains("if(Double.compare(r.getDps(),current.getDps())<0)continue;");
+        return s.contains("if(FinalLoadoutSelection.betterTtk(current.getExpectedTtkSeconds(),current.getDps(),r.getExpectedTtkSeconds(),r.getDps()))continue;");
     }
 }
