@@ -13,6 +13,12 @@ Magic setups to help you defeat enemies as quickly as possible.
   setups to recommend the lowest estimated kill time for the selected target.
 - **Owned Gear Detection** — Uses bank, inventory and equipped items to build
   loadouts from gear you already own.
+- **Owned Ammunition and Runes** — Checks owned ammunition and weapon compatibility
+  when comparing Ranged setups. For Magic, checks required runes and rune-providing
+  equipment to recommend a spell and loadout you can use against the selected target.
+- **Offensive Prayer Recommendations** — Checks your Prayer level and prayer unlocks
+  to recommend the strongest available offensive prayer for each combat style and
+  include its bonuses in the combat calculations.
 - **Target-Specific Calculations** — Accounts for enemy defence, weaknesses,
   immunities, damage mechanics and equipment requirements.
 - **Advanced Combat Mechanics** — Models weapon passives, enchanted ammunition,
@@ -40,7 +46,8 @@ Magic setups to help you defeat enemies as quickly as possible.
 4. **Choose Your Attack Style** — Select Slash, Stab, Crush, Ranged or Magic.
    The **BEST** indicator highlights the style with the lowest estimated TTK.
 5. **Review Your Loadout** — Check the recommended equipment, estimated TTK,
-   DPS and other combat statistics.
+   DPS and other combat statistics, including the recommended ammunition or Magic
+   spell and offensive prayer.
 6. **Gear Up at the Bank** — Open your bank and click the My BiS Finder button
    in the upper-right corner to view your recommended gear and supplies.
 
