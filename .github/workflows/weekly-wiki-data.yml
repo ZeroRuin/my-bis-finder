@@ -11,17 +11,17 @@ concurrency:
   cancel-in-progress: false
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       GH_TOKEN: ${{ github.token }}
       WIKI_UPDATE_REPORT: /tmp/wiki-update-report.md
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: main
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
       - name: Test updater
@@ -29,7 +29,7 @@ jobs:
       - name: Fetch and validate published data
         id: data
         run: python scripts/update_wiki_data.py
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         if: steps.data.outputs.changed == 'true'
         with:
           distribution: temurin

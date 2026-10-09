@@ -1,0 +1,67 @@
+name: Submit merged data update to Plugin Hub
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      data_pr_number:
+        description: Merged automated data PR number (for retrying a skipped or failed submission)
+        required: true
+        type: string
+permissions:
+  contents: read
+  pull-requests: read
+concurrency:
+  group: plugin-hub-submission
+  cancel-in-progress: false
+jobs:
+  submit:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      DATA_PR_NUMBER: ${{ github.event.pull_request.number || inputs.data_pr_number }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Test submission eligibility checks
+        run: python3 -m unittest discover -s scripts -p 'test_submit_plugin_hub.py' -v
+      - name: Check that this is a reviewed automated data merge
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/submit_plugin_hub.py prepare
+      - name: Preserve trusted submission script
+        if: steps.source.outputs.eligible == 'true'
+        run: cp scripts/submit_plugin_hub.py /tmp/submit_plugin_hub.py
+      - uses: actions/checkout@v6
+        if: steps.source.outputs.eligible == 'true'
+        with:
+          ref: ${{ steps.source.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-java@v5
+        if: steps.source.outputs.eligible == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.source.outputs.eligible == 'true'
+        with:
+          gradle-version: '8.10.2'
+      - name: Test exact plugin commit to be submitted
+        if: steps.source.outputs.eligible == 'true'
+        run: gradle --no-daemon mechanicsSelfTest
+      - name: Submit for Plugin Hub maintainer review
+        if: steps.source.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.HUB_SUBMISSION_TOKEN }}
+          PLUGIN_COMMIT: ${{ steps.source.outputs.sha }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo 'HUB_SUBMISSION_TOKEN is missing or expired; configure the repository secret.' >&2
+            exit 1
+          fi
+          python3 /tmp/submit_plugin_hub.py submit
