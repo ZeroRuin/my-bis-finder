@@ -57,3 +57,12 @@ tasks.register('mechanicsSelfTest', JavaExec) {
     mainClass = 'com.personalbis.MechanicsSelfTest'
     enableAssertions = true
 }
+
+
+tasks.register('gimStorageSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Tests group-storage snapshots with synthetic RuneLite container events.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.GroupStorageSnapshotSelfTest'
+    enableAssertions = true
+}
