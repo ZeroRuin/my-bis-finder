@@ -1,0 +1,63 @@
+name: Weekly Wiki data update
+on:
+  schedule:
+    - cron: '17 4 * * 5'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: weekly-wiki-data
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      WIKI_UPDATE_REPORT: /tmp/wiki-update-report.md
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Test updater
+        run: python -m unittest discover -s scripts -p 'test_update_wiki_data.py' -v
+      - name: Fetch and validate published data
+        id: data
+        run: python scripts/update_wiki_data.py
+      - uses: actions/setup-java@v4
+        if: steps.data.outputs.changed == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.data.outputs.changed == 'true'
+        with:
+          gradle-version: '8.10.2'
+      - name: Compile and check mechanics against updated data
+        if: steps.data.outputs.changed == 'true'
+        run: gradle --no-daemon mechanicsSelfTest
+      - name: Create or refresh the data update PR
+        if: steps.data.outputs.changed == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch=automation/wiki-data-update
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch -c "$branch"
+          git add src/main/resources/wiki-data WIKI-DATA-NOTES.txt
+          git commit -m 'data: refresh published OSRS Wiki datasets'
+          expected=$(git ls-remote origin "refs/heads/$branch" | cut -f1)
+          git push --force-with-lease="refs/heads/$branch:$expected" origin "HEAD:refs/heads/$branch"
+          number=$(gh pr list --head "$branch" --base main --state open --json number --jq '.[0].number // empty')
+          printf '\nMechanics self-test: passed. Review and merge to include these bundled data changes in a future plugin release.\n' >> "$WIKI_UPDATE_REPORT"
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --title 'Update bundled OSRS Wiki data' --body-file "$WIKI_UPDATE_REPORT"
+          else
+            gh pr create --base main --head "$branch" --title 'Update bundled OSRS Wiki data' --body-file "$WIKI_UPDATE_REPORT"
+          fi
