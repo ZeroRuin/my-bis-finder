@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.4 — Group Ironman Storage
+
+- Adds optional shared-storage gear and supply calculations for GIM accounts.
+- Captures shared snapshots on storage updates and displays the last scan time.
+- Adds BiS views to both storage interfaces, with references to items in the other store.
+- Adds a collapsed Advanced section and saves checkbox preferences.
+- Improves sidebar font sizes, wrapping, spacing and scrolling.
+- Removes displayed calculation timings and in-game simulation controls.
+
+
 ## 0.9.3 — Time-to-Kill Update
 
 ### New
@@ -1692,3 +1702,4 @@ Migrates Keris and enchanted-bolt expected damage to the shared Wiki-derived Hit
 
 ## alpha50.4.50.10
 Melee attacker distributions (standard, Fang, Keris, Scythe, Dual macuahuitl, standard independent two-hit, Soulreaper stack hits) now flow through Corp and the shared Wiki NPC post-hit transform stage before expected DPS is collapsed. This preserves per-hitsplat caps, armour and reductions.
+

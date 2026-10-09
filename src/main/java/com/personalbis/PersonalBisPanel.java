@@ -123,6 +123,16 @@ public class PersonalBisPanel extends PluginPanel
     private JPanel validationSection;
     private final JButton generateLoadoutButton = osrsButton("Generate Loadout");
     private final JLabel generateMessage = new JLabel(" ", SwingConstants.CENTER);
+    private final JButton advancedToggle = osrsButton("Advanced ▸");
+    private final JPanel advancedOptions = new JPanel();
+    private final JPanel groupStorageOptions = new JPanel();
+    private boolean advancedExpanded;
+    private volatile boolean groupStorageAvailable = false;
+    private final net.runelite.client.config.ConfigManager preferenceConfig;
+    private final JCheckBox includeGroupStorage = new JCheckBox("Include group storage", false);
+    private final JTextArea groupStorageNote = new JTextArea();
+    private volatile boolean includeGroupStorageEnabled;
+    private final GroupStorageSnapshot groupSnapshot = new GroupStorageSnapshot();
     private final JCheckBox includeRubyBolts = new JCheckBox("Include Ruby bolts (e)",true);
     private final JTextArea rubyBoltNote = new JTextArea("    - Increases calculation time.");
     private final JLabel loadoutHeading = new JLabel("Your best loadout");
@@ -188,9 +198,16 @@ public class PersonalBisPanel extends PluginPanel
     @Inject
     public PersonalBisPanel(Client client, ClientThread clientThread, ItemManager itemManager, SpriteManager spriteManager,
         BankScanner bankScanner, EquipmentIntelligence intelligence, MeleeLoadoutOptimizer meleeOptimizer, RangedLoadoutOptimizer rangedOptimizer, RangedCombatCalculator rangedCalculator, MagicLoadoutOptimizer magicOptimizer, SlayerPluginService slayerService,
-        MonsterDatabase monsterDatabase, AccountSnapshot account, PersonalBisBankFilter bankFilter)
+        MonsterDatabase monsterDatabase, AccountSnapshot account, PersonalBisBankFilter bankFilter, net.runelite.client.config.ConfigManager preferenceConfig)
     {
         super(false);
+        this.preferenceConfig = preferenceConfig;
+        String savedGroup = preferenceConfig.getConfiguration("personalbis", "includeGroupStorage");
+        String savedRuby = preferenceConfig.getConfiguration("personalbis", "includeRubyBolts");
+        includeGroupStorageEnabled = savedGroup != null && Boolean.parseBoolean(savedGroup);
+        includeRubyBoltsEnabled = savedRuby == null || Boolean.parseBoolean(savedRuby);
+        includeGroupStorage.setSelected(includeGroupStorageEnabled);
+        includeRubyBolts.setSelected(includeRubyBoltsEnabled);
         this.client = client;
         this.clientThread = clientThread;
         this.itemManager = itemManager;
@@ -212,27 +229,46 @@ public class PersonalBisPanel extends PluginPanel
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
         content.setBackground(OSRS_PANEL);
         content.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
-        content.setPreferredSize(new Dimension(PluginPanel.PANEL_WIDTH, 660));
+
         content.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH, Integer.MAX_VALUE));
         buildUi();
+        // BoxLayout uses each child's alignment to calculate the shared horizontal axis.
+        // Mixing centred test buttons with left-aligned controls shifts the entire column.
+        for (Component child : content.getComponents())
+        {
+            if (child instanceof javax.swing.JComponent)
+                ((javax.swing.JComponent) child).setAlignmentX(Component.LEFT_ALIGNMENT);
+        }
 
         // PluginPanel's default constructor creates a JScrollPane with a Look&Feel border.
         // Use the unwrapped panel and provide our own borderless scroll pane instead.
         content.setAlignmentX(Component.LEFT_ALIGNMENT);
-        JPanel northPanel = new JPanel(new BorderLayout());
+        JPanel northPanel = new SidebarViewportPanel();
         northPanel.setBackground(OSRS_PANEL);
         northPanel.add(content, BorderLayout.NORTH);
         JScrollPane panelScroll = new JScrollPane(northPanel);
+        panelScroll.setBackground(OSRS_PANEL);
+        panelScroll.getViewport().setBackground(OSRS_PANEL);
         panelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         panelScroll.setBorder(null);
         panelScroll.setViewportBorder(null);
         add(panelScroll, BorderLayout.CENTER);
     }
 
+    private static final class SidebarViewportPanel extends JPanel implements javax.swing.Scrollable
+    {
+        SidebarViewportPanel() { super(new BorderLayout()); }
+        public Dimension getPreferredScrollableViewportSize() { return getPreferredSize(); }
+        public int getScrollableUnitIncrement(java.awt.Rectangle bounds, int orientation, int direction) { return 16; }
+        public int getScrollableBlockIncrement(java.awt.Rectangle bounds, int orientation, int direction) { return Math.max(16, bounds.height - 16); }
+        public boolean getScrollableTracksViewportWidth() { return true; }
+        public boolean getScrollableTracksViewportHeight() { return false; }
+    }
+
     private void buildUi()
     {
         JLabel title = new JLabel("My BiS Finder", SwingConstants.LEFT);
-        title.setFont(FontManager.getRunescapeBoldFont().deriveFont(17f));
+        title.setFont(headerFont());
         title.setForeground(OSRS_GOLD);
         title.setOpaque(true);
         title.setBackground(OSRS_PANEL);
@@ -364,13 +400,84 @@ public class PersonalBisPanel extends PluginPanel
 
         // Prayer and boost controls are intentionally hidden; recommendations are automatic.
 
-        resultTitle.setFont(FontManager.getRunescapeBoldFont().deriveFont(15f));
+        resultTitle.setFont(headerFont());
         resultTitle.setForeground(OSRS_GREEN);
         resultTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 monsterInfo.setFont(FontManager.getRunescapeFont());
         monsterInfo.setForeground(OSRS_CREAM);
         monsterInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
 content.add(Box.createVerticalStrut(5));
+
+        advancedToggle.setFont(headerFont());
+        advancedToggle.setForeground(OSRS_GOLD);
+        advancedToggle.setHorizontalAlignment(SwingConstants.LEFT);
+        advancedToggle.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
+        advancedToggle.setBorderPainted(false);
+        advancedToggle.setContentAreaFilled(false);
+        advancedToggle.setFocusPainted(false);
+        advancedToggle.setOpaque(false);
+        advancedToggle.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        advancedToggle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        advancedToggle.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        advancedOptions.setLayout(new BoxLayout(advancedOptions, BoxLayout.Y_AXIS));
+        advancedOptions.setOpaque(false);
+        advancedOptions.setAlignmentX(Component.LEFT_ALIGNMENT);
+        advancedOptions.setBorder(BorderFactory.createEmptyBorder(6, 4, 8, 4));
+        advancedOptions.setVisible(false);
+        advancedToggle.addActionListener(e -> {
+            advancedExpanded = !advancedExpanded;
+            advancedToggle.setText(advancedExpanded ? "Advanced ▾" : "Advanced ▸");
+            advancedOptions.setVisible(advancedExpanded);
+            content.revalidate(); content.repaint();
+        });
+        JTextArea advancedNote = new JTextArea("Options may increase calculation time.");
+        advancedNote.setEditable(false); advancedNote.setFocusable(false);
+        advancedNote.setOpaque(false); advancedNote.setLineWrap(true); advancedNote.setWrapStyleWord(true);
+        advancedNote.setFont(FontManager.getRunescapeFont()); advancedNote.setForeground(OSRS_CREAM);
+        advancedNote.setAlignmentX(Component.LEFT_ALIGNMENT); advancedNote.setRows(1);
+        advancedNote.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        advancedOptions.add(advancedNote);
+        advancedOptions.add(Box.createVerticalStrut(5));
+        content.add(advancedToggle); content.add(advancedOptions);
+        content.add(Box.createVerticalStrut(8));
+
+        groupStorageOptions.setLayout(new BoxLayout(groupStorageOptions, BoxLayout.Y_AXIS));
+        groupStorageOptions.setOpaque(false);
+        groupStorageOptions.setAlignmentX(Component.LEFT_ALIGNMENT);
+        advancedOptions.add(groupStorageOptions);
+        styleCheck(includeGroupStorage);
+        includeGroupStorage.setForeground(includeGroupStorageEnabled ? OSRS_GREEN : OSRS_CREAM);
+        includeGroupStorage.setFont(FontManager.getRunescapeBoldFont());
+        includeGroupStorage.setOpaque(false);
+        includeGroupStorage.setBorderPainted(false);
+        includeGroupStorage.setAlignmentX(Component.LEFT_ALIGNMENT);
+        includeGroupStorage.addActionListener(e -> {
+            includeGroupStorageEnabled = includeGroupStorage.isSelected();
+            includeGroupStorage.setForeground(includeGroupStorageEnabled ? OSRS_GREEN : OSRS_CREAM);
+            preferenceConfig.setConfiguration("personalbis", "includeGroupStorage", includeGroupStorageEnabled);
+            invalidateOptimizerCache();
+            if (loadoutsGenerated) markLoadoutStale("Group storage setting changed — regenerate.");
+            clientThread.invokeLater(() -> bankFilter.setGroupItems(groupStorageAvailable && includeGroupStorageEnabled ? groupSnapshot.getItems() : Collections.emptyList()));
+        });
+        groupStorageNote.setEditable(false);
+        groupStorageNote.setFocusable(false);
+        groupStorageNote.setOpaque(false);
+        groupStorageNote.setLineWrap(true);
+        groupStorageNote.setWrapStyleWord(true);
+        groupStorageNote.setFont(FontManager.getRunescapeFont());
+        groupStorageNote.setForeground(OSRS_CREAM);
+        groupStorageNote.setAlignmentX(Component.LEFT_ALIGNMENT);
+        groupStorageNote.setRows(4);
+        groupStorageNote.setColumns(18);
+        groupStorageNote.setMaximumSize(new Dimension(Integer.MAX_VALUE, 75));
+        includeGroupStorage.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
+        groupStorageOptions.add(Box.createVerticalStrut(2));
+        groupStorageOptions.add(includeGroupStorage);
+        groupStorageOptions.add(groupStorageNote);
+        groupStorageOptions.add(Box.createVerticalStrut(5));
+        groupStorageOptions.add(Box.createVerticalStrut(4));
+        groupStorageOptions.add(Box.createVerticalStrut(5));
+        updateGroupStorageNote();
 
         styleCheck(includeRubyBolts);
         includeRubyBolts.setFont(FontManager.getRunescapeBoldFont());
@@ -379,9 +486,10 @@ content.add(Box.createVerticalStrut(5));
         includeRubyBolts.setMargin(new Insets(0,0,0,0));
         includeRubyBolts.setBorder(BorderFactory.createEmptyBorder(2,0,2,0));
         includeRubyBolts.setAlignmentX(Component.LEFT_ALIGNMENT);
-        includeRubyBolts.setMaximumSize(includeRubyBolts.getPreferredSize());
+        includeRubyBolts.setMaximumSize(new Dimension(Integer.MAX_VALUE, 26));
         includeRubyBolts.addActionListener(e -> {
             includeRubyBoltsEnabled=includeRubyBolts.isSelected();
+            preferenceConfig.setConfiguration("personalbis", "includeRubyBolts", includeRubyBoltsEnabled);
             updateRubyBoltUi();
             invalidateOptimizerCache();
             if(loadoutsGenerated)markLoadoutStale("Ruby bolt setting changed — regenerate the loadout.");
@@ -397,7 +505,7 @@ content.add(Box.createVerticalStrut(5));
         rubyBoltNote.setForeground(OSRS_CREAM); rubyBoltNote.setAlignmentX(Component.LEFT_ALIGNMENT);
         rubyBoltNote.setBorder(BorderFactory.createEmptyBorder(0,0,2,0));
         rubyBoltNote.setMaximumSize(new Dimension(Integer.MAX_VALUE,rubyBoltNote.getPreferredSize().height));
-        content.add(includeRubyBolts); content.add(rubyBoltNote); content.add(Box.createVerticalStrut(5));
+        advancedOptions.add(includeRubyBolts); advancedOptions.add(Box.createVerticalStrut(5));
 
         generateLoadoutButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         generateLoadoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
@@ -457,7 +565,7 @@ content.add(Box.createVerticalStrut(5));
 
         loadoutHeading.setHorizontalAlignment(SwingConstants.LEFT);
         loadoutHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
-        loadoutHeading.setFont(FontManager.getRunescapeBoldFont().deriveFont(14f));
+        loadoutHeading.setFont(headerFont());
         loadoutHeading.setForeground(OSRS_GOLD);
         loadoutHeading.setBorder(new EmptyBorder(0,0,4,0));
         gearSection.add(loadoutHeading);
@@ -553,10 +661,15 @@ content.add(Box.createVerticalStrut(5));
         return p;
     }
 
+    private java.awt.Font headerFont()
+    {
+        return FontManager.getRunescapeBoldFont().deriveFont(FontManager.getRunescapeFont().getSize2D());
+    }
+
     private JLabel sectionLabel(String text)
     {
         JLabel label = new JLabel(text);
-        label.setFont(FontManager.getRunescapeBoldFont().deriveFont(14f));
+        label.setFont(headerFont());
         label.setForeground(OSRS_GOLD);
         label.setBorder(new EmptyBorder(0, 0, 4, 0));
         return label;
@@ -785,12 +898,17 @@ content.add(Box.createVerticalStrut(5));
     {
         JPanel panel=osrsCard();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE,180));
+        panel.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH - 8,180));
         JLabel h=new JLabel(heading,SwingConstants.CENTER);
-        h.setFont(FontManager.getRunescapeBoldFont().deriveFont(15f));
+        h.setFont(headerFont());
         h.setForeground(OSRS_GOLD); h.setAlignmentX(Component.CENTER_ALIGNMENT);
-        JLabel b=new JLabel("<html><div style='text-align:center;width:180px'>"+body+"</div></html>",SwingConstants.CENTER);
-        b.setFont(FontManager.getRunescapeFont()); b.setForeground(OSRS_CREAM); b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JTextArea b = new JTextArea(body);
+        b.setEditable(false); b.setFocusable(false); b.setOpaque(false);
+        b.setLineWrap(true); b.setWrapStyleWord(true);
+        b.setFont(FontManager.getRunescapeFont()); b.setForeground(OSRS_CREAM);
+        b.setAlignmentX(Component.CENTER_ALIGNMENT);
+        b.setRows(4); b.setColumns(16);
+        b.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH - 24, 85));
         panel.add(Box.createVerticalStrut(20)); panel.add(h); panel.add(Box.createVerticalStrut(8)); panel.add(b); panel.add(Box.createVerticalStrut(20));
         return panel;
     }
@@ -799,9 +917,9 @@ content.add(Box.createVerticalStrut(5));
     {
         JPanel panel=osrsCard();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE,180));
+        panel.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH - 8,180));
         JLabel heading=new JLabel("How to use",SwingConstants.CENTER);
-        heading.setFont(FontManager.getRunescapeBoldFont().deriveFont(15f));
+        heading.setFont(headerFont());
         heading.setForeground(OSRS_GOLD); heading.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createVerticalStrut(20)); panel.add(heading); panel.add(Box.createVerticalStrut(8));
         panel.add(onboardingLine("1. Select a target"));
@@ -834,6 +952,9 @@ content.add(Box.createVerticalStrut(5));
             loggedOutPanel=messagePanel("🔒  Log in to begin","Log in to search monsters, scan your bank and find your best gear.");
             noTargetPanel=onboardingPanel();
             chooseStylePanel=messagePanel("Choose an attack style","Select Stab, Slash, Crush, Ranged or Magic to view your best gear.");
+            loggedOutPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            noTargetPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            chooseStylePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
             content.add(loggedOutPanel); content.add(noTargetPanel); content.add(chooseStylePanel);
         }
     }
@@ -855,8 +976,14 @@ content.add(Box.createVerticalStrut(5));
         if(chooseStylePanel!=null)chooseStylePanel.setVisible(stylesReady&&loadoutsGenerated&&!styleExplicitlySelected);
         if (attackStyleHeading != null) attackStyleHeading.setVisible(stylesReady);
         if (stylesPanel != null) stylesPanel.setVisible(stylesReady);
+        boolean advancedAvailable = targetReady && (groupStorageAvailable || ownedHasRubyBolts);
+        advancedToggle.setVisible(advancedAvailable);
+        advancedOptions.setVisible(advancedAvailable && advancedExpanded);
+        groupStorageOptions.setVisible(targetReady && groupStorageAvailable);
+        includeGroupStorage.setVisible(targetReady && groupStorageAvailable);
+        groupStorageNote.setVisible(targetReady && groupStorageAvailable);
         boolean showRuby=targetReady&&ownedHasRubyBolts;
-        includeRubyBolts.setVisible(showRuby); rubyBoltNote.setVisible(showRuby);
+        includeRubyBolts.setVisible(showRuby); rubyBoltNote.setVisible(false);
         generateLoadoutButton.setText(loadoutsGenerated ? "Regenerate Loadout" : "Generate Loadout");
         generateLoadoutButton.setVisible(targetReady);
         generateMessage.setVisible(targetReady);
@@ -894,6 +1021,12 @@ content.add(Box.createVerticalStrut(5));
 
     private void generateLoadouts()
     {
+        if (groupStorageAvailable && includeGroupStorageEnabled && !groupSnapshot.hasSnapshot())
+        {
+            generateMessage.setText("Open group storage first, then try again.");
+            generateMessage.setForeground(Color.RED);
+            return;
+        }
         if (!bankChecked)
         {
             generateMessage.setText("Please open your bank and try again.");
@@ -1053,6 +1186,7 @@ content.add(Box.createVerticalStrut(5));
 
     public void updatePlayerStats()
     {
+        groupStorageAvailable = client.getAccountType() != null && client.getAccountType().isGroupIronman();
         account.refresh();
         // Stat/XP events may fire repeatedly during ordinary combat. Refresh the
         // account snapshot for the next manual run without invalidating the five
@@ -1066,12 +1200,36 @@ content.add(Box.createVerticalStrut(5));
             "  Pray " + account.real(Skill.PRAYER));
     }
 
+    public void captureGroupStorage(net.runelite.api.events.ItemContainerChanged event)
+    {
+        if (groupSnapshot.capture(event, client::getItemDefinition, java.time.Instant::now))
+        {
+            bankFilter.setGroupItems(groupStorageAvailable && includeGroupStorageEnabled ? groupSnapshot.getItems() : Collections.emptyList());
+            SwingUtilities.invokeLater(() -> { updateGroupStorageNote(); invalidateOptimizerCache(); });
+        }
+    }
+
+    public void clearGroupStorage()
+    {
+        groupSnapshot.clear();
+        bankFilter.setGroupItems(Collections.emptyList());
+        SwingUtilities.invokeLater(() -> { updateGroupStorageNote(); invalidateOptimizerCache();
+            if (loadoutsGenerated) markLoadoutStale("Group snapshot cleared — regenerate."); });
+    }
+
+    private void updateGroupStorageNote()
+    {
+        groupStorageNote.setText("Changes made by teammates won't be reflected until storage is reopened.\n" +
+            (groupSnapshot.hasSnapshot() ? "Last snapshot: " + java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss").withZone(java.time.ZoneId.systemDefault()).format(groupSnapshot.getCapturedAt()) + " (" + groupSnapshot.getItems().size() + " items)" : "Group storage: not scanned"));
+    }
+
     public void refreshBankItems()
     {
         // ItemContainerChanged runs on RuneLite's client thread. Keep this path to
         // a lightweight immutable ownership snapshot. Existing generated loadouts
         // remain available until the player deliberately regenerates them.
         cachedBank = bankScanner.scan();
+        bankFilter.setPersonalItems(cachedBank);
         ownedHasRubyBolts = hasRubyBolts(bankScanner.scanOwnedGear(cachedBank));
         bankChecked = true;
 
@@ -1210,6 +1368,7 @@ content.add(Box.createVerticalStrut(5));
         // Recommended remains bank-only (and therefore placeholder-free), while
         // loadout ownership also includes items currently worn or carried.
         final List<BankItem> bankSnapshot=new ArrayList<>(cachedBank);
+        if (groupStorageAvailable && includeGroupStorageEnabled) bankSnapshot.addAll(groupSnapshot.getItems());
         final List<BankItem> ownedGearSnapshot=bankScanner.scanOwnedGear(bankSnapshot);
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
         final Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot=new EnumMap<>(AttackStyle.class);
@@ -1534,7 +1693,7 @@ content.add(Box.createVerticalStrut(5));
             meleeValidation.setCaretPosition(0);
 
             StringBuilder validation = new StringBuilder();
-            validation.append("Calculation: ").append(calculationMillis).append(" ms").append(System.lineSeparator());
+
             validation.append("Optimizer cache: ").append(uiSelectedStyleCacheHit ? "HIT" : "MISS").append(System.lineSeparator());
             Long selectedMs = optimizerStageMillis.get(requestedStyle);
             if (selectedMs != null)
@@ -1923,7 +2082,7 @@ content.add(Box.createVerticalStrut(5));
             generateLoadoutButton.setEnabled(true);
             setStyleControlsEnabled(true);
             generateMessage.setForeground(OSRS_CREAM);
-            generateMessage.setText(calculateAllStyles?timingMessage(calculationMillis,optimizerStageMillis):" ");
+            generateMessage.setText(calculateAllStyles ? "Loadouts ready." : " ");
             updateProgressiveVisibility();
             status.setText(monsterDatabase.getAll().size()+" unique monster variants  •  "+bankSnapshot.size()+" bank items"+(selectedCombat==null?"":"  •  melee validation alpha7"));
         });

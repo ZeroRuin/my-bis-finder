@@ -29,6 +29,9 @@ Magic setups to help you defeat enemies as quickly as possible.
   and unlocked prayers.
 - **Attack Style Comparison** — Calculates Melee, Ranged and Magic loadouts and
   lets you switch between cached results without recalculating.
+- **Group Ironman Storage** — Optionally includes shared gear and supplies in
+  calculations. Both storage views show references to items in the other store.
+- **Saved Advanced Options** — Remembers checkbox preferences across restarts.
 - **Bank Loadout Integration** — Provides a dedicated bank view for finding
   recommended equipment and supplies.
 - **Loadout Statistics** — Shows estimated TTK, sustained DPS and combat statistics.
@@ -55,6 +58,39 @@ Magic setups to help you defeat enemies as quickly as possible.
 
 *The My BiS Finder button appears in the upper-right corner of the bank interface.*
 
+## Advanced options
+
+Expand **Advanced** below the selected target to adjust optional settings. It
+starts collapsed and appears only when an option is available. Options may
+increase calculation time. Checked options are green.
+
+- **Include Ruby bolts (e)** appears when these bolts are owned. Uncheck it to
+  exclude them from calculations.
+- **Include group storage** appears on GIM accounts and is off by default.
+
+Both preferences are saved across RuneLite restarts. Changing an option requires
+regenerating the loadout. Storage updates do not automatically rerun calculations.
+
+## Group Ironman accounts
+
+1. Open your personal bank to capture its contents.
+2. Select a target and enable **Include group storage** under **Advanced**.
+3. Open group storage to capture a shared snapshot. The sidebar shows its last
+   scan time. Deposits and withdrawals update it while storage is open.
+4. Generate a loadout and choose an attack style.
+5. Click My BiS Finder beside the close button in either storage interface.
+
+The open store shows selected gear and recommended supplies with their normal
+withdrawal actions. Items held in the other store appear under **Stored in group
+storage** or **Stored in personal bank**, with a reminder to open that store.
+Reference icons cannot withdraw items. Recommended supplies can span both stores.
+Toggle the button off to restore the normal storage layout.
+
+Shared gear, ammunition, runes, food and potions are considered when enabled.
+You can reuse the snapshot for regeneration without reopening storage. Changes
+made by teammates may not appear until group storage is reopened. Scan both stores
+again after logging in: snapshots are session-only, even though preferences persist.
+
 ## Privacy
 
 All account, bank and loadout processing occurs locally in RuneLite. My BiS Finder
@@ -64,7 +100,7 @@ does not transmit account or bank data and does not make external network reques
 
 The project targets Java 11 and RuneLite `latest.release`. Run the plugin through
 the Gradle `run` task and execute `mechanicsSelfTest` for the mechanics regression
-suite before publishing a change.
+suite before publishing a change. Run `gimStorageSelfTest` for shared-snapshot checks.
 
 ## AI development and resource-use disclosure
 
@@ -73,10 +109,6 @@ The plugin does not make live requests to the OSRS Wiki or other external data
 services while RuneLite is running. Wiki-derived equipment, monster, spell and
 ammunition data is bundled with the plugin, and all loadout calculations run
 locally.
-
-The bundled equipment and monster data snapshot was last refreshed on
-**13 September 2026**. See the [data notes](https://github.com/ZeroRuin/my-bis-finder/blob/main/WIKI-DATA-NOTES.txt)
-for record counts and snapshot details.
 
 Releases are reviewed, tested and submitted by the maintainer. Mechanics changes
 are covered by the project's regression suite and remain subject to RuneLite's
@@ -90,3 +122,4 @@ offline data pack are recorded in `WIKI-DATA-NOTES.txt` and its manifest.
 ## Version history
 
 See the [full changelog](https://github.com/ZeroRuin/my-bis-finder/blob/main/CHANGELOG.md).
+

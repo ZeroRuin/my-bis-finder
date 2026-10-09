@@ -114,6 +114,7 @@ public class PersonalBisPlugin extends Plugin
     @Subscribe
     public void onItemContainerChanged(ItemContainerChanged event)
     {
+        panel.captureGroupStorage(event);
         if (event.getContainerId() == InventoryID.BANK)
         {
             // Keep ownership current without discarding generated loadouts or
@@ -130,6 +131,7 @@ public class PersonalBisPlugin extends Plugin
     @Subscribe
     public void onGameStateChanged(GameStateChanged event)
     {
+        if (event.getGameState() == GameState.LOGIN_SCREEN) panel.clearGroupStorage();
         if (event.getGameState() == GameState.LOGGED_IN)
         {
             panel.refreshAll();

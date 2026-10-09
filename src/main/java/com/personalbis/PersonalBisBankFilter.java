@@ -67,6 +67,31 @@ public class PersonalBisBankFilter
     private final List<Widget> hiddenNativeDecorations = new ArrayList<>();
     private final List<RecommendedSupply> supplies = new ArrayList<>();
 
+    private final List<BankItem> groupItems = new ArrayList<>();
+    private final Set<Widget> referenceWidgets = new HashSet<>();
+    public void setGroupItems(List<BankItem> items)
+    {
+        groupItems.clear(); groupItems.addAll(items);
+        if (active) clientThread.invokeLater(this::requestLayout);
+    }
+    private Widget lastLayoutContainer;
+    private Widget sharedLayoutContainer;
+    private final Map<Widget, int[]> sharedOriginalPositions = new java.util.IdentityHashMap<>();
+    private int sharedOriginalScrollHeight;
+    private final List<BankItem> personalItems = new ArrayList<>();
+    public void setPersonalItems(List<BankItem> items) { personalItems.clear(); personalItems.addAll(items); }
+    private boolean sharedOpen() {
+        Widget w = client.getWidget(InterfaceID.SharedBank.ITEMS);
+        return w != null && !w.isHidden();
+    }
+    private void requestLayout() {
+        if (sharedOpen()) layoutSections(client.getWidget(InterfaceID.SharedBank.ITEMS));
+        else bankSearch.layoutBank();
+    }
+    @Subscribe
+    public void onGameTick(net.runelite.api.events.GameTick event) {
+        if (active && sharedOpen()) layoutSections(client.getWidget(InterfaceID.SharedBank.ITEMS));
+    }
     private boolean active;
     private AttackStyle bestStyle;
     private String targetHeader = "My BiS Finder";
@@ -100,7 +125,7 @@ public class PersonalBisBankFilter
 
         if (active)
         {
-            clientThread.invokeLater(bankSearch::layoutBank);
+            clientThread.invokeLater(this::requestLayout);
         }
     }
 
@@ -108,13 +133,13 @@ public class PersonalBisBankFilter
     public void setBestStyle(AttackStyle style)
     {
         bestStyle = style;
-        if (active) clientThread.invokeLater(bankSearch::layoutBank);
+        if (active) clientThread.invokeLater(this::requestLayout);
     }
 
     public void setTarget(MonsterDefinition monster)
     {
         targetHeader = SlayerTargetRequirements.bankHeader(monster);
-        if (active) clientThread.invokeLater(bankSearch::layoutBank);
+        if (active) clientThread.invokeLater(this::requestLayout);
     }
 
     public void setSupplies(List<RecommendedSupply> items)
@@ -122,7 +147,7 @@ public class PersonalBisBankFilter
         supplies.clear();
         if (items != null) supplies.addAll(items);
         for (RecommendedSupply item : supplies) recommendedItemIds.add(itemManager.canonicalize(item.itemId));
-        if (active) clientThread.invokeLater(bankSearch::layoutBank);
+        if (active) clientThread.invokeLater(this::requestLayout);
     }
 
     public boolean isActive()
@@ -134,7 +159,7 @@ public class PersonalBisBankFilter
     {
         if (active)
         {
-            clientThread.invokeLater(bankSearch::layoutBank);
+            clientThread.invokeLater(this::requestLayout);
         }
     }
 
@@ -151,7 +176,7 @@ public class PersonalBisBankFilter
             active = true;
             // Dedicated Personal BiS view: keep the complete native bank item set.
             // We only rearrange widgets after RuneLite finishes building the bank.
-            bankSearch.layoutBank();
+            requestLayout();
         });
     }
 
@@ -169,6 +194,13 @@ public class PersonalBisBankFilter
         active = false;
         clearAddedWidgets();
         restoreNativeDecorations();
+        for (Map.Entry<Widget,int[]> entry : sharedOriginalPositions.entrySet()) {
+            Widget w=entry.getKey(); int[] pos=entry.getValue();
+            w.setOriginalX(pos[0]); w.setOriginalY(pos[1]); w.setHidden(pos[2] != 0); w.revalidate();
+        }
+        sharedOriginalPositions.clear();
+        if(sharedLayoutContainer != null) { sharedLayoutContainer.setScrollHeight(sharedOriginalScrollHeight); sharedLayoutContainer.revalidate(); }
+        sharedLayoutContainer=null;
         bankSearch.reset(true);
     }
 
@@ -223,7 +255,10 @@ public class PersonalBisBankFilter
             return;
         }
 
-        if (event.getParam1() != InterfaceID.Bankmain.ITEMS)
+        if (widget != null && referenceWidgets.contains(widget)) { event.consume(); return; }
+        boolean group = event.getParam1() == InterfaceID.SharedBank.ITEMS;
+        if (group && "Examine".equals(event.getMenuOption())) return;
+        if (event.getParam1() != InterfaceID.Bankmain.ITEMS && !group)
         {
             return;
         }
@@ -233,7 +268,7 @@ public class PersonalBisBankFilter
             return;
         }
 
-        ItemContainer bank = client.getItemContainer(InventoryID.BANK);
+        ItemContainer bank = client.getItemContainer(group ? net.runelite.api.InventoryID.GROUP_STORAGE.getId() : InventoryID.BANK);
         if (bank == null)
         {
             return;
@@ -270,12 +305,21 @@ public class PersonalBisBankFilter
     {
         return id == InterfaceID.Bankmain.SEARCH
             || id == InterfaceID.Bankmain.SEARCH_GRAPHIC
-            || id == InterfaceID.Bankmain.TABS;
+            || id == InterfaceID.Bankmain.TABS
+            || id == InterfaceID.SharedBank.SEARCH
+            || id == InterfaceID.SharedBank.SEARCH_GRAPHIC
+            || id == InterfaceID.SharedBank.MAIN_BANK;
     }
 
     private void layoutSections(Widget itemContainer)
     {
         clearAddedWidgets();
+        lastLayoutContainer = itemContainer;
+        boolean group = itemContainer.getId() == InterfaceID.SharedBank.ITEMS;
+        if (group && sharedLayoutContainer != itemContainer) {
+            sharedOriginalPositions.clear(); sharedLayoutContainer=itemContainer;
+            sharedOriginalScrollHeight=itemContainer.getScrollHeight();
+        }
         restoreNativeDecorations();
 
         Widget[] children = itemContainer.getDynamicChildren();
@@ -284,7 +328,7 @@ public class PersonalBisBankFilter
             return;
         }
 
-        ItemContainer bank = client.getItemContainer(InventoryID.BANK);
+        ItemContainer bank = client.getItemContainer(group ? net.runelite.api.InventoryID.GROUP_STORAGE.getId() : InventoryID.BANK);
         if (bank == null)
         {
             return;
@@ -295,9 +339,10 @@ public class PersonalBisBankFilter
         List<Widget> itemWidgets = new ArrayList<>();
         for (Widget child : children)
         {
-            if (child == null) continue;
+            if (child == null || referenceWidgets.contains(child)) continue;
             if (child.getItemId() >= 0)
             {
+                if (group) sharedOriginalPositions.putIfAbsent(child, new int[]{child.getOriginalX(),child.getOriginalY(),child.isSelfHidden()?1:0});
                 itemWidgets.add(child);
                 child.setHidden(true);
             }
@@ -373,6 +418,40 @@ public class PersonalBisBankFilter
         }
 
         y = addDivider(itemContainer, y);
+        java.util.Map<Integer, Integer> shared = new java.util.LinkedHashMap<>();
+        for (List<Integer> ids : recommendations.values()) for (Integer id : ids)
+        {
+            if (id == null) continue;
+            Widget local = ownedWidgets.get(itemManager.canonicalize(id));
+            if (local != null && local.getItemQuantity() > 0) continue;
+            for (BankItem item : (group ? personalItems : groupItems)) if (itemManager.canonicalize(item.getItemId()) == itemManager.canonicalize(id))
+            { shared.put(item.getItemId(), 1); break; }
+        }
+        for (RecommendedSupply supply : supplies)
+        {
+            int missing = Math.max(0, supply.quantity - bank.count(supply.itemId));
+            for (BankItem item : (group ? personalItems : groupItems)) if (item.getItemId() == supply.itemId && missing > 0)
+            { shared.put(item.getItemId(), Math.min(missing, item.getQuantity())); break; }
+        }
+        if (!shared.isEmpty())
+        {
+            y = addHeader(itemContainer, group ? "Stored in personal bank" : "Stored in group storage", y, false);
+            y = addHeader(itemContainer, group ? "Open personal bank to withdraw" : "Open group storage to withdraw", y, false);
+            int index = 0;
+            for (java.util.Map.Entry<Integer,Integer> entry : shared.entrySet())
+            {
+                Widget icon = itemContainer.createChild(-1, WidgetType.GRAPHIC);
+                icon.setOriginalWidth(BANK_ITEM_WIDTH); icon.setOriginalHeight(BANK_ITEM_HEIGHT);
+                icon.setBorderType(1); icon.setItemId(entry.getKey()); icon.setItemQuantity(entry.getValue());
+                icon.setItemQuantityMode(ItemQuantityMode.ALWAYS);
+                icon.setName(client.getItemDefinition(entry.getKey()).getName() + (group ? " (personal bank reference)" : " (group storage reference)"));
+                icon.clearActions(); icon.setDragDeadTime(Integer.MAX_VALUE);
+                placeItem(icon, index++, y);
+                addedWidgets.add(icon); referenceWidgets.add(icon);
+            }
+            y += ((index + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW) * ITEM_Y_SPACING + SECTION_GAP;
+            y = addDivider(itemContainer, y);
+        }
         y = addHeader(itemContainer, "Other items", y, false);
         int otherIndex = 0;
         for (Widget widget : itemWidgets)
@@ -389,8 +468,8 @@ public class PersonalBisBankFilter
         int scrollY = itemContainer.getScrollY();
         clientThread.invokeLater(() -> client.runScript(
             ScriptID.UPDATE_SCROLLBAR,
-            InterfaceID.Bankmain.SCROLLBAR,
-            InterfaceID.Bankmain.ITEMS,
+            group ? InterfaceID.SharedBank.SCROLLBAR : InterfaceID.Bankmain.SCROLLBAR,
+            group ? InterfaceID.SharedBank.ITEMS : InterfaceID.Bankmain.ITEMS,
             scrollY));
     }
 
@@ -575,6 +654,16 @@ public class PersonalBisBankFilter
                 widget.setHidden(true);
             }
         }
+        if (lastLayoutContainer != null) {
+            Widget[] children=lastLayoutContainer.getChildren();
+            if(children != null) {
+                children=children.clone();
+                for(int i=0;i<children.length;i++) if(addedWidgets.contains(children[i])) children[i]=null;
+                int length=children.length; while(length>0 && children[length-1]==null) length--;
+                lastLayoutContainer.setChildren(java.util.Arrays.copyOf(children,length));
+            }
+        }
+        referenceWidgets.clear();
         addedWidgets.clear();
     }
 

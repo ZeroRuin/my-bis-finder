@@ -42,6 +42,12 @@ public class BankBisOverlay extends Overlay
         Widget bankTitle = client.getWidget(InterfaceID.Bankmain.TITLE);
         Widget bankContainer = client.getWidget(InterfaceID.Bankmain.ITEMS);
 
+        boolean shared = false;
+        if (bankContainer == null || bankContainer.isHidden()) {
+            bankContainer = client.getWidget(InterfaceID.SharedBank.ITEMS);
+            bankTitle = client.getWidget(InterfaceID.SharedBank.CLOSE);
+            shared = true;
+        }
         if (bankTitle == null || bankContainer == null || bankContainer.isHidden())
         {
             bounds = new Rectangle();
@@ -53,7 +59,7 @@ public class BankBisOverlay extends Overlay
         // Keep Personal BiS as a matching square immediately to its left.
         // Personal BiS occupies the compact plugin slot immediately left of the
         // native close button; other plugin buttons (e.g. Quest Helper) remain left of us.
-        int x = titleBounds.x + titleBounds.width - BUTTON_SIZE - CLOSE_GAP - 23;
+        int x = shared ? titleBounds.x - BUTTON_SIZE - CLOSE_GAP : titleBounds.x + titleBounds.width - BUTTON_SIZE - CLOSE_GAP - 23;
         int y = titleBounds.y;
         bounds = new Rectangle(x, y, BUTTON_SIZE, BUTTON_SIZE);
 
