@@ -153,7 +153,8 @@ public class PersonalBisPlugin extends Plugin
     {
         if ("personalbis".equals(event.getGroup()))
         {
-            clientThread.invokeLater(panel::updatePlayerStats);
+            if (ItemExclusions.KEY.equals(event.getKey())) panel.exclusionsChanged();
+            else clientThread.invokeLater(panel::updatePlayerStats);
         }
     }
 }

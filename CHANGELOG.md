@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.5 — Item Exclusions
+
+- Automatically expands Loadout stats to fit wrapped spell names and all stat lines.
+- Right-click generated sidebar gear or recommended bank items to exclude them.
+- Applies exclusions to equipment, ammunition, runes, food, potions and other recommended supplies.
+- Keeps generated results and bank layouts available while multiple exclusions are added.
+- Shows a persistent regeneration warning until the current list is applied.
+- Adds an editable Excluded items settings list; erase entries or empty the box to restore items.
+- Handles potion doses and RuneLite canonical variants together.
+- Adds regression checks for supply fallback, rune eligibility and bank menu scope.
+
 ## 0.9.4 — Group Ironman Storage
 
 - Adds optional shared-storage gear and supply calculations for GIM accounts.

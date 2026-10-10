@@ -32,9 +32,13 @@ Magic setups to help you defeat enemies as quickly as possible.
 - **Group Ironman Storage** — Optionally includes shared gear and supplies in
   calculations. Both storage views show references to items in the other store.
 - **Saved Advanced Options** — Remembers checkbox preferences across restarts.
+- **Item Exclusions** — Right-click recommended gear or supplies to exclude them,
+  or edit the exclusion list in plugin settings. Keep existing results visible
+  while excluding multiple items, then regenerate once to apply the changes.
 - **Bank Loadout Integration** — Provides a dedicated bank view for finding
   recommended equipment and supplies.
 - **Loadout Statistics** — Shows estimated TTK, sustained DPS and combat statistics.
+  The stats box expands to fit longer spell names and wrapped text.
 - **Offline Calculations** — Uses bundled OSRS Wiki-derived equipment and monster
   data, with no live Wiki requests during play.
 
@@ -123,3 +127,25 @@ offline data pack are recorded in `WIKI-DATA-NOTES.txt` and its manifest.
 
 See the [full changelog](https://github.com/ZeroRuin/my-bis-finder/blob/main/CHANGELOG.md).
 
+
+## Item exclusions
+
+Right-click a generated sidebar equipment icon or an item in the recommended
+sections of the BiS bank view and choose **Exclude from My BiS Finder**. This
+also works on the item references shown between personal and group storage.
+Items in **Other items** and the ordinary bank view retain their normal menus.
+
+Exclusions cover equipment, ammunition, runes, food, potions and other supplies.
+The existing results stay visible while you exclude several items. A warning
+asks you to regenerate; the next generation applies the complete exclusion list.
+Switching combat styles before regeneration continues showing the existing results.
+
+Manage the comma-separated **Excluded items** text box in the plugin settings.
+Delete a name to restore that item. Select all text and delete it to clear all
+exclusions. Names match exactly, ignoring case and surrounding spaces; potion
+doses and variants canonicalised by RuneLite are treated together. Exclusions
+use the current RuneLite configuration profile, like other plugin settings.
+
+Excluded runes prevent spells that require them, unless eligible equipment
+provides those runes. Food and potions fall back to other supported owned items.
+An excluded supply is omitted if no eligible alternative is available.

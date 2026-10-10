@@ -1,0 +1,34 @@
+My BiS Finder 0.9.5 — local verification
+
+Open the project in IntelliJ. Disable the installed My BiS Finder, then run the
+Gradle run task and enable My BiS Finder.
+
+1. Scan the bank, choose a target, generate and select a combat style.
+2. Right-click a sidebar gear icon and choose Exclude from My BiS Finder.
+3. Confirm icons, stats and the BiS bank view remain visible. The warning says:
+   Exclusion list updated. Generate again to apply changes.
+4. Exclude several items without regenerating. Switch combat styles; the old
+   results should remain available and the warning should remain visible.
+5. In the BiS bank view, exclude a recommended rune, food and potion. Check
+   normal withdrawal actions still work. Other items must have no exclude action.
+6. Regenerate once. Excluded gear and supplies must no longer be recommended;
+   supported owned food/potion alternatives should be chosen when available.
+   If a required rune is excluded, a spell using it must not be selected unless
+   an allowed weapon/tome supplies that rune. Charged powered staves retain
+   their built-in attacks; excluding loose runes does not remove stored charges.
+7. Settings > My BiS Finder > Excluded items: delete individual
+   names, then regenerate to restore them. Ctrl+A and Delete clears the whole list.
+8. Exclude one potion dose and confirm the other doses are excluded too.
+9. Restart and confirm the list persists in the RuneLite configuration profile.
+10. On a GIM account, check exclusions in both storage views and the reference
+    icons. An exclusion applies to the same item in every ownership source.
+11. Ordinary bank menus and unrelated items must have no plugin exclusion option.
+
+Automated checks: mechanicsSelfTest, gimStorageSelfTest, itemExclusionSelfTest,
+loadoutStatsSizingSelfTest.
+These checks can be run locally before submitting the update to Plugin Hub.
+
+12. Select Magic with a long spell name (such as Dark Demonbane + Mark of
+    Darkness). Confirm Prayer Bonus remains visible. Switch to shorter styles
+    and confirm the stats box shrinks again. Resize the sidebar/client and check
+    wrapping and the outer sidebar scroll still work.

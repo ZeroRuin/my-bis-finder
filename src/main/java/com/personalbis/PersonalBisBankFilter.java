@@ -17,6 +17,8 @@ import net.runelite.api.ItemComposition;
 import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.MenuEntry;
+import net.runelite.api.MenuAction;
+import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.ScriptID;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.events.ScriptCallbackEvent;
@@ -60,6 +62,8 @@ public class PersonalBisBankFilter
     private final ClientThread clientThread;
     private final BankSearch bankSearch;
     private final ItemManager itemManager;
+    private final ItemExclusions exclusions;
+    private final Set<Widget> generatedWidgets = Collections.newSetFromMap(new java.util.IdentityHashMap<>());
     private final Set<Integer> recommendedItemIds = new HashSet<>();
     private final Map<AttackStyle, List<Integer>> recommendations = new EnumMap<>(AttackStyle.class);
     private final List<AttackStyle> styleOrder = new ArrayList<>();
@@ -98,12 +102,13 @@ public class PersonalBisBankFilter
     private int originalContainerChildren = -1;
 
     @Inject
-    public PersonalBisBankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager)
+    public PersonalBisBankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager, ItemExclusions exclusions)
     {
         this.client = client;
         this.clientThread = clientThread;
         this.bankSearch = bankSearch;
         this.itemManager = itemManager;
+        this.exclusions = exclusions;
     }
 
     public void setRecommendedItemIds(Set<Integer> ids)
@@ -238,6 +243,21 @@ public class PersonalBisBankFilter
         clientThread.invokeAtTickEnd(() -> layoutSections(itemContainer));
     }
 
+    @Subscribe
+    public void onMenuEntryAdded(MenuEntryAdded event)
+    {
+        if (!active || !"Examine".equals(event.getOption())) return;
+        Widget widget = event.getMenuEntry().getWidget();
+        if (widget == null || !generatedWidgets.contains(widget) || widget.getItemId() <= 0) return;
+        int itemId = widget.getItemId();
+        client.createMenuEntry(-1)
+            .setOption(ItemExclusions.MENU_OPTION)
+            .setTarget(event.getTarget())
+            .setType(MenuAction.RUNELITE)
+            .setDeprioritized(true)
+            .onClick(entry -> exclusions.exclude(itemId));
+    }
+
     @Subscribe(priority = -1)
     public void onMenuOptionClicked(MenuOptionClicked event)
     {
@@ -247,6 +267,13 @@ public class PersonalBisBankFilter
         }
 
         Widget widget = event.getWidget();
+        if (ItemExclusions.MENU_OPTION.equals(event.getMenuOption())
+            && widget != null && referenceWidgets.contains(widget))
+        {
+            exclusions.exclude(widget.getItemId());
+            event.consume();
+            return;
+        }
         if (isNativeBankNavigation(widget, event.getParam1()))
         {
             // Restore the ordinary bank before RuneLite/Jagex handles the same
@@ -390,6 +417,7 @@ public class PersonalBisBankFilter
                 Widget widget = ownedWidgets.get(itemManager.canonicalize(itemId));
                 if (widget == null || used.contains(widget)) continue;
                 used.add(widget);
+                generatedWidgets.add(widget);
                 widget.setHidden(false);
                 placeItem(widget, itemInSection++, y);
             }
@@ -410,6 +438,7 @@ public class PersonalBisBankFilter
                 if (widget == null || used.contains(widget)) continue;
                 if (widget.getItemQuantity() <= 0) continue;
                 used.add(widget);
+                generatedWidgets.add(widget);
                 widget.setHidden(false);
                 placeItem(widget, itemInSection++, y);
             }
@@ -446,6 +475,10 @@ public class PersonalBisBankFilter
                 icon.setItemQuantityMode(ItemQuantityMode.ALWAYS);
                 icon.setName(client.getItemDefinition(entry.getKey()).getName() + (group ? " (personal bank reference)" : " (group storage reference)"));
                 icon.clearActions(); icon.setDragDeadTime(Integer.MAX_VALUE);
+                final int referenceItemId = entry.getKey();
+                icon.setAction(9, ItemExclusions.MENU_OPTION);
+                icon.setHasListener(true);
+                icon.setOnOpListener((net.runelite.api.widgets.JavaScriptCallback) event -> exclusions.exclude(referenceItemId));
                 placeItem(icon, index++, y);
                 addedWidgets.add(icon); referenceWidgets.add(icon);
             }
@@ -643,6 +676,7 @@ public class PersonalBisBankFilter
 
     private void clearAddedWidgets()
     {
+        generatedWidgets.clear();
         if (addedWidgets.isEmpty())
         {
             return;

@@ -26,7 +26,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.4'
+version = '0.9.5'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -61,4 +61,23 @@ tasks.register('mechanicsSelfTest', JavaExec) {
 tasks.register('gimStorageSelfTest', JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.personalbis.GroupStorageSnapshotSelfTest'
+}
+
+
+tasks.register('itemExclusionSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks item exclusions, supply alternatives, rune eligibility and generated-bank menu scope.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.ItemExclusionSelfTest'
+    enableAssertions = true
+}
+
+
+tasks.register('loadoutStatsSizingSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks wrapped Loadout stats grow and shrink without clipping.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.LoadoutStatsSizingSelfTest'
+    systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
 }

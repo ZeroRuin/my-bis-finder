@@ -90,6 +90,11 @@ public class PersonalBisPanel extends PluginPanel
     private final MonsterDatabase monsterDatabase;
     private final AccountSnapshot account;
     private final PersonalBisBankFilter bankFilter;
+    private final ItemExclusions exclusions;
+    private final JLabel exclusionWarning = new JLabel();
+    private volatile ItemExclusionList generationExclusions = new ItemExclusionList("");
+    private List<BankItem> generationBank = Collections.emptyList();
+    private List<BankItem> generationOwned = Collections.emptyList();
 
     private final JPanel content = new JPanel();
     private final JComboBox<MonsterDefinition> monsterBox = new JComboBox<>();
@@ -101,7 +106,7 @@ public class PersonalBisPanel extends PluginPanel
     private final JLabel resultTitle = new JLabel("Best owned setup");
     private final JLabel accountLevels = new JLabel("Levels: —");
     private final JLabel monsterInfo = new JLabel("Target: —");
-    private final JTextArea meleeValidation = new JTextArea();
+    private final JTextArea meleeValidation = new AutoSizingTextArea();
     private final JLabel slayerItemWarning = new JLabel();
     private final JTextArea loadoutValidation = new JTextArea();
     private final JLabel[] gear = new JLabel[EquipmentSlot.values().length];
@@ -198,10 +203,11 @@ public class PersonalBisPanel extends PluginPanel
     @Inject
     public PersonalBisPanel(Client client, ClientThread clientThread, ItemManager itemManager, SpriteManager spriteManager,
         BankScanner bankScanner, EquipmentIntelligence intelligence, MeleeLoadoutOptimizer meleeOptimizer, RangedLoadoutOptimizer rangedOptimizer, RangedCombatCalculator rangedCalculator, MagicLoadoutOptimizer magicOptimizer, SlayerPluginService slayerService,
-        MonsterDatabase monsterDatabase, AccountSnapshot account, PersonalBisBankFilter bankFilter, net.runelite.client.config.ConfigManager preferenceConfig)
+        MonsterDatabase monsterDatabase, AccountSnapshot account, PersonalBisBankFilter bankFilter, net.runelite.client.config.ConfigManager preferenceConfig, ItemExclusions exclusions)
     {
         super(false);
         this.preferenceConfig = preferenceConfig;
+        this.exclusions = exclusions;
         String savedGroup = preferenceConfig.getConfiguration("personalbis", "includeGroupStorage");
         String savedRuby = preferenceConfig.getConfiguration("personalbis", "includeRubyBolts");
         includeGroupStorageEnabled = savedGroup != null && Boolean.parseBoolean(savedGroup);
@@ -516,6 +522,12 @@ content.add(Box.createVerticalStrut(5));
         generateMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
         generateMessage.setMaximumSize(new Dimension(Integer.MAX_VALUE, 54));
         content.add(generateMessage);
+        exclusionWarning.setFont(FontManager.getRunescapeFont());
+        exclusionWarning.setForeground(OSRS_GOLD);
+        exclusionWarning.setAlignmentX(Component.LEFT_ALIGNMENT);
+        exclusionWarning.setMaximumSize(new Dimension(Integer.MAX_VALUE, 64));
+        exclusionWarning.setVisible(false);
+        content.add(exclusionWarning);
         content.add(Box.createVerticalStrut(8));
 
         attackStyleHeading = sectionLabel("Attack style");
@@ -587,6 +599,21 @@ content.add(Box.createVerticalStrut(5));
             label.setMinimumSize(new Dimension(40, 40));
             label.setBorder(BorderFactory.createEmptyBorder());
             gear[slot.ordinal()] = label;
+            label.addMouseListener(new java.awt.event.MouseAdapter()
+            {
+                private void showMenu(java.awt.event.MouseEvent event)
+                {
+                    Object id = label.getClientProperty("personalbis.itemId");
+                    if (!event.isPopupTrigger() || !loadoutsGenerated || !(id instanceof Integer)) return;
+                    javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
+                    javax.swing.JMenuItem exclude = new javax.swing.JMenuItem(ItemExclusions.MENU_OPTION);
+                    exclude.addActionListener(e -> clientThread.invokeLater(() -> exclusions.exclude((Integer) id)));
+                    popup.add(exclude);
+                    popup.show(label, event.getX(), event.getY());
+                }
+                @Override public void mousePressed(java.awt.event.MouseEvent e) { showMenu(e); }
+                @Override public void mouseReleased(java.awt.event.MouseEvent e) { showMenu(e); }
+            });
         }
         prayerIcon.setOpaque(true);
         prayerIcon.setBackground(new Color(38, 38, 38));
@@ -620,7 +647,6 @@ content.add(Box.createVerticalStrut(5));
         validationCard.setLayout(new BoxLayout(validationCard, BoxLayout.Y_AXIS));
         validationCard.setBackground(OSRS_PANEL);
         validationCard.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        validationCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 165));
         validationCard.add(sectionLabel("Loadout stats"));
         slayerItemWarning.setForeground(Color.RED);
         slayerItemWarning.setFont(FontManager.getRunescapeFont());
@@ -638,7 +664,6 @@ content.add(Box.createVerticalStrut(5));
         meleeValidation.setText("Select an attack style.");
         meleeValidation.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
         meleeValidation.setAlignmentX(Component.LEFT_ALIGNMENT);
-        meleeValidation.setMaximumSize(new Dimension(Integer.MAX_VALUE, 105));
         validationCard.add(meleeValidation);
 
         validationSection = validationCard;
@@ -1052,6 +1077,20 @@ content.add(Box.createVerticalStrut(5));
         refreshRecommendationsAsync(true);
     }
 
+    public void exclusionsChanged()
+    {
+        SwingUtilities.invokeLater(this::updateExclusionWarning);
+    }
+
+    private void updateExclusionWarning()
+    {
+        boolean changed = loadoutsGenerated && !generationExclusions.sameAs(exclusions.snapshot());
+        exclusionWarning.setText("<html>Exclusion list updated.<br>Generate again to apply changes.</html>");
+        exclusionWarning.setVisible(changed);
+        content.revalidate();
+        content.repaint();
+    }
+
     private void markLoadoutStale(String message)
     {
         calculationGeneration.incrementAndGet();
@@ -1367,9 +1406,18 @@ content.add(Box.createVerticalStrut(5));
         }
         // Recommended remains bank-only (and therefore placeholder-free), while
         // loadout ownership also includes items currently worn or carried.
-        final List<BankItem> bankSnapshot=new ArrayList<>(cachedBank);
-        if (groupStorageAvailable && includeGroupStorageEnabled) bankSnapshot.addAll(groupSnapshot.getItems());
-        final List<BankItem> ownedGearSnapshot=bankScanner.scanOwnedGear(bankSnapshot);
+        if (calculateAllStyles)
+        {
+            generationExclusions = exclusions.snapshot();
+            List<BankItem> stores = new ArrayList<>(cachedBank);
+            if (groupStorageAvailable && includeGroupStorageEnabled) stores.addAll(groupSnapshot.getItems());
+            generationBank = exclusions.filter(stores, generationExclusions);
+            generationOwned = exclusions.filter(bankScanner.scanOwnedGear(stores), generationExclusions);
+        }
+        // Style switches reuse the exact ownership/exclusion policy of the last
+        // generation, even while the user batches changes in the settings list.
+        final List<BankItem> bankSnapshot = new ArrayList<>(generationBank);
+        final List<BankItem> ownedGearSnapshot = new ArrayList<>(generationOwned);
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
         final Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot=new EnumMap<>(AttackStyle.class);
         for(AttackStyle style:AttackStyle.values()){
@@ -1622,6 +1670,7 @@ content.add(Box.createVerticalStrut(5));
                 EquipmentSlot slot=EquipmentSlot.values()[i];
                 EquipmentCandidate best=selectedGear.get(slot);
                 JLabel label=gear[i];
+                label.putClientProperty("personalbis.itemId", best == null ? null : best.getItem().getItemId());
                 if (best==null)
                 {
                     label.setText("—");
@@ -2082,7 +2131,10 @@ content.add(Box.createVerticalStrut(5));
             generateLoadoutButton.setEnabled(true);
             setStyleControlsEnabled(true);
             generateMessage.setForeground(OSRS_CREAM);
-            generateMessage.setText(calculateAllStyles ? "Loadouts ready." : " ");
+            generateMessage.setText(selectedCombat == null && uiRanged == null && uiMagic == null
+                ? "<html>No usable setup.<br>Check ownership and exclusions.</html>"
+                : (calculateAllStyles ? "Loadouts ready." : " "));
+            updateExclusionWarning();
             updateProgressiveVisibility();
             status.setText(monsterDatabase.getAll().size()+" unique monster variants  •  "+bankSnapshot.size()+" bank items"+(selectedCombat==null?"":"  •  melee validation alpha7"));
         });
