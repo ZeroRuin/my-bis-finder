@@ -10,7 +10,12 @@ import java.util.Map;
 /** Explicit task/species/area membership; separate from broad highlight aliases. */
 final class KonarTargetCatalogue
 {
-    private static final Pack PACK = load();
+    private static volatile Pack PACK;
+
+    static synchronized void initialize(Gson gson)
+    {
+        if (PACK == null) PACK = load(gson);
+    }
     private static final class Pack
     {
         String combatSourceSha256;
@@ -18,12 +23,12 @@ final class KonarTargetCatalogue
     }
     private static final class Rule { String name; List<Integer> automaticIds; }
 
-    private static Pack load()
+    private static Pack load(Gson gson)
     {
         try (InputStream in = KonarTargetCatalogue.class.getResourceAsStream("/slayer-data/konar-targets.json"))
         {
             if (in == null) throw new IllegalStateException("Missing Konar target definitions");
-            Pack pack = new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
+            Pack pack = gson.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
             // Weekly combat updates must not reuse a uniqueness conclusion
             // established against different levels/stats. Membership remains
             // useful, but automatic resolutions wait for recompilation.

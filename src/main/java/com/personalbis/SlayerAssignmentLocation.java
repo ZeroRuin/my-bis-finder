@@ -13,9 +13,17 @@ final class SlayerAssignmentLocation
 {
     static final String UNKNOWN_LOCATION = "Location not yet detected";
     enum Eligibility { ELIGIBLE, INELIGIBLE, UNKNOWN }
-    private static final Pack PACK = load();
-    private static final List<PositiveMatch> MATCHES = loadMatches();
-    private static final ScopePack SCOPE = loadScope();
+    private static volatile Pack PACK;
+    private static volatile List<PositiveMatch> MATCHES;
+    private static volatile ScopePack SCOPE;
+
+    static synchronized void initialize(Gson gson)
+    {
+        if (SCOPE != null) return;
+        PACK = load(gson);
+        MATCHES = loadMatches(gson);
+        SCOPE = loadScope(gson);
+    }
 
     private static final class ScopePack
     {
@@ -24,12 +32,12 @@ final class SlayerAssignmentLocation
         Map<String, List<String>> konarLocations;
     }
 
-    private static ScopePack loadScope()
+    private static ScopePack loadScope(Gson gson)
     {
         try (InputStream in = SlayerAssignmentLocation.class.getResourceAsStream("/slayer-data/restricted-task-scope.json"))
         {
             if (in == null) throw new IllegalStateException("Missing restricted Slayer task scope");
-            return new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), ScopePack.class);
+            return gson.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), ScopePack.class);
         }
         catch (java.io.IOException ex) { throw new IllegalStateException("Cannot load restricted Slayer task scope", ex); }
     }
@@ -43,12 +51,12 @@ final class SlayerAssignmentLocation
         List<Integer> catalogueIds;
     }
 
-    private static List<PositiveMatch> loadMatches()
+    private static List<PositiveMatch> loadMatches(Gson gson)
     {
         try (InputStream in = SlayerAssignmentLocation.class.getResourceAsStream("/slayer-data/restricted-location-matches.json"))
         {
             if (in == null) throw new IllegalStateException("Missing Slayer location matches");
-            PositivePack pack = new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), PositivePack.class);
+            PositivePack pack = gson.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), PositivePack.class);
             return Collections.unmodifiableList(pack.rows);
         }
         catch (java.io.IOException ex)
@@ -63,12 +71,12 @@ final class SlayerAssignmentLocation
         Map<String, List<String>> ids;
     }
 
-    private static Pack load()
+    private static Pack load(Gson gson)
     {
         try (InputStream in = SlayerAssignmentLocation.class.getResourceAsStream("/slayer-data/locations.json"))
         {
             if (in == null) throw new IllegalStateException("Missing Slayer location definitions");
-            return new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
+            return gson.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
         }
         catch (java.io.IOException ex)
         {

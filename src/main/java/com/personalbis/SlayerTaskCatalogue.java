@@ -14,19 +14,24 @@ import java.util.Map;
 /** Offline snapshot of RuneLite's task families; no dependency on its private Task enum. */
 final class SlayerTaskCatalogue
 {
-    private static final Map<String, List<String>> TASKS = load();
+    private static volatile Map<String, List<String>> TASKS;
+
+    static synchronized void initialize(Gson gson)
+    {
+        if (TASKS == null) TASKS = load(gson);
+    }
 
     private static final class Pack
     {
         Map<String, List<String>> tasks;
     }
 
-    private static Map<String, List<String>> load()
+    private static Map<String, List<String>> load(Gson gson)
     {
         try (InputStream in = SlayerTaskCatalogue.class.getResourceAsStream("/slayer-data/tasks.json"))
         {
             if (in == null) throw new IllegalStateException("Missing Slayer task definitions");
-            Pack pack = new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
+            Pack pack = gson.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
             Map<String, List<String>> tasks = new LinkedHashMap<>();
             for (Map.Entry<String, List<String>> entry : pack.tasks.entrySet())
             {

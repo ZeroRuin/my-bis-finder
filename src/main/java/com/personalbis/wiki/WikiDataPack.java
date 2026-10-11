@@ -29,6 +29,7 @@ public class WikiDataPack
     {
         this.gson = gson;
         WikiEquipmentEngine.initialize(gson);
+        com.personalbis.SlayerData.initialize(gson);
         reload();
     }
 

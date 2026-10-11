@@ -9,17 +9,22 @@ import java.util.List;
 /** User-reviewed exact task/area/picker-profile decisions. */
 final class ReviewedSlayerLocations
 {
-    private static final Pack PACK = load();
+    private static volatile Pack PACK;
+
+    static synchronized void initialize(Gson gson)
+    {
+        if (PACK == null) PACK = load(gson);
+    }
     private static final class Pack { String combatSourceSha256; List<Row> rows; }
     private static final class Row { String task, area, name; int id, level; boolean eligible; }
 
-    private static Pack load()
+    private static Pack load(Gson gson)
     {
         try (InputStream in = ReviewedSlayerLocations.class.getResourceAsStream("/slayer-data/reviewed-locations.json");
              InputStream combat = ReviewedSlayerLocations.class.getResourceAsStream("/wiki-data/monsters.json"))
         {
             if (in == null || combat == null) throw new IllegalStateException("Missing reviewed Slayer data");
-            Pack pack = new Gson().fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
+            Pack pack = gson.fromJson(new InputStreamReader(in, StandardCharsets.UTF_8), Pack.class);
             java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
             byte[] buffer = new byte[8192];
             int count;

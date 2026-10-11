@@ -16,6 +16,7 @@ itemExclusionSelfTest
 loadoutStatsSizingSelfTest
 slayerTaskSelfTest
 reviewedSlayerLocationsSelfTest
+slayerGsonSelfTest
 ```
 
 Run the data-tool checks with:
