@@ -1,0 +1,1465 @@
+{
+  "source": "https://oldschool.runescape.wiki/w/Konar_quo_Maten",
+  "reviewedAt": "2026-10-11",
+  "provenance": "User supplied Wiki Konar task/location/alternative table. Existing reviewed superior definitions supplement it; Bloodveld GWD superior exception retained. Legacy metal-dragon and standalone Venators research scope retained separately.",
+  "tasks": {
+    "Aberrant spectres": {
+      "Slayer Tower": [
+        {
+          "name": "Aberrant spectre",
+          "automatic": true
+        },
+        {
+          "name": "Abhorrent spectre",
+          "automatic": true
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Aberrant spectre",
+          "automatic": true
+        },
+        {
+          "name": "Abhorrent spectre",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Deviant spectre",
+          "automatic": true
+        },
+        {
+          "name": "Repugnant spectre",
+          "automatic": true
+        }
+      ]
+    },
+    "Abyssal demons": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Abyssal demon",
+          "automatic": true
+        },
+        {
+          "name": "Greater abyssal demon",
+          "automatic": true
+        }
+      ],
+      "Abyss": [
+        {
+          "name": "Abyssal demon",
+          "automatic": true
+        },
+        {
+          "name": "Abyssal Sire",
+          "automatic": true
+        },
+        {
+          "name": "Greater abyssal demon",
+          "automatic": true
+        }
+      ],
+      "Slayer Tower": [
+        {
+          "name": "Abyssal demon",
+          "automatic": true
+        },
+        {
+          "name": "Greater abyssal demon",
+          "automatic": true
+        }
+      ]
+    },
+    "Ankou": {
+      "Stronghold of Security": [
+        {
+          "name": "Ankou",
+          "automatic": true
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Ankou",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Ankou",
+          "automatic": true
+        }
+      ]
+    },
+    "Aviansies": {
+      "God Wars Dungeon": [
+        {
+          "name": "Aviansie",
+          "automatic": true
+        },
+        {
+          "name": "Kree'arra",
+          "automatic": true
+        },
+        {
+          "name": "Flight Kilisa",
+          "automatic": true
+        },
+        {
+          "name": "Flockleader Geerin",
+          "automatic": true
+        },
+        {
+          "name": "Wingman Skree",
+          "automatic": true
+        }
+      ]
+    },
+    "Basilisks": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Basilisk",
+          "automatic": true
+        },
+        {
+          "name": "Monstrous basilisk",
+          "automatic": true
+        }
+      ],
+      "Jormungand's Prison": [
+        {
+          "name": "Basilisk",
+          "automatic": true
+        },
+        {
+          "name": "Basilisk Knight",
+          "automatic": true
+        },
+        {
+          "name": "Monstrous basilisk",
+          "automatic": true
+        },
+        {
+          "name": "Basilisk Sentinel",
+          "automatic": true
+        }
+      ]
+    },
+    "Black demons": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Black demon",
+          "automatic": true
+        },
+        {
+          "name": "Skotizo",
+          "automatic": true
+        }
+      ],
+      "Chasm of Fire": [
+        {
+          "name": "Black demon",
+          "automatic": true
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Black demon",
+          "automatic": true
+        }
+      ],
+      "Brimhaven Dungeon": [
+        {
+          "name": "Black demon",
+          "automatic": true
+        }
+      ]
+    },
+    "Black dragons": {
+      "Myths' Guild": [
+        {
+          "name": "Black dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby black dragon",
+          "automatic": true
+        }
+      ],
+      "Evil Chicken's Lair": [
+        {
+          "name": "Black dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby black dragon",
+          "automatic": true
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Black dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby black dragon",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Brutal black dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Bloodveld": {
+      "God Wars Dungeon": [
+        {
+          "name": "Bloodveld",
+          "automatic": true
+        }
+      ],
+      "Meiyerditch Laboratories": [
+        {
+          "name": "Bloodveld",
+          "automatic": true
+        },
+        {
+          "name": "Mutated Bloodveld",
+          "automatic": true
+        },
+        {
+          "name": "Insatiable Bloodveld",
+          "automatic": true
+        },
+        {
+          "name": "Insatiable mutated Bloodveld",
+          "automatic": true
+        }
+      ],
+      "Slayer Tower": [
+        {
+          "name": "Bloodveld",
+          "automatic": true
+        },
+        {
+          "name": "Insatiable Bloodveld",
+          "automatic": true
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Bloodveld",
+          "automatic": true
+        },
+        {
+          "name": "Insatiable Bloodveld",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Mutated Bloodveld",
+          "automatic": true
+        },
+        {
+          "name": "Insatiable mutated Bloodveld",
+          "automatic": true
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Mutated Bloodveld",
+          "automatic": true
+        },
+        {
+          "name": "Insatiable mutated Bloodveld",
+          "automatic": true
+        }
+      ]
+    },
+    "Blue dragons": {
+      "Isle of Souls": [
+        {
+          "name": "Blue dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true
+        }
+      ],
+      "Myths' Guild": [
+        {
+          "name": "Blue dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true
+        }
+      ],
+      "Ogre Enclave": [
+        {
+          "name": "Blue dragon",
+          "automatic": true
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Blue dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Brutal blue dragon",
+          "automatic": true
+        }
+      ],
+      "Ruins of Tapoyauik": [
+        {
+          "name": "Brutal blue dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Brine rats": {
+      "Brine Rat Cavern": [
+        {
+          "name": "Brine rat",
+          "automatic": true
+        }
+      ]
+    },
+    "Cave kraken": {
+      "Kraken Cove": [
+        {
+          "name": "Cave kraken",
+          "automatic": true
+        },
+        {
+          "name": "Kraken",
+          "automatic": true
+        }
+      ]
+    },
+    "Dagannoth": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Dagannoth",
+          "automatic": false
+        }
+      ],
+      "Lighthouse": [
+        {
+          "name": "Dagannoth",
+          "automatic": false
+        }
+      ],
+      "Waterbirth Island": [
+        {
+          "name": "Dagannoth",
+          "automatic": false
+        },
+        {
+          "name": "Dagannoth (Waterbirth Island)",
+          "automatic": true
+        },
+        {
+          "name": "Dagannoth fledgeling",
+          "automatic": true
+        },
+        {
+          "name": "Dagannoth spawn",
+          "automatic": true
+        },
+        {
+          "name": "Dagannoth Prime",
+          "automatic": true
+        },
+        {
+          "name": "Dagannoth Rex",
+          "automatic": true
+        },
+        {
+          "name": "Dagannoth Supreme",
+          "automatic": true
+        }
+      ],
+      "Jormungand's Prison": [
+        {
+          "name": "Dagannoth",
+          "automatic": false
+        }
+      ]
+    },
+    "Dark beasts": {
+      "Mourner Tunnels": [
+        {
+          "name": "Dark beast",
+          "automatic": true
+        },
+        {
+          "name": "Night beast",
+          "automatic": true
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Dark beast",
+          "automatic": true
+        },
+        {
+          "name": "Night beast",
+          "automatic": true
+        }
+      ]
+    },
+    "Drakes": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Drake",
+          "automatic": true
+        },
+        {
+          "name": "Guardian Drake",
+          "automatic": true
+        }
+      ]
+    },
+    "Dust devils": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Dust devil",
+          "automatic": true
+        },
+        {
+          "name": "Choke devil",
+          "automatic": true
+        }
+      ],
+      "Smoke Dungeon": [
+        {
+          "name": "Dust devil",
+          "automatic": true
+        },
+        {
+          "name": "Choke devil",
+          "automatic": true
+        }
+      ]
+    },
+    "Fire giants": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Fire giant",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Fire giant",
+          "automatic": true
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Fire giant",
+          "automatic": true
+        }
+      ],
+      "Giants' Den": [
+        {
+          "name": "Fire giant",
+          "automatic": true
+        }
+      ],
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Fire giant",
+          "automatic": true
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Fire giant",
+          "automatic": true
+        }
+      ],
+      "Waterfall Dungeon": [
+        {
+          "name": "Fire giant",
+          "automatic": true
+        }
+      ]
+    },
+    "Fossil Island Wyverns": {
+      "Wyvern Cave": [
+        {
+          "name": "Spitting Wyvern",
+          "automatic": true
+        },
+        {
+          "name": "Taloned Wyvern",
+          "automatic": true
+        },
+        {
+          "name": "Long-tailed Wyvern",
+          "automatic": true
+        },
+        {
+          "name": "Ancient Wyvern",
+          "automatic": true
+        }
+      ]
+    },
+    "Gargoyles": {
+      "Slayer Tower": [
+        {
+          "name": "Gargoyle",
+          "automatic": true
+        },
+        {
+          "name": "Dawn",
+          "automatic": true
+        },
+        {
+          "name": "Dusk",
+          "automatic": true
+        },
+        {
+          "name": "Marble gargoyle",
+          "automatic": true
+        }
+      ]
+    },
+    "Greater demons": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Greater demon",
+          "automatic": true
+        },
+        {
+          "name": "Skotizo",
+          "automatic": true
+        }
+      ],
+      "Chasm of Fire": [
+        {
+          "name": "Greater demon",
+          "automatic": true
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Greater demon",
+          "automatic": true
+        }
+      ],
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Greater demon",
+          "automatic": true
+        }
+      ],
+      "Brimhaven Dungeon": [
+        {
+          "name": "Greater demon",
+          "automatic": true
+        }
+      ]
+    },
+    "Hellhounds": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Hellhound",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Hellhound",
+          "automatic": true
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Hellhound",
+          "automatic": true
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Hellhound",
+          "automatic": true
+        },
+        {
+          "name": "Cerberus",
+          "automatic": true
+        }
+      ],
+      "Witchaven Dungeon": [
+        {
+          "name": "Hellhound",
+          "automatic": true
+        }
+      ]
+    },
+    "Hydras": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Hydra",
+          "automatic": true
+        },
+        {
+          "name": "Alchemical Hydra",
+          "automatic": true
+        },
+        {
+          "name": "Colossal Hydra",
+          "automatic": true
+        }
+      ]
+    },
+    "Jellies": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Jelly",
+          "automatic": true
+        },
+        {
+          "name": "Vitreous Jelly",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Warped Jelly",
+          "automatic": true
+        },
+        {
+          "name": "Vitreous Warped Jelly",
+          "automatic": true
+        }
+      ],
+      "Ruins of Tapoyauik": [
+        {
+          "name": "Chilled jelly",
+          "automatic": true
+        },
+        {
+          "name": "Vitreous Chilled Jelly",
+          "automatic": true
+        }
+      ]
+    },
+    "Kalphites": {
+      "Kalphite Lair": [
+        {
+          "name": "Kalphite Guardian",
+          "automatic": true
+        },
+        {
+          "name": "Kalphite Soldier",
+          "automatic": true
+        },
+        {
+          "name": "Kalphite Worker",
+          "automatic": true
+        },
+        {
+          "name": "Kalphite Queen",
+          "automatic": true
+        }
+      ],
+      "Kalphite Cave": [
+        {
+          "name": "Kalphite Guardian",
+          "automatic": true
+        },
+        {
+          "name": "Kalphite Soldier",
+          "automatic": true
+        },
+        {
+          "name": "Kalphite Worker",
+          "automatic": true
+        }
+      ]
+    },
+    "Kurasks": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Kurask",
+          "automatic": true
+        },
+        {
+          "name": "King kurask",
+          "automatic": true
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Kurask",
+          "automatic": true
+        },
+        {
+          "name": "King kurask",
+          "automatic": true
+        }
+      ]
+    },
+    "Lesser Nagua": {
+      "Neypotzli": [
+        {
+          "name": "Sulphur Nagua",
+          "automatic": true
+        }
+      ],
+      "Ruins of Tapoyauik": [
+        {
+          "name": "Frost Nagua",
+          "automatic": true
+        },
+        {
+          "name": "Amoxliatl",
+          "automatic": true
+        }
+      ],
+      "Crypt of Tonali": [
+        {
+          "name": "Earthen Nagua",
+          "automatic": true
+        }
+      ]
+    },
+    "Lizardmen": {
+      "Battlefront": [
+        {
+          "name": "Lizardman",
+          "automatic": false
+        },
+        {
+          "name": "Lizardman brute",
+          "automatic": true
+        }
+      ],
+      "Lizardman Canyon": [
+        {
+          "name": "Lizardman",
+          "automatic": false
+        },
+        {
+          "name": "Lizardman shaman",
+          "automatic": true
+        },
+        {
+          "name": "Lizardman brute",
+          "automatic": true
+        }
+      ],
+      "Lizardman Settlement": [
+        {
+          "name": "Lizardman",
+          "automatic": false
+        },
+        {
+          "name": "Lizardman shaman",
+          "automatic": true
+        },
+        {
+          "name": "Lizardman brute",
+          "automatic": true
+        }
+      ],
+      "Kebos Swamp": [
+        {
+          "name": "Lizardman",
+          "automatic": false
+        }
+      ],
+      "Molch": [
+        {
+          "name": "Lizardman",
+          "automatic": false
+        },
+        {
+          "name": "Lizardman shaman",
+          "automatic": true
+        }
+      ]
+    },
+    "Metal dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true
+        },
+        {
+          "name": "Iron dragon",
+          "automatic": true
+        },
+        {
+          "name": "Steel dragon",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true
+        },
+        {
+          "name": "Iron dragon",
+          "automatic": true
+        },
+        {
+          "name": "Steel dragon",
+          "automatic": true
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Iron dragon",
+          "automatic": true
+        }
+      ],
+      "Lithkren Vault": [
+        {
+          "name": "Adamant dragon",
+          "automatic": true
+        },
+        {
+          "name": "Rune dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Bronze dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Iron dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Iron dragon",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Iron dragon",
+          "automatic": true
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Iron dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Steel dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Steel dragon",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Steel dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Adamant dragons": {
+      "Lithkren Vault": [
+        {
+          "name": "Adamant dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Rune dragons": {
+      "Lithkren Vault": [
+        {
+          "name": "Rune dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Mutated zygomites": {
+      "Zanaris": [
+        {
+          "name": "Zygomite",
+          "automatic": true
+        }
+      ],
+      "Fossil Island": [
+        {
+          "name": "Ancient Zygomite",
+          "automatic": true
+        }
+      ]
+    },
+    "Nechryael": {
+      "Slayer Tower": [
+        {
+          "name": "Nechryael",
+          "automatic": true
+        },
+        {
+          "name": "Nechryarch",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Greater Nechryael",
+          "automatic": true
+        },
+        {
+          "name": "Nechryarch",
+          "automatic": true
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Greater Nechryael",
+          "automatic": true
+        },
+        {
+          "name": "Nechryarch",
+          "automatic": true
+        }
+      ]
+    },
+    "Red dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Red dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby red dragon",
+          "automatic": true
+        }
+      ],
+      "Forthos Dungeon": [
+        {
+          "name": "Red dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby red dragon",
+          "automatic": true
+        }
+      ],
+      "Myths' Guild": [
+        {
+          "name": "Red dragon",
+          "automatic": true
+        },
+        {
+          "name": "Baby red dragon",
+          "automatic": true
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Brutal red dragon",
+          "automatic": true
+        }
+      ]
+    },
+    "Skeletal Wyverns": {
+      "Asgarnian Ice Dungeon": [
+        {
+          "name": "Skeletal Wyvern",
+          "automatic": true
+        }
+      ]
+    },
+    "Smoke devils": {
+      "Smoke Devil Dungeon": [
+        {
+          "name": "Smoke devil",
+          "automatic": true
+        },
+        {
+          "name": "Thermonuclear smoke devil",
+          "automatic": true
+        },
+        {
+          "name": "Nuclear smoke devil",
+          "automatic": true
+        }
+      ]
+    },
+    "Trolls": {
+      "Troll Stronghold": [
+        {
+          "name": "Mountain troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Troll general",
+          "automatic": true
+        }
+      ],
+      "Keldagrim": [
+        {
+          "name": "Mountain troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false
+        }
+      ],
+      "Death Plateau": [
+        {
+          "name": "Mountain troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Pee Hat",
+          "automatic": true
+        },
+        {
+          "name": "Kraka",
+          "automatic": true
+        },
+        {
+          "name": "Stick",
+          "automatic": true
+        },
+        {
+          "name": "Rock (Troll)",
+          "automatic": true
+        },
+        {
+          "name": "Thrower Troll",
+          "automatic": true
+        },
+        {
+          "name": "Thrower troll (Trollheim)",
+          "automatic": true
+        }
+      ],
+      "South of Mount Quidamortem": [
+        {
+          "name": "Mountain troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false
+        }
+      ],
+      "Fremennik Isles": [
+        {
+          "name": "Mountain troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false
+        }
+      ],
+      "Wyrmscraig Cavern": [
+        {
+          "name": "Mountain troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false
+        }
+      ]
+    },
+    "Turoth": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Turoth",
+          "automatic": true
+        },
+        {
+          "name": "Spiked Turoth",
+          "automatic": true
+        }
+      ]
+    },
+    "Vampyres": {
+      "Darkmeyer": [
+        {
+          "name": "Vampyre Juvenile",
+          "automatic": true
+        },
+        {
+          "name": "Vampyre Juvinate",
+          "automatic": true
+        },
+        {
+          "name": "Vyrewatch",
+          "automatic": true
+        },
+        {
+          "name": "Vyrewatch Sentinel",
+          "automatic": true
+        }
+      ],
+      "Meiyerditch": [
+        {
+          "name": "Vampyre Juvenile",
+          "automatic": true
+        },
+        {
+          "name": "Vampyre Juvinate",
+          "automatic": true
+        },
+        {
+          "name": "Vyrewatch",
+          "automatic": true
+        }
+      ],
+      "Slepe": [
+        {
+          "name": "Vampyre Juvenile",
+          "automatic": true
+        },
+        {
+          "name": "Vyrewatch",
+          "automatic": true
+        }
+      ],
+      "Vampyrium": [
+        {
+          "name": "Venator",
+          "automatic": true
+        }
+      ]
+    },
+    "Venators": {
+      "Apsul Hunting Ground": [
+        {
+          "name": "Venator",
+          "automatic": true
+        },
+        {
+          "name": "Blood-starved venator",
+          "automatic": true
+        }
+      ],
+      "Virer Hunting Ground": [
+        {
+          "name": "Venator",
+          "automatic": true
+        },
+        {
+          "name": "Blood-starved venator",
+          "automatic": true
+        }
+      ]
+    },
+    "Warped Creatures": {
+      "Poison Waste Dungeon": [
+        {
+          "name": "Warped Terrorbird",
+          "automatic": true
+        },
+        {
+          "name": "Warped Tortoise",
+          "automatic": true
+        },
+        {
+          "name": "Mutated Terrorbird",
+          "automatic": true
+        },
+        {
+          "name": "Mutated Tortoise",
+          "automatic": true
+        }
+      ]
+    },
+    "Waterfiends": {
+      "Ancient Cavern": [
+        {
+          "name": "Waterfiend",
+          "automatic": true
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Waterfiend",
+          "automatic": true
+        }
+      ],
+      "Kraken Cove": [
+        {
+          "name": "Waterfiend",
+          "automatic": true
+        }
+      ]
+    },
+    "Wyrms": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Wyrm",
+          "automatic": true
+        },
+        {
+          "name": "Shadow Wyrm",
+          "automatic": true
+        }
+      ],
+      "Neypotzli": [
+        {
+          "name": "Wyrmling",
+          "automatic": true
+        }
+      ],
+      "Wyrmscraig Cavern": [
+        {
+          "name": "Wyrmling",
+          "automatic": true
+        },
+        {
+          "name": "Lava Strykewyrm",
+          "automatic": true
+        }
+      ],
+      "Charred Dungeon": [
+        {
+          "name": "Lava Strykewyrm",
+          "automatic": true
+        },
+        {
+          "name": "Magma strykewyrm",
+          "automatic": true
+        }
+      ]
+    }
+  }
+}

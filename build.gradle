@@ -26,7 +26,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.5'
+version = '0.9.6'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -80,4 +80,37 @@ tasks.register('loadoutStatsSizingSelfTest', JavaExec) {
     mainClass = 'com.personalbis.LoadoutStatsSizingSelfTest'
     systemProperty 'java.awt.headless', 'true'
     enableAssertions = true
+}
+
+tasks.register('slayerTaskSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks task alternatives, assignment locations and catalogue merging.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.SlayerTaskSelfTest'
+    systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
+}
+
+tasks.register('slayerLocationCoverage', JavaExec) {
+    group = 'verification'
+    description = 'Writes the Konar/Krystilia confirmed-target coverage report.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.SlayerLocationCoverage'
+    systemProperty 'java.awt.headless', 'true'
+}
+
+tasks.register('slayerUnresolvedAudit', JavaExec) {
+    group = 'verification'
+    description = 'Lists every unresolved Konar/Krystilia task variant and area as JSON.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.SlayerUnresolvedAudit'
+    systemProperty 'java.awt.headless', 'true'
+}
+
+tasks.register('reviewedSlayerLocationsSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks every imported Slayer review decision and picker scope.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.ReviewedSlayerLocationsSelfTest'
+    systemProperty 'java.awt.headless', 'true'
 }

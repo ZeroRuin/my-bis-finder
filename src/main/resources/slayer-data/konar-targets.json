@@ -1,0 +1,3667 @@
+{
+  "source": "https://oldschool.runescape.wiki/w/Konar_quo_Maten",
+  "reviewedAt": "2026-10-11",
+  "provenance": "User supplied Wiki Konar task/location/alternative table. Existing reviewed superior definitions supplement it; Bloodveld GWD superior exception retained. Legacy metal-dragon and standalone Venators research scope retained separately.",
+  "tasks": {
+    "Aberrant spectres": {
+      "Slayer Tower": [
+        {
+          "name": "Aberrant spectre",
+          "automatic": true,
+          "levels": [
+            96
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Abhorrent spectre",
+          "automatic": true,
+          "levels": [
+            253
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7402
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Aberrant spectre",
+          "automatic": true,
+          "levels": [
+            96
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Abhorrent spectre",
+          "automatic": true,
+          "levels": [
+            253
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7402
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Deviant spectre",
+          "automatic": true,
+          "levels": [
+            169
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7279
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Repugnant spectre",
+          "automatic": true,
+          "levels": [
+            335
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7403
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Abyssal demons": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Abyssal demon",
+          "automatic": true,
+          "levels": [
+            124
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            415,
+            7241,
+            11239
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Greater abyssal demon",
+          "automatic": true,
+          "levels": [
+            342
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7410
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Abyss": [
+        {
+          "name": "Abyssal demon",
+          "automatic": true,
+          "levels": [
+            124
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            415,
+            7241,
+            11239
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Abyssal Sire",
+          "automatic": true,
+          "levels": [
+            350
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Greater abyssal demon",
+          "automatic": true,
+          "levels": [
+            342
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7410
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Slayer Tower": [
+        {
+          "name": "Abyssal demon",
+          "automatic": true,
+          "levels": [
+            124
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            415,
+            7241,
+            11239
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Greater abyssal demon",
+          "automatic": true,
+          "levels": [
+            342
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7410
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Ankou": {
+      "Stronghold of Security": [
+        {
+          "name": "Ankou",
+          "automatic": true,
+          "levels": [
+            75,
+            82,
+            86,
+            95,
+            98
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Ankou",
+          "automatic": true,
+          "levels": [
+            75,
+            82,
+            86,
+            95,
+            98
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Ankou",
+          "automatic": true,
+          "levels": [
+            75,
+            82,
+            86,
+            95,
+            98
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Aviansies": {
+      "God Wars Dungeon": [
+        {
+          "name": "Aviansie",
+          "automatic": true,
+          "levels": [
+            69,
+            71,
+            73,
+            79,
+            83,
+            84,
+            89,
+            92,
+            94,
+            97,
+            131,
+            137,
+            148
+          ],
+          "combatProfiles": 15,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Kree'arra",
+          "automatic": true,
+          "levels": [
+            580
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3162
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Flight Kilisa",
+          "automatic": true,
+          "levels": [
+            159
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3165
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Flockleader Geerin",
+          "automatic": true,
+          "levels": [
+            149
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3164
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Wingman Skree",
+          "automatic": true,
+          "levels": [
+            143
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3163
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Basilisks": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Basilisk",
+          "automatic": true,
+          "levels": [
+            61
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            417
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Monstrous basilisk",
+          "automatic": true,
+          "levels": [
+            135
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7395
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Jormungand's Prison": [
+        {
+          "name": "Basilisk",
+          "automatic": true,
+          "levels": [
+            61
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            417
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Basilisk Knight",
+          "automatic": true,
+          "levels": [
+            204
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            9293
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Monstrous basilisk",
+          "automatic": true,
+          "levels": [
+            135
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7395
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Basilisk Sentinel",
+          "automatic": true,
+          "levels": [
+            358
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            9258
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Black demons": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Black demon",
+          "automatic": true,
+          "levels": [
+            172,
+            178,
+            184,
+            188
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Skotizo",
+          "automatic": true,
+          "levels": [
+            321
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7286
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Chasm of Fire": [
+        {
+          "name": "Black demon",
+          "automatic": true,
+          "levels": [
+            172,
+            178,
+            184,
+            188
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Black demon",
+          "automatic": true,
+          "levels": [
+            172,
+            178,
+            184,
+            188
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Brimhaven Dungeon": [
+        {
+          "name": "Black demon",
+          "automatic": true,
+          "levels": [
+            172,
+            178,
+            184,
+            188
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Black dragons": {
+      "Myths' Guild": [
+        {
+          "name": "Black dragon",
+          "automatic": true,
+          "levels": [
+            227,
+            247
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Baby black dragon",
+          "automatic": true,
+          "levels": [
+            83
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Evil Chicken's Lair": [
+        {
+          "name": "Black dragon",
+          "automatic": true,
+          "levels": [
+            227,
+            247
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Baby black dragon",
+          "automatic": true,
+          "levels": [
+            83
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Black dragon",
+          "automatic": true,
+          "levels": [
+            227,
+            247
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Baby black dragon",
+          "automatic": true,
+          "levels": [
+            83
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Brutal black dragon",
+          "automatic": true,
+          "levels": [
+            318
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7275
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Bloodveld": {
+      "God Wars Dungeon": [
+        {
+          "name": "Bloodveld",
+          "automatic": true,
+          "levels": [
+            76,
+            81
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Meiyerditch Laboratories": [
+        {
+          "name": "Bloodveld",
+          "automatic": true,
+          "levels": [
+            76,
+            81
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Mutated Bloodveld",
+          "automatic": true,
+          "levels": [
+            123
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7276
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Insatiable Bloodveld",
+          "automatic": true,
+          "levels": [
+            202
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7397
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Insatiable mutated Bloodveld",
+          "automatic": true,
+          "levels": [
+            278
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7398
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Slayer Tower": [
+        {
+          "name": "Bloodveld",
+          "automatic": true,
+          "levels": [
+            76,
+            81
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Insatiable Bloodveld",
+          "automatic": true,
+          "levels": [
+            202
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7397
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Bloodveld",
+          "automatic": true,
+          "levels": [
+            76,
+            81
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Insatiable Bloodveld",
+          "automatic": true,
+          "levels": [
+            202
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7397
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Mutated Bloodveld",
+          "automatic": true,
+          "levels": [
+            123
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7276
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Insatiable mutated Bloodveld",
+          "automatic": true,
+          "levels": [
+            278
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7398
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Mutated Bloodveld",
+          "automatic": true,
+          "levels": [
+            123
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7276
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Insatiable mutated Bloodveld",
+          "automatic": true,
+          "levels": [
+            278
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7398
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Blue dragons": {
+      "Isle of Souls": [
+        {
+          "name": "Blue dragon",
+          "automatic": true,
+          "levels": [
+            111
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true,
+          "levels": [
+            48
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Myths' Guild": [
+        {
+          "name": "Blue dragon",
+          "automatic": true,
+          "levels": [
+            111
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true,
+          "levels": [
+            48
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Ogre Enclave": [
+        {
+          "name": "Blue dragon",
+          "automatic": true,
+          "levels": [
+            111
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Blue dragon",
+          "automatic": true,
+          "levels": [
+            111
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true,
+          "levels": [
+            48
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Brutal blue dragon",
+          "automatic": true,
+          "levels": [
+            271
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Ruins of Tapoyauik": [
+        {
+          "name": "Brutal blue dragon",
+          "automatic": true,
+          "levels": [
+            271
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Baby blue dragon",
+          "automatic": true,
+          "levels": [
+            48
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Brine rats": {
+      "Brine Rat Cavern": [
+        {
+          "name": "Brine rat",
+          "automatic": true,
+          "levels": [
+            70
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            4501
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Cave kraken": {
+      "Kraken Cove": [
+        {
+          "name": "Cave kraken",
+          "automatic": true,
+          "levels": [
+            127
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            492
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Kraken",
+          "automatic": true,
+          "levels": [
+            291
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            494
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Dagannoth": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Dagannoth",
+          "automatic": false,
+          "levels": [
+            74,
+            92
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Lighthouse": [
+        {
+          "name": "Dagannoth",
+          "automatic": false,
+          "levels": [
+            74,
+            92
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Waterbirth Island": [
+        {
+          "name": "Dagannoth",
+          "automatic": false,
+          "levels": [
+            74,
+            92
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Dagannoth (Waterbirth Island)",
+          "automatic": true,
+          "levels": [
+            88,
+            90
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Dagannoth fledgeling",
+          "automatic": true,
+          "levels": [
+            70
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2264
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Dagannoth spawn",
+          "automatic": true,
+          "levels": [
+            42
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3184
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Dagannoth Prime",
+          "automatic": true,
+          "levels": [
+            303
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2266
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Dagannoth Rex",
+          "automatic": true,
+          "levels": [
+            303
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2267
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Dagannoth Supreme",
+          "automatic": true,
+          "levels": [
+            303
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2265
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Jormungand's Prison": [
+        {
+          "name": "Dagannoth",
+          "automatic": false,
+          "levels": [
+            74,
+            92
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Dark beasts": {
+      "Mourner Tunnels": [
+        {
+          "name": "Dark beast",
+          "automatic": true,
+          "levels": [
+            182
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            4005
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Night beast",
+          "automatic": true,
+          "levels": [
+            374
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7409
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Dark beast",
+          "automatic": true,
+          "levels": [
+            182
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            4005
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Night beast",
+          "automatic": true,
+          "levels": [
+            374
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7409
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Drakes": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Drake",
+          "automatic": true,
+          "levels": [
+            192
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8612
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Guardian Drake",
+          "automatic": true,
+          "levels": [
+            376
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            10400
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Dust devils": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Dust devil",
+          "automatic": true,
+          "levels": [
+            93,
+            110
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Choke devil",
+          "automatic": true,
+          "levels": [
+            264
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7404
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Smoke Dungeon": [
+        {
+          "name": "Dust devil",
+          "automatic": true,
+          "levels": [
+            93,
+            110
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Choke devil",
+          "automatic": true,
+          "levels": [
+            264
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7404
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Fire giants": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Fire giant",
+          "automatic": true,
+          "levels": [
+            86,
+            104,
+            109
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Fire giant",
+          "automatic": true,
+          "levels": [
+            86,
+            104,
+            109
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Fire giant",
+          "automatic": true,
+          "levels": [
+            86,
+            104,
+            109
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Giants' Den": [
+        {
+          "name": "Fire giant",
+          "automatic": true,
+          "levels": [
+            86,
+            104,
+            109
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Fire giant",
+          "automatic": true,
+          "levels": [
+            86,
+            104,
+            109
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Fire giant",
+          "automatic": true,
+          "levels": [
+            86,
+            104,
+            109
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Waterfall Dungeon": [
+        {
+          "name": "Fire giant",
+          "automatic": true,
+          "levels": [
+            86,
+            104,
+            109
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Fossil Island Wyverns": {
+      "Wyvern Cave": [
+        {
+          "name": "Spitting Wyvern",
+          "automatic": true,
+          "levels": [
+            139
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7794
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Taloned Wyvern",
+          "automatic": true,
+          "levels": [
+            147
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7793
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Long-tailed Wyvern",
+          "automatic": true,
+          "levels": [
+            152
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7792
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Ancient Wyvern",
+          "automatic": true,
+          "levels": [
+            210
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7795
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Gargoyles": {
+      "Slayer Tower": [
+        {
+          "name": "Gargoyle",
+          "automatic": true,
+          "levels": [
+            111
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            412,
+            1543
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Dawn",
+          "automatic": true,
+          "levels": [
+            228
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7852
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Dusk",
+          "automatic": true,
+          "levels": [
+            248,
+            328
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Marble gargoyle",
+          "automatic": true,
+          "levels": [
+            349
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7407
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Greater demons": {
+      "Catacombs of Kourend": [
+        {
+          "name": "Greater demon",
+          "automatic": true,
+          "levels": [
+            92,
+            100,
+            101,
+            104,
+            113
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Skotizo",
+          "automatic": true,
+          "levels": [
+            321
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7286
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Chasm of Fire": [
+        {
+          "name": "Greater demon",
+          "automatic": true,
+          "levels": [
+            92,
+            100,
+            101,
+            104,
+            113
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Greater demon",
+          "automatic": true,
+          "levels": [
+            92,
+            100,
+            101,
+            104,
+            113
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Greater demon",
+          "automatic": true,
+          "levels": [
+            92,
+            100,
+            101,
+            104,
+            113
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Brimhaven Dungeon": [
+        {
+          "name": "Greater demon",
+          "automatic": true,
+          "levels": [
+            92,
+            100,
+            101,
+            104,
+            113
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Hellhounds": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Hellhound",
+          "automatic": true,
+          "levels": [
+            122,
+            127,
+            136
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Hellhound",
+          "automatic": true,
+          "levels": [
+            122,
+            127,
+            136
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Stronghold Slayer Cave": [
+        {
+          "name": "Hellhound",
+          "automatic": true,
+          "levels": [
+            122,
+            127,
+            136
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Taverley Dungeon": [
+        {
+          "name": "Hellhound",
+          "automatic": true,
+          "levels": [
+            122,
+            127,
+            136
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Cerberus",
+          "automatic": true,
+          "levels": [
+            318
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            5862
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Witchaven Dungeon": [
+        {
+          "name": "Hellhound",
+          "automatic": true,
+          "levels": [
+            122,
+            127,
+            136
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Hydras": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Hydra",
+          "automatic": true,
+          "levels": [
+            194
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8609
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Alchemical Hydra",
+          "automatic": true,
+          "levels": [
+            426
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Colossal Hydra",
+          "automatic": true,
+          "levels": [
+            309
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            10402
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Jellies": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Jelly",
+          "automatic": true,
+          "levels": [
+            78
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            437,
+            438,
+            439,
+            440,
+            441,
+            442,
+            11241,
+            11242,
+            11243,
+            11244,
+            11245
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Vitreous Jelly",
+          "automatic": true,
+          "levels": [
+            206
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7399
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Warped Jelly",
+          "automatic": true,
+          "levels": [
+            112
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7277
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Vitreous Warped Jelly",
+          "automatic": true,
+          "levels": [
+            241
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7400
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Ruins of Tapoyauik": [
+        {
+          "name": "Chilled jelly",
+          "automatic": true,
+          "levels": [
+            112
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            13799
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Vitreous Chilled Jelly",
+          "automatic": true,
+          "levels": [
+            241
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15501
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Kalphites": {
+      "Kalphite Lair": [
+        {
+          "name": "Kalphite Guardian",
+          "automatic": true,
+          "levels": [
+            141
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            959,
+            960,
+            962
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Kalphite Soldier",
+          "automatic": true,
+          "levels": [
+            85
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            957,
+            958
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Kalphite Worker",
+          "automatic": true,
+          "levels": [
+            28
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            955
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Kalphite Queen",
+          "automatic": true,
+          "levels": [
+            333
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Kalphite Cave": [
+        {
+          "name": "Kalphite Guardian",
+          "automatic": true,
+          "levels": [
+            141
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            959,
+            960,
+            962
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Kalphite Soldier",
+          "automatic": true,
+          "levels": [
+            85
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            957,
+            958
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Kalphite Worker",
+          "automatic": true,
+          "levels": [
+            28
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            955
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Kurasks": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Kurask",
+          "automatic": true,
+          "levels": [
+            106
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            410,
+            411
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "King kurask",
+          "automatic": true,
+          "levels": [
+            295
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7405
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Kurask",
+          "automatic": true,
+          "levels": [
+            106
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            410,
+            411
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "King kurask",
+          "automatic": true,
+          "levels": [
+            295
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7405
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Lesser Nagua": {
+      "Neypotzli": [
+        {
+          "name": "Sulphur Nagua",
+          "automatic": true,
+          "levels": [
+            98
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            13033
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Ruins of Tapoyauik": [
+        {
+          "name": "Frost Nagua",
+          "automatic": true,
+          "levels": [
+            104
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            13728
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Amoxliatl",
+          "automatic": true,
+          "levels": [
+            263
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            13685
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Crypt of Tonali": [
+        {
+          "name": "Earthen Nagua",
+          "automatic": true,
+          "levels": [
+            128
+          ],
+          "combatProfiles": 3,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Lizardmen": {
+      "Battlefront": [
+        {
+          "name": "Lizardman",
+          "automatic": false,
+          "levels": [
+            53,
+            62
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Lizardman brute",
+          "automatic": true,
+          "levels": [
+            75
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            6918,
+            8564
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Lizardman Canyon": [
+        {
+          "name": "Lizardman",
+          "automatic": false,
+          "levels": [
+            53,
+            62
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Lizardman shaman",
+          "automatic": true,
+          "levels": [
+            150
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Lizardman brute",
+          "automatic": true,
+          "levels": [
+            75
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            6918,
+            8564
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Lizardman Settlement": [
+        {
+          "name": "Lizardman",
+          "automatic": false,
+          "levels": [
+            53,
+            62
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Lizardman shaman",
+          "automatic": true,
+          "levels": [
+            150
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Lizardman brute",
+          "automatic": true,
+          "levels": [
+            75
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            6918,
+            8564
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Kebos Swamp": [
+        {
+          "name": "Lizardman",
+          "automatic": false,
+          "levels": [
+            53,
+            62
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Molch": [
+        {
+          "name": "Lizardman",
+          "automatic": false,
+          "levels": [
+            53,
+            62
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Lizardman shaman",
+          "automatic": true,
+          "levels": [
+            150
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Metal dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true,
+          "levels": [
+            131,
+            143
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Iron dragon",
+          "automatic": true,
+          "levels": [
+            189,
+            215
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Steel dragon",
+          "automatic": true,
+          "levels": [
+            246,
+            274
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true,
+          "levels": [
+            131,
+            143
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Iron dragon",
+          "automatic": true,
+          "levels": [
+            189,
+            215
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Steel dragon",
+          "automatic": true,
+          "levels": [
+            246,
+            274
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Iron dragon",
+          "automatic": true,
+          "levels": [
+            189,
+            215
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Lithkren Vault": [
+        {
+          "name": "Adamant dragon",
+          "automatic": true,
+          "levels": [
+            338
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8030
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Rune dragon",
+          "automatic": true,
+          "levels": [
+            380
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8031
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Bronze dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true,
+          "levels": [
+            131,
+            143
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Bronze dragon",
+          "automatic": true,
+          "levels": [
+            131,
+            143
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Iron dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Iron dragon",
+          "automatic": true,
+          "levels": [
+            189,
+            215
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Iron dragon",
+          "automatic": true,
+          "levels": [
+            189,
+            215
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Isle of Souls": [
+        {
+          "name": "Iron dragon",
+          "automatic": true,
+          "levels": [
+            189,
+            215
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Steel dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Steel dragon",
+          "automatic": true,
+          "levels": [
+            246,
+            274
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Steel dragon",
+          "automatic": true,
+          "levels": [
+            246,
+            274
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Adamant dragons": {
+      "Lithkren Vault": [
+        {
+          "name": "Adamant dragon",
+          "automatic": true,
+          "levels": [
+            338
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8030
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Rune dragons": {
+      "Lithkren Vault": [
+        {
+          "name": "Rune dragon",
+          "automatic": true,
+          "levels": [
+            380
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8031
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Mutated zygomites": {
+      "Zanaris": [
+        {
+          "name": "Zygomite",
+          "automatic": true,
+          "levels": [
+            74,
+            86
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Fossil Island": [
+        {
+          "name": "Ancient Zygomite",
+          "automatic": true,
+          "levels": [
+            109
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7797
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Nechryael": {
+      "Slayer Tower": [
+        {
+          "name": "Nechryael",
+          "automatic": true,
+          "levels": [
+            115
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8,
+            11
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Nechryarch",
+          "automatic": true,
+          "levels": [
+            300
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7411
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Greater Nechryael",
+          "automatic": true,
+          "levels": [
+            200
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7278,
+            11240
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Nechryarch",
+          "automatic": true,
+          "levels": [
+            300
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7411
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Greater Nechryael",
+          "automatic": true,
+          "levels": [
+            200
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7278,
+            11240
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Nechryarch",
+          "automatic": true,
+          "levels": [
+            300
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7411
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Red dragons": {
+      "Brimhaven Dungeon": [
+        {
+          "name": "Red dragon",
+          "automatic": true,
+          "levels": [
+            152
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            247,
+            248,
+            249,
+            250,
+            251
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Baby red dragon",
+          "automatic": true,
+          "levels": [
+            48
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            244,
+            245,
+            246
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Forthos Dungeon": [
+        {
+          "name": "Red dragon",
+          "automatic": true,
+          "levels": [
+            152
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            247,
+            248,
+            249,
+            250,
+            251
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Baby red dragon",
+          "automatic": true,
+          "levels": [
+            48
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            244,
+            245,
+            246
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Myths' Guild": [
+        {
+          "name": "Red dragon",
+          "automatic": true,
+          "levels": [
+            152
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            247,
+            248,
+            249,
+            250,
+            251
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Baby red dragon",
+          "automatic": true,
+          "levels": [
+            48
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            244,
+            245,
+            246
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Catacombs of Kourend": [
+        {
+          "name": "Brutal red dragon",
+          "automatic": true,
+          "levels": [
+            289
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7274
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Skeletal Wyverns": {
+      "Asgarnian Ice Dungeon": [
+        {
+          "name": "Skeletal Wyvern",
+          "automatic": true,
+          "levels": [
+            140
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            465,
+            466,
+            467,
+            468
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Smoke devils": {
+      "Smoke Devil Dungeon": [
+        {
+          "name": "Smoke devil",
+          "automatic": true,
+          "levels": [
+            160
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            498
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Thermonuclear smoke devil",
+          "automatic": true,
+          "levels": [
+            301
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            499
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Nuclear smoke devil",
+          "automatic": true,
+          "levels": [
+            280
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            7406
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Trolls": {
+      "Troll Stronghold": [
+        {
+          "name": "Mountain troll",
+          "automatic": false,
+          "levels": [
+            69,
+            71
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false,
+          "levels": [
+            120,
+            121,
+            123,
+            124
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false,
+          "levels": [
+            100
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false,
+          "levels": [
+            102
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Troll general",
+          "automatic": true,
+          "levels": [
+            113
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Keldagrim": [
+        {
+          "name": "Mountain troll",
+          "automatic": false,
+          "levels": [
+            69,
+            71
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false,
+          "levels": [
+            120,
+            121,
+            123,
+            124
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false,
+          "levels": [
+            100
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false,
+          "levels": [
+            102
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Death Plateau": [
+        {
+          "name": "Mountain troll",
+          "automatic": false,
+          "levels": [
+            69,
+            71
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false,
+          "levels": [
+            120,
+            121,
+            123,
+            124
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false,
+          "levels": [
+            100
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false,
+          "levels": [
+            102
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Pee Hat",
+          "automatic": true,
+          "levels": [
+            91
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            927
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Kraka",
+          "automatic": true,
+          "levels": [
+            91
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            928
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Stick",
+          "automatic": true,
+          "levels": [
+            104
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            926
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Rock (Troll)",
+          "automatic": true,
+          "levels": [
+            111
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            925
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Thrower Troll",
+          "automatic": true,
+          "levels": [
+            67
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            931
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Thrower troll (Trollheim)",
+          "automatic": true,
+          "levels": [
+            68
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            4135
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "South of Mount Quidamortem": [
+        {
+          "name": "Mountain troll",
+          "automatic": false,
+          "levels": [
+            69,
+            71
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false,
+          "levels": [
+            120,
+            121,
+            123,
+            124
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false,
+          "levels": [
+            100
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false,
+          "levels": [
+            102
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Fremennik Isles": [
+        {
+          "name": "Mountain troll",
+          "automatic": false,
+          "levels": [
+            69,
+            71
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false,
+          "levels": [
+            120,
+            121,
+            123,
+            124
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false,
+          "levels": [
+            100
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false,
+          "levels": [
+            102
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Wyrmscraig Cavern": [
+        {
+          "name": "Mountain troll",
+          "automatic": false,
+          "levels": [
+            69,
+            71
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll",
+          "automatic": false,
+          "levels": [
+            120,
+            121,
+            123,
+            124
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll grunt",
+          "automatic": false,
+          "levels": [
+            100
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll female",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll grunt",
+          "automatic": false,
+          "levels": [
+            102
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll male",
+          "automatic": false,
+          "levels": [
+            82
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Frenzied ice troll runt",
+          "automatic": false,
+          "levels": [
+            74
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ]
+    },
+    "Turoth": {
+      "Fremennik Slayer Dungeon": [
+        {
+          "name": "Turoth",
+          "automatic": true,
+          "levels": [
+            83,
+            85,
+            87,
+            89
+          ],
+          "combatProfiles": 4,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Spiked Turoth",
+          "automatic": true,
+          "levels": [
+            244
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            10397
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Vampyres": {
+      "Darkmeyer": [
+        {
+          "name": "Vampyre Juvenile",
+          "automatic": true,
+          "levels": [
+            45
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3692,
+            4436,
+            9731
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Vampyre Juvinate",
+          "automatic": true,
+          "levels": [
+            50,
+            54,
+            59,
+            75,
+            90,
+            119
+          ],
+          "combatProfiles": 6,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Vyrewatch",
+          "automatic": true,
+          "levels": [
+            87,
+            105,
+            110,
+            120,
+            125
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Vyrewatch Sentinel",
+          "automatic": true,
+          "levels": [
+            151
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            9756,
+            9757,
+            9758,
+            9759,
+            9760,
+            9761,
+            9762,
+            9763
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Meiyerditch": [
+        {
+          "name": "Vampyre Juvenile",
+          "automatic": true,
+          "levels": [
+            45
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3692,
+            4436,
+            9731
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Vampyre Juvinate",
+          "automatic": true,
+          "levels": [
+            50,
+            54,
+            59,
+            75,
+            90,
+            119
+          ],
+          "combatProfiles": 6,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Vyrewatch",
+          "automatic": true,
+          "levels": [
+            87,
+            105,
+            110,
+            120,
+            125
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Slepe": [
+        {
+          "name": "Vampyre Juvenile",
+          "automatic": true,
+          "levels": [
+            45
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            3692,
+            4436,
+            9731
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Vyrewatch",
+          "automatic": true,
+          "levels": [
+            87,
+            105,
+            110,
+            120,
+            125
+          ],
+          "combatProfiles": 5,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        }
+      ],
+      "Vampyrium": [
+        {
+          "name": "Venator",
+          "automatic": true,
+          "levels": [
+            246
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15765,
+            15766,
+            15767,
+            15768,
+            15769
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Venators": {
+      "Apsul Hunting Ground": [
+        {
+          "name": "Venator",
+          "automatic": true,
+          "levels": [
+            246
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15765,
+            15766,
+            15767,
+            15768,
+            15769
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Blood-starved venator",
+          "automatic": true,
+          "levels": [
+            246
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15770
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Virer Hunting Ground": [
+        {
+          "name": "Venator",
+          "automatic": true,
+          "levels": [
+            246
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15765,
+            15766,
+            15767,
+            15768,
+            15769
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Blood-starved venator",
+          "automatic": true,
+          "levels": [
+            246
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15770
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Warped Creatures": {
+      "Poison Waste Dungeon": [
+        {
+          "name": "Warped Terrorbird",
+          "automatic": true,
+          "levels": [
+            96,
+            138
+          ],
+          "combatProfiles": 2,
+          "automaticIds": [],
+          "resolution": "Exact spawn/manual evidence or remaining review required"
+        },
+        {
+          "name": "Warped Tortoise",
+          "automatic": true,
+          "levels": [
+            121
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            12490
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Mutated Terrorbird",
+          "automatic": true,
+          "levels": [
+            178
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            12464
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Mutated Tortoise",
+          "automatic": true,
+          "levels": [
+            247
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            12465
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Waterfiends": {
+      "Ancient Cavern": [
+        {
+          "name": "Waterfiend",
+          "automatic": true,
+          "levels": [
+            115
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2916,
+            2917
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Iorwerth Dungeon": [
+        {
+          "name": "Waterfiend",
+          "automatic": true,
+          "levels": [
+            115
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2916,
+            2917
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Kraken Cove": [
+        {
+          "name": "Waterfiend",
+          "automatic": true,
+          "levels": [
+            115
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            2916,
+            2917
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    },
+    "Wyrms": {
+      "Karuulm Slayer Dungeon": [
+        {
+          "name": "Wyrm",
+          "automatic": true,
+          "levels": [
+            97
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            8611
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Shadow Wyrm",
+          "automatic": true,
+          "levels": [
+            259
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            10399
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Neypotzli": [
+        {
+          "name": "Wyrmling",
+          "automatic": true,
+          "levels": [
+            55
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            13032,
+            16296
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Wyrmscraig Cavern": [
+        {
+          "name": "Wyrmling",
+          "automatic": true,
+          "levels": [
+            55
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            13032,
+            16296
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Lava Strykewyrm",
+          "automatic": true,
+          "levels": [
+            116
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15500
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ],
+      "Charred Dungeon": [
+        {
+          "name": "Lava Strykewyrm",
+          "automatic": true,
+          "levels": [
+            116
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15500
+          ],
+          "resolution": "Single combat level and identical combat data"
+        },
+        {
+          "name": "Magma strykewyrm",
+          "automatic": true,
+          "levels": [
+            249
+          ],
+          "combatProfiles": 1,
+          "automaticIds": [
+            15504
+          ],
+          "resolution": "Single combat level and identical combat data"
+        }
+      ]
+    }
+  },
+  "rulesSha256": "f38577c23fac51b74288e416b054a991737c91240370578194adca7bbf10723a",
+  "combatSourceSha256": "5419520721e4f1f6b4ee78f857f295de9203f42b10f3c9a1aabaa82f8be3a8a6",
+  "note": "Automatic IDs identify equivalent combat profiles for an explicitly listed species/area, not a spawn-location claim for each model ID. No propagation to Krystilia."
+}

@@ -24,6 +24,7 @@ public class MonsterDatabase
     private final Client client;
     private final WikiDataPack wikiDataPack;
     private List<MonsterDefinition> monsters = Collections.emptyList();
+    private Map<String, List<MonsterDefinition>> taskLocationRecords = Collections.emptyMap();
 
     @Inject
     public MonsterDatabase(Client client, WikiDataPack wikiDataPack)
@@ -38,6 +39,14 @@ public class MonsterDatabase
         // authoritative. This preserves exact NPC ids/versions/attributes used by
         // mechanics rules instead of reconstructing targets from RuneLite cache stats.
         monsters = Collections.unmodifiableList(catalogue(wikiDataPack.getMonsters()));
+        Map<String, List<MonsterDefinition>> records = new LinkedHashMap<>();
+        for (WikiMonster wiki : wikiDataPack.getMonsters())
+        {
+            if (wiki == null || wiki.name == null || wiki.skills == null || isUnused(wiki)) continue;
+            MonsterDefinition candidate = fromWiki(wiki);
+            records.computeIfAbsent(combatKey(candidate), ignored -> new ArrayList<>()).add(candidate);
+        }
+        taskLocationRecords = records;
     }
 
     static List<MonsterDefinition> catalogue(List<WikiMonster> source)
@@ -197,23 +206,56 @@ public class MonsterDatabase
         {
             return Collections.emptyList();
         }
-        String normalized = normalizeTaskName(task);
         List<MonsterDefinition> exact = new ArrayList<>();
         List<MonsterDefinition> variants = new ArrayList<>();
         for (MonsterDefinition monster : monsters)
         {
-            String name = normalizeTaskName(monster.getName());
-            if (name.equals(normalized))
+            if (!SlayerTaskCatalogue.matches(task, monster)) continue;
+            if (SlayerTaskCatalogue.normalize(monster.getName()).equals(SlayerTaskCatalogue.singular(task)))
             {
                 exact.add(monster);
             }
-            else if (name.contains(normalized))
+            else
             {
                 variants.add(monster);
             }
         }
         exact.addAll(variants);
         return exact;
+    }
+
+    public List<MonsterDefinition> findTaskVariants(String task, String location)
+    {
+        if (!SlayerAssignmentLocation.supportsTaskArea(task, location)) return Collections.emptyList();
+        List<MonsterDefinition> variants = new ArrayList<>(findTaskVariants(task));
+        variants.removeIf(m -> taskLocationEligibility(task, m, location)
+            != SlayerAssignmentLocation.Eligibility.ELIGIBLE);
+        return variants;
+    }
+
+    SlayerAssignmentLocation.Eligibility taskLocationEligibility(String task, MonsterDefinition monster, String location)
+    {
+        SlayerAssignmentLocation.Eligibility reviewed = ReviewedSlayerLocations.decision(task, location, monster);
+        if (reviewed != null) return reviewed;
+        SlayerAssignmentLocation.Eligibility decision = KonarTargetCatalogue.decision(task, location, monster);
+        return decision == null ? taskLocationEligibility(monster, location) : decision;
+    }
+
+    SlayerAssignmentLocation.Eligibility taskLocationEligibility(MonsterDefinition monster, String location)
+    {
+        // Display entries can represent several identical combat records. Any
+        // eligible source record makes that combat setup usable in this area.
+        boolean unknown = false;
+        List<MonsterDefinition> records = taskLocationRecords.get(combatKey(monster));
+        if (records == null) return SlayerAssignmentLocation.eligibility(monster, location);
+        for (MonsterDefinition candidate : records)
+        {
+            SlayerAssignmentLocation.Eligibility eligibility = SlayerAssignmentLocation.eligibility(candidate, location);
+            if (eligibility == SlayerAssignmentLocation.Eligibility.ELIGIBLE) return eligibility;
+            unknown |= eligibility == SlayerAssignmentLocation.Eligibility.UNKNOWN;
+        }
+        return unknown ? SlayerAssignmentLocation.Eligibility.UNKNOWN
+            : SlayerAssignmentLocation.Eligibility.INELIGIBLE;
     }
 
     public MonsterDefinition findBest(String text)

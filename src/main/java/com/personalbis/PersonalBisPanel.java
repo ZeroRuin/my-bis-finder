@@ -153,6 +153,9 @@ public class PersonalBisPanel extends PluginPanel
     private List<BankItem> cachedBank = Collections.emptyList();
     private volatile boolean ownedHasRubyBolts;
     private String lastSlayerTask;
+    private String lastSlayerLocation = "";
+    private final JTextArea slayerAssignmentNote = new AutoSizingTextArea();
+    private Set<String> unverifiedTaskTargets = Collections.emptySet();
     private volatile boolean slayerMode;
     private volatile boolean slayerTargetMode;
     private volatile boolean includeRubyBoltsEnabled=true;
@@ -361,6 +364,16 @@ public class PersonalBisPanel extends PluginPanel
         targetGbc.gridy = 1;
         targetGbc.insets = new Insets(0, 0, 4, 0);
         targetCard.add(monsterBox, targetGbc);
+        slayerAssignmentNote.setEditable(false);
+        slayerAssignmentNote.setFocusable(false);
+        slayerAssignmentNote.setOpaque(false);
+        slayerAssignmentNote.setLineWrap(true);
+        slayerAssignmentNote.setWrapStyleWord(true);
+        slayerAssignmentNote.setFont(FontManager.getRunescapeFont());
+        slayerAssignmentNote.setForeground(OSRS_CREAM);
+        slayerAssignmentNote.setVisible(false);
+        targetGbc.gridy = 2;
+        targetCard.add(slayerAssignmentNote, targetGbc);
         monsterBox.addActionListener(e ->
         {
             if (!populatingTargets)
@@ -379,6 +392,7 @@ public class PersonalBisPanel extends PluginPanel
                     invalidateOptimizerCache();
                     markLoadoutStale("");
                     updateProgressiveVisibility();
+                    updateSlayerAssignmentNote();
                 }
             }
         });
@@ -764,14 +778,14 @@ content.add(Box.createVerticalStrut(5));
         slayerTask.setOpaque(false);
         slayerTask.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
         monsterBox.setEnabled(true);
-        // Keep the single target field editable at all times. Slayer mode fills it
-        // automatically and suppresses filtering through slayerTargetMode, while
-        // manual mode must remain typeable after the checkbox is cleared.
+        // Restricted tasks must not accept a typed target outside their model.
+        monsterBox.setEditable(!selected);
+        slayerAssignmentNote.setVisible(selected);
         if (monsterBox.getEditor().getEditorComponent() != null)
             monsterBox.getEditor().getEditorComponent().setEnabled(true);
         monsterBox.setEnabled(true);
         monsterBox.setToolTipText(selected
-            ? "Eligible NPC variants for your current Slayer task."
+            ? "Task alternatives; entries marked [location?] need location verification."
             : "Choose a monster target.");
     }
 
@@ -1137,6 +1151,7 @@ content.add(Box.createVerticalStrut(5));
 
     private void applyMonsterFilter()
     {
+        if (slayerTargetMode) return;
         String query = targetEditorText();
         List<MonsterDefinition> matches = monsterDatabase.search(query, Integer.MAX_VALUE);
         matches.removeIf(this::isImpling);
@@ -1185,6 +1200,7 @@ content.add(Box.createVerticalStrut(5));
 
     private MonsterDefinition resolveTypedTarget()
     {
+        if (slayerTargetMode) return null;
         String query = targetEditorText().trim();
         if (query.isEmpty()) return null;
         for (MonsterDefinition m : monsterDatabase.search(query, Integer.MAX_VALUE))
@@ -1309,24 +1325,37 @@ content.add(Box.createVerticalStrut(5));
 
     public void updateSlayerTask()
     {
-        String task = slayerService.getTask();
-        boolean changed = task == null ? lastSlayerTask != null : !task.equals(lastSlayerTask);
+        String task = currentSlayerTask();
+        String location = currentSlayerLocation();
+        boolean changed = !java.util.Objects.equals(task, lastSlayerTask)
+            || !java.util.Objects.equals(location, lastSlayerLocation);
         lastSlayerTask = task;
-        if (!slayerTargetMode || task == null || task.trim().isEmpty())
+        lastSlayerLocation = location;
+        if (!slayerTargetMode)
         {
             return;
         }
 
-        List<MonsterDefinition> variants = monsterDatabase.findTaskVariants(task);
+        List<MonsterDefinition> variants = monsterDatabase.findTaskVariants(task, location);
         variants.removeIf(m -> !SlayerTargetRequirements.allowed(m, account.real(Skill.SLAYER)));
+        Set<String> unverified = new HashSet<>();
+        for (MonsterDefinition variant : monsterDatabase.findTaskVariants(task))
+            if (SlayerTargetRequirements.allowed(variant, account.real(Skill.SLAYER))
+                && monsterDatabase.taskLocationEligibility(task, variant, location) == SlayerAssignmentLocation.Eligibility.UNKNOWN)
+                unverified.add(MonsterDatabase.combatKey(variant));
         SwingUtilities.invokeLater(() ->
         {
-            MonsterDefinition previous = (MonsterDefinition) monsterBox.getSelectedItem();
+            if (!slayerTargetMode || !java.util.Objects.equals(task, lastSlayerTask)
+                || !java.util.Objects.equals(location, lastSlayerLocation)) return;
+            MonsterDefinition previous = monsterBox.getSelectedItem() instanceof MonsterDefinition
+                ? (MonsterDefinition) monsterBox.getSelectedItem() : null;
             DefaultComboBoxModel<MonsterDefinition> model = new DefaultComboBoxModel<>();
             for (MonsterDefinition variant : variants)
             {
                 model.addElement(variant);
             }
+            populatingTargets = true;
+            unverifiedTaskTargets = Collections.unmodifiableSet(unverified);
             monsterBox.setModel(model);
 
             // Preserve the user's chosen variant while the task is unchanged.
@@ -1354,26 +1383,67 @@ content.add(Box.createVerticalStrut(5));
                 if (selected != null)
                 {
                     targetExplicitlySelected = true;
-                    styleExplicitlySelected = false;
-                    clearStyleSelection();
+                    if (changed || !MonsterDatabase.sameCatalogueEntry(previous, selected))
+                    {
+                        styleExplicitlySelected = false;
+                        clearStyleSelection();
+                        markLoadoutStale("");
+                    }
                     updateProgressiveVisibility();
                 }
             }
             else
             {
                 monsterInfo.setText("Slayer: " + task + " • no monster variants found");
+                targetExplicitlySelected = false;
+                styleExplicitlySelected = false;
+                clearStyleSelection();
+                markLoadoutStale("");
             }
+            populatingTargets = false;
+            if (changed) markLoadoutStale("Slayer assignment changed — regenerate the loadout.");
             updateSlayerUiState();
+            updateSlayerAssignmentNote();
+            updateProgressiveVisibility();
         });
+    }
+
+    private String currentSlayerLocation()
+    {
+        // Krystilia assignments count only inside the Wilderness, even when
+        // SlayerPluginService has no explicit Konar-style location string.
+        return SlayerAssignmentLocation.assignment(slayerService.getTaskLocation(),
+            client.getVarbitValue(net.runelite.api.gameval.VarbitID.SLAYER_MASTER),
+            client.getVarpValue(net.runelite.api.gameval.VarPlayerID.SLAYER_AREA) > 0, currentSlayerTask());
+    }
+
+    private String currentSlayerTask()
+    {
+        return slayerService.getRemainingAmount() > 0 ? slayerService.getTask() : null;
+    }
+
+    private void updateSlayerAssignmentNote()
+    {
+        slayerAssignmentNote.setVisible(slayerTargetMode);
+        if (!slayerTargetMode) return;
+        String text = SlayerAssignmentLocation.note(lastSlayerTask, lastSlayerLocation,
+            unverifiedTaskTargets.size(), SlayerTaskCatalogue.knownTask(lastSlayerTask));
+        if (monsterBox.getItemCount() == 0 && lastSlayerTask != null)
+            text += lastSlayerLocation == null || lastSlayerLocation.isEmpty()
+                ? " No matching targets available in the bundled catalogue."
+                : " No confirmed targets available for this assigned location.";
+        slayerAssignmentNote.setText(text);
+        slayerAssignmentNote.setForeground(unverifiedTaskTargets.isEmpty() ? OSRS_CREAM : OSRS_GOLD);
+        content.revalidate();
     }
 
     public void refreshSlayerTaskIfChanged()
     {
-        String task = slayerService.getTask();
-        if (task == null ? lastSlayerTask != null : !task.equals(lastSlayerTask))
+        String task = currentSlayerTask();
+        if (!java.util.Objects.equals(task, lastSlayerTask)
+            || !java.util.Objects.equals(currentSlayerLocation(), lastSlayerLocation))
         {
             updateSlayerTask();
-            if (slayerTargetMode) SwingUtilities.invokeLater(() -> markLoadoutStale("Slayer task changed — generate the loadout again."));
         }
     }
 
@@ -2262,12 +2332,13 @@ content.add(Box.createVerticalStrut(5));
         bankFilter.toggle();
     }
 
-    private static class MonsterRenderer extends DefaultListCellRenderer
+    private class MonsterRenderer extends DefaultListCellRenderer
     {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus)
         {
             JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            label.setToolTipText(value == null ? null : value.toString());
             label.setFont(FontManager.getRunescapeFont());
             label.setBorder(new EmptyBorder(4, 5, 4, 5));
             if (isSelected)

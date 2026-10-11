@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.9.6 — Slayer Task Alternatives
+
+- Expands current Slayer assignments into selectable combat variants, monsters and boss alternatives.
+- Filters Konar choices by the assigned area and Krystilia choices by confirmed Wilderness spawns.
+- Uses explicit Konar task/species/area rules, supported superiors and 470 completed profile/location review decisions.
+- Provides confirmed targets for all 159 researched task/area combinations in the current catalogue.
+- Hides unverified variants and waits for unresolved assignment locations instead of offering unrestricted choices.
+- Refreshes target choices when tasks or assigned locations change; preserves named Konar boss assignments without an area roll.
+- Keeps manual target search available when Slayer task mode is disabled.
+- Preserves location evidence for merged combat profiles and disables snapshot-specific conclusions after combat-data changes.
+- Adds Slayer regression checks, coverage audits and maintained data-import tools.
+- Rewrites the README and consolidates local testing instructions; removes obsolete checklists and ignores generated caches.
+
 ## 0.9.5 — Item Exclusions
 
 - Automatically expands Loadout stats to fit wrapped spell names and all stat lines.

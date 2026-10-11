@@ -1,0 +1,496 @@
+{
+  "sources": [
+    "https://oldschool.runescape.wiki/w/Slayer_task/Greater_demons",
+    "https://oldschool.runescape.wiki/w/Konar_quo_Maten",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Blue_dragons",
+    "https://oldschool.runescape.wiki/w/Greater_Nechryael",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Black_demons",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Hellhounds",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Abyssal_demons",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Hydras",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Gargoyles",
+    "https://oldschool.runescape.wiki/w/Zygomite",
+    "https://oldschool.runescape.wiki/w/Ancient_Zygomite",
+    "https://oldschool.runescape.wiki/w/Poison_Waste_Dungeon",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Cave_kraken",
+    "https://oldschool.runescape.wiki/w/Wyrm",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Lesser_Nagua",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Venators",
+    "https://oldschool.runescape.wiki/w/Wilderness_Slayer_Cave",
+    "https://oldschool.runescape.wiki/w/Superior_slayer_monster",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Bears",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Spiders",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Skeletons",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Scorpions",
+    "https://oldschool.runescape.wiki/w/Vyrewatch_Sentinel",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Lizardmen",
+    "https://oldschool.runescape.wiki/w/Slayer_task/Black_dragons",
+    "https://oldschool.runescape.wiki/w/Wyrmling",
+    "https://oldschool.runescape.wiki/w/Charred_Dungeon",
+    "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+    "https://oldschool.runescape.wiki/w/Baby_red_dragon_(Construction)",
+    "https://oldschool.runescape.wiki/w/Dagannoth_(Construction)",
+    "https://oldschool.runescape.wiki/w/Hellhound_(Construction)",
+    "https://oldschool.runescape.wiki/w/Kalphite_soldier_(Construction)",
+    "https://oldschool.runescape.wiki/w/Rune_dragon_(Construction)",
+    "https://oldschool.runescape.wiki/w/Steel_dragon_(Construction)",
+    "https://oldschool.runescape.wiki/w/Troll_(Construction)",
+    "https://oldschool.runescape.wiki/w/Dagannoth_Kings",
+    "https://oldschool.runescape.wiki/w/Slayer_task",
+    "https://oldschool.runescape.wiki/w/Revenant_Caves",
+    "https://oldschool.runescape.wiki/w/Dagannoth_(Waterbirth_Island)",
+    "https://oldschool.runescape.wiki/w/Zombie_(Wilderness)"
+  ],
+  "reviewedAt": "2026-10-11",
+  "names": {
+    "K'ril Tsutsaroth": [
+      "God Wars Dungeon"
+    ],
+    "Tstanon Karlak": [
+      "God Wars Dungeon"
+    ],
+    "Skotizo": [
+      "Catacombs of Kourend"
+    ],
+    "Tormented Demon": [
+      "Ancient Guthixian Temple"
+    ],
+    "Vorkath": [
+      "Ungael"
+    ],
+    "Demonic gorilla": [
+      "Crash Site Cavern"
+    ],
+    "Balfrug Kreeyath": [
+      "God Wars Dungeon"
+    ],
+    "Cerberus": [
+      "Taverley Dungeon"
+    ],
+    "Abyssal Sire": [
+      "Abyss"
+    ],
+    "Alchemical Hydra": [
+      "Karuulm Slayer Dungeon"
+    ],
+    "Dawn": [
+      "Slayer Tower"
+    ],
+    "Dusk": [
+      "Slayer Tower"
+    ],
+    "Wyrm": [
+      "Karuulm Slayer Dungeon"
+    ],
+    "Shadow Wyrm": [
+      "Karuulm Slayer Dungeon"
+    ],
+    "Sulphur Nagua": [
+      "Neypotzli"
+    ],
+    "Frost Nagua": [
+      "Ruins of Tapoyauik"
+    ],
+    "Earthen Nagua": [
+      "Crypt of Tonali"
+    ],
+    "Amoxliatl": [
+      "Ruins of Tapoyauik"
+    ],
+    "Venator": [
+      "Apsul Hunting Ground",
+      "Virer Hunting Ground"
+    ],
+    "Blood-starved venator": [
+      "Apsul Hunting Ground",
+      "Virer Hunting Ground"
+    ],
+    "Callisto": [
+      "Wilderness"
+    ],
+    "Artio": [
+      "Wilderness"
+    ],
+    "Venenatis": [
+      "Wilderness"
+    ],
+    "Spindel": [
+      "Wilderness"
+    ],
+    "Scorpia": [
+      "Wilderness"
+    ],
+    "Vet'ion": [
+      "Wilderness"
+    ],
+    "Calvar'ion": [
+      "Wilderness"
+    ],
+    "Vyrewatch Sentinel": [
+      "Darkmeyer"
+    ],
+    "Abhorrent spectre": [
+      "Slayer Tower",
+      "Stronghold Slayer Cave"
+    ],
+    "Repugnant spectre": [
+      "Catacombs of Kourend"
+    ],
+    "King kurask": [
+      "Fremennik Slayer Dungeon",
+      "Iorwerth Dungeon"
+    ],
+    "Monstrous basilisk": [
+      "Fremennik Slayer Dungeon",
+      "Jormungand's Prison"
+    ],
+    "Basilisk Sentinel": [
+      "Jormungand's Prison"
+    ],
+    "Guardian Drake": [
+      "Karuulm Slayer Dungeon"
+    ],
+    "Colossal Hydra": [
+      "Karuulm Slayer Dungeon"
+    ],
+    "Choke devil": [
+      "Smoke Dungeon",
+      "Catacombs of Kourend",
+      "Wilderness"
+    ],
+    "Marble gargoyle": [
+      "Slayer Tower"
+    ],
+    "Nechryarch": [
+      "Slayer Tower",
+      "Catacombs of Kourend",
+      "Iorwerth Dungeon",
+      "Wilderness"
+    ],
+    "Vitreous Jelly": [
+      "Fremennik Slayer Dungeon",
+      "Wilderness"
+    ],
+    "Vitreous Warped Jelly": [
+      "Catacombs of Kourend"
+    ],
+    "Vitreous Chilled Jelly": [
+      "Ruins of Tapoyauik"
+    ],
+    "Spiked Turoth": [
+      "Fremennik Slayer Dungeon"
+    ],
+    "Nuclear smoke devil": [
+      "Smoke Devil Dungeon"
+    ],
+    "Thermonuclear smoke devil": [
+      "Smoke Devil Dungeon"
+    ],
+    "Kalphite Queen": [
+      "Kalphite Lair"
+    ],
+    "Chilled Jelly": [
+      "Ruins of Tapoyauik"
+    ],
+    "Lava Strykewyrm": [
+      "Charred Dungeon",
+      "Wyrmscraig Cavern"
+    ],
+    "Magma strykewyrm": [
+      "Charred Dungeon"
+    ],
+    "Arrg (Nightmare Zone)": [],
+    "Baby red dragon (Construction)": [],
+    "Black Knight Titan (Nightmare Zone)": [],
+    "Black demon (Nightmare Zone)": [],
+    "Corrupt Lizardman (Nightmare Zone)": [],
+    "Dad (Nightmare Zone)": [],
+    "Dagannoth (Construction)": [],
+    "Dagannoth mother (Nightmare Zone)": [],
+    "Elvarg (Nightmare Zone)": [],
+    "Hellhound (Construction)": [],
+    "Ice Troll King (Nightmare Zone)": [],
+    "Kalphite soldier (Construction)": [],
+    "Rune dragon (Construction)": [],
+    "Skeleton Hellhound (Nightmare Zone)": [],
+    "Steel dragon (Construction)": [],
+    "Troll (Construction)": [],
+    "Dagannoth Prime": [
+      "Waterbirth Island"
+    ],
+    "Dagannoth Rex": [
+      "Waterbirth Island"
+    ],
+    "Dagannoth Supreme": [
+      "Waterbirth Island"
+    ],
+    "Night beast": [
+      "Mourner Tunnels",
+      "Iorwerth Dungeon"
+    ],
+    "Revenant maledictus": [
+      "Wilderness"
+    ],
+    "Dagannoth (Waterbirth Island)": [
+      "Waterbirth Island"
+    ],
+    "Zombie (Wilderness)": [
+      "Wilderness"
+    ]
+  },
+  "ids": {
+    "2025": [
+      "Brimhaven Dungeon",
+      "Chasm of Fire",
+      "Isle of Souls",
+      "Ogre Enclave",
+      "Entrana Dungeon",
+      "Wilderness",
+      "Karuulm Slayer Dungeon"
+    ],
+    "7245": [
+      "Catacombs of Kourend"
+    ],
+    "7244": [
+      "Catacombs of Kourend"
+    ],
+    "7246": [
+      "Catacombs of Kourend"
+    ],
+    "7871": [
+      "Wilderness"
+    ],
+    "7273": [
+      "Catacombs of Kourend"
+    ],
+    "13795": [
+      "Ruins of Tapoyauik"
+    ],
+    "7278": [
+      "Catacombs of Kourend",
+      "Iorwerth Dungeon"
+    ],
+    "11240": [
+      "Wilderness"
+    ],
+    "537": [
+      "Zanaris"
+    ],
+    "1024": [
+      "Zanaris"
+    ],
+    "7797": [
+      "Fossil Island"
+    ],
+    "12491": [
+      "Poison Waste Dungeon"
+    ],
+    "12490": [
+      "Poison Waste Dungeon"
+    ],
+    "492": [
+      "Kraken Cove"
+    ],
+    "494": [
+      "Kraken Cove"
+    ],
+    "11241": [
+      "Wilderness"
+    ],
+    "11242": [
+      "Wilderness"
+    ],
+    "11243": [
+      "Wilderness"
+    ],
+    "11244": [
+      "Wilderness"
+    ],
+    "11245": [
+      "Wilderness"
+    ],
+    "13031": [
+      "Neypotzli"
+    ],
+    "13032": [
+      "Neypotzli"
+    ],
+    "8565": [
+      "Molch"
+    ],
+    "6766": [
+      "Lizardman Canyon",
+      "Lizardman Settlement"
+    ],
+    "6918": [
+      "Lizardman Canyon",
+      "Lizardman Settlement",
+      "Kebos Swamp",
+      "Molch"
+    ]
+  },
+  "scope": [
+    "Konar",
+    "Krystilia"
+  ],
+  "auditReviews": [
+    {
+      "name": "Arrg (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Baby red dragon (Construction)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Baby_red_dragon_(Construction)",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Black Knight Titan (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Black demon (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Corrupt Lizardman (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Dad (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Dagannoth (Construction)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Dagannoth_(Construction)",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Dagannoth mother (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Elvarg (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Hellhound (Construction)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Hellhound_(Construction)",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Ice Troll King (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Kalphite soldier (Construction)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Kalphite_soldier_(Construction)",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Rune dragon (Construction)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Rune_dragon_(Construction)",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Skeleton Hellhound (Nightmare Zone)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Nightmare_Zone",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Steel dragon (Construction)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Steel_dragon_(Construction)",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Troll (Construction)",
+      "locations": [],
+      "source": "https://oldschool.runescape.wiki/w/Troll_(Construction)",
+      "note": "Named instanced minigame/player-owned-house variant, outside all researched Konar/Krystilia assignment areas."
+    },
+    {
+      "name": "Dagannoth Prime",
+      "locations": [
+        "Waterbirth Island"
+      ],
+      "source": "https://oldschool.runescape.wiki/w/Dagannoth_Kings",
+      "note": "Wiki boss locations and task-alternative table."
+    },
+    {
+      "name": "Dagannoth Rex",
+      "locations": [
+        "Waterbirth Island"
+      ],
+      "source": "https://oldschool.runescape.wiki/w/Dagannoth_Kings",
+      "note": "Wiki boss locations and task-alternative table."
+    },
+    {
+      "name": "Dagannoth Supreme",
+      "locations": [
+        "Waterbirth Island"
+      ],
+      "source": "https://oldschool.runescape.wiki/w/Dagannoth_Kings",
+      "note": "Wiki boss locations and task-alternative table."
+    },
+    {
+      "name": "Night beast",
+      "locations": [
+        "Mourner Tunnels",
+        "Iorwerth Dungeon"
+      ],
+      "source": "https://oldschool.runescape.wiki/w/Slayer_task",
+      "note": "Superior of Dark beast; inherit the two documented parent locations."
+    },
+    {
+      "name": "Revenant maledictus",
+      "locations": [
+        "Wilderness"
+      ],
+      "source": "https://oldschool.runescape.wiki/w/Revenant_Caves",
+      "note": "Documented dynamic demiboss in the Wilderness Revenant Caves."
+    },
+    {
+      "name": "Dagannoth (Waterbirth Island)",
+      "locations": [
+        "Waterbirth Island"
+      ],
+      "source": "https://oldschool.runescape.wiki/w/Dagannoth_(Waterbirth_Island)",
+      "note": "Exact NPC IDs 2259/3185 plus reviewed Waterbirth spawn footprints; wiki location-disambiguated title."
+    },
+    {
+      "name": "Zombie (Wilderness)",
+      "locations": [
+        "Wilderness"
+      ],
+      "source": "https://oldschool.runescape.wiki/w/Zombie_(Wilderness)",
+      "note": "Exact NPC IDs 45/59 and reviewed Wilderness spawn footprints; wiki location-disambiguated title."
+    },
+    {
+      "name": "Baby black dragon",
+      "note": "Removed broad name-level location assumption: level 83 has distinct Normal/Myths combat profiles. Use exact spawn/area-labelled version evidence; leave other profile/area combinations unresolved.",
+      "source": "User supplied Konar table and bundled monsters.json"
+    }
+  ]
+}

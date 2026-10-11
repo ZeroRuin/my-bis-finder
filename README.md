@@ -1,151 +1,167 @@
 # My BiS Finder
 
-My BiS Finder analyses your banked, equipped and inventory gear to find the fastest
-expected time-to-kill (TTK) loadout for your chosen target in Old School RuneScape.
+My BiS Finder looks at your banked, equipped and inventory gear to recommend
+loadouts for your chosen target. It compares Melee, Ranged
+and Magic using your combat levels, available equipment and supported target
+mechanics, then highlights the lowest estimated time to kill.
 
-Using your available equipment, combat levels, unlocked content and target-specific
-combat mechanics, the plugin calculates and recommends effective Melee, Ranged and
-Magic setups to help you defeat enemies as quickly as possible.
+Calculations run locally in RuneLite using bundled OSRS Wiki-derived data.
+You do not need to enter your bank into a separate calculator.
 
 ## Features
 
-- **Fastest Time-to-Kill Loadouts** — Compares owned Melee, Ranged and Magic
-  setups to recommend the lowest estimated kill time for the selected target.
-- **Owned Gear Detection** — Uses bank, inventory and equipped items to build
-  loadouts from gear you already own.
-- **Owned Ammunition and Runes** — Checks owned ammunition and weapon compatibility
-  when comparing Ranged setups. For Magic, checks required runes and rune-providing
-  equipment to recommend a spell and loadout you can use against the selected target.
-- **Offensive Prayer Recommendations** — Checks your Prayer level and prayer unlocks
-  to recommend the strongest available offensive prayer for each combat style and
-  include its bonuses in the combat calculations.
-- **Target-Specific Calculations** — Accounts for enemy defence, weaknesses,
-  immunities, damage mechanics and equipment requirements.
-- **Advanced Combat Mechanics** — Models weapon passives, enchanted ammunition,
-  elemental weaknesses and multi-hit attacks.
-- **Slayer Task Integration** — Select a target using your current Slayer task
-  and apply relevant Slayer equipment bonuses.
-- **Account-Aware Recommendations** — Considers combat levels, quest requirements
-  and unlocked prayers.
-- **Attack Style Comparison** — Calculates Melee, Ranged and Magic loadouts and
-  lets you switch between cached results without recalculating.
-- **Group Ironman Storage** — Optionally includes shared gear and supplies in
-  calculations. Both storage views show references to items in the other store.
-- **Saved Advanced Options** — Remembers checkbox preferences across restarts.
-- **Item Exclusions** — Right-click recommended gear or supplies to exclude them,
-  or edit the exclusion list in plugin settings. Keep existing results visible
-  while excluding multiple items, then regenerate once to apply the changes.
-- **Bank Loadout Integration** — Provides a dedicated bank view for finding
-  recommended equipment and supplies.
-- **Loadout Statistics** — Shows estimated TTK, sustained DPS and combat statistics.
-  The stats box expands to fit longer spell names and wrapped text.
-- **Offline Calculations** — Uses bundled OSRS Wiki-derived equipment and monster
-  data, with no live Wiki requests during play.
+- Owned equipment, compatible ammunition and available runes.
+- Slash, Stab, Crush, Ranged and Magic comparisons, with a **BEST** indicator
+  and cached results for switching styles.
+- Supported spells, offensive prayers, food, potions and Slayer supplies.
+- Target defence, elemental weaknesses, immunities, weapon passives, enchanted
+  bolt effects and multi-hit attacks.
+- Current Slayer task alternatives, including differently named monsters and
+  bosses, with location filtering for Konar and Krystilia.
+- A bank view for finding recommended items and optional GIM shared storage.
+- Persistent item exclusions and a statistics panel that expands for wrapped text.
 
-## Using the plugin
+## Getting started
 
-1. **Scan Your Bank** — Open your bank once to capture owned items. Inventory
-   and equipped items are also considered.
-2. **Select Your Target** — Choose a monster, or enable **Load Slayer Task** to
-   select your current Slayer target.
-3. **Generate Your Loadout** — Click **Generate Loadout** to calculate all
-   supported attack styles.
-4. **Choose Your Attack Style** — Select Slash, Stab, Crush, Ranged or Magic.
-   The **BEST** indicator highlights the style with the lowest estimated TTK.
-5. **Review Your Loadout** — Check the recommended equipment, estimated TTK,
-   DPS and other combat statistics, including the recommended ammunition or Magic
-   spell and offensive prayer.
-6. **Gear Up at the Bank** — Open your bank and click the My BiS Finder button
-   in the upper-right corner to view your recommended gear and supplies.
+Install **My BiS Finder** through RuneLite's Plugin Hub and open its sidebar.
+This repository may include changes awaiting Plugin Hub review.
 
-![My BiS Finder button in the Bank of Gielinor interface](docs/bank-ui-button.png)
+1. **Open your bank** to capture owned items. Equipped gear and inventory items
+   are also considered.
+2. **Choose a target**, or enable **Load Slayer Task** and select an alternative
+   from your detected assignment.
+3. Click **Generate Loadout** to calculate the supported combat styles.
+4. Select **Slash**, **Stab**, **Crush**, **Ranged** or **Magic** to see its gear,
+   estimated time to kill, sustained DPS, ammunition or spell, and prayer.
+5. Open your bank and click the **My BiS Finder button** to find recommended
+   equipment and supplies. Click it again to restore the normal bank layout.
 
-*The My BiS Finder button appears in the upper-right corner of the bank interface.*
+![My BiS Finder button in the bank interface](docs/bank-ui-button.png)
 
-## Advanced options
+The button appears in the upper-right corner of the bank interface. Gear icons
+and validation appear once a target, bank scan and generated style are available.
+Regenerate after changes to the target, assignment, ownership or calculation
+options. Switching generated styles reuses the current results.
 
-Expand **Advanced** below the selected target to adjust optional settings. It
-starts collapsed and appears only when an option is available. Options may
-increase calculation time. Checked options are green.
+## Slayer tasks and locations
 
-- **Include Ruby bolts (e)** appears when these bolts are owned. Uncheck it to
-  exclude them from calculations.
-- **Include group storage** appears on GIM accounts and is off by default.
+Enable **Load Slayer Task** to use your detected assignment. The dropdown lists
+matching combat profiles and supported alternatives from the bundled catalogue.
+For example, an unrestricted Greater demons task can offer Greater demons,
+K'ril Tsutsaroth, Tstanon Karlak, Skotizo and Tormented demons.
 
-Both preferences are saved across RuneLite restarts. Changing an option requires
-regenerating the loadout. Storage updates do not automatically rerun calculations.
+- **Konar:** targets are filtered to the assigned area and its permitted species.
+- **Krystilia:** targets are filtered to confirmed Wilderness variants.
+- **Other masters:** task-family matching applies without an assigned-area filter.
 
-## Group Ironman accounts
+The note below the picker shows the detected assignment location. If RuneLite
+has not detected the task, check it with your Slayer gem, helmet or master.
+Supported Slayer level requirements apply; quest access and special killing
+requirements still matter.
 
-1. Open your personal bank to capture its contents.
-2. Select a target and enable **Include group storage** under **Advanced**.
-3. Open group storage to capture a shared snapshot. The sidebar shows its last
-   scan time. Deposits and withdrawals update it while storage is open.
-4. Generate a loadout and choose an attack style.
-5. Click My BiS Finder beside the close button in either storage interface.
+Only confirmed targets appear for restricted assignments. Unknown variants stay
+hidden with a note, and an undetected area keeps the picker empty. Named Konar
+boss assignments without an area roll remain available. Task changes refresh the
+choices and require regeneration. Disable task mode to return to manual search.
 
-The open store shows selected gear and recommended supplies with their normal
-withdrawal actions. Items held in the other store appear under **Stored in group
-storage** or **Stored in personal bank**, with a reminder to open that store.
-Reference icons cannot withdraw items. Recommended supplies can span both stores.
-Toggle the button off to restore the normal storage layout.
-
-Shared gear, ammunition, runes, food and potions are considered when enabled.
-You can reuse the snapshot for regeneration without reopening storage. Changes
-made by teammates may not appear until group storage is reopened. Scan both stores
-again after logging in: snapshots are session-only, even though preferences persist.
-
-## Privacy
-
-All account, bank and loadout processing occurs locally in RuneLite. My BiS Finder
-does not transmit account or bank data and does not make external network requests.
-
-## Development
-
-The project targets Java 11 and RuneLite `latest.release`. Run the plugin through
-the Gradle `run` task and execute `mechanicsSelfTest` for the mechanics regression
-suite before publishing a change. Run `gimStorageSelfTest` for shared-snapshot checks.
-
-## AI development and resource-use disclosure
-
-My BiS Finder was developed with substantial assistance from AI coding tools.
-The plugin does not make live requests to the OSRS Wiki or other external data
-services while RuneLite is running. Wiki-derived equipment, monster, spell and
-ammunition data is bundled with the plugin, and all loadout calculations run
-locally.
-
-Releases are reviewed, tested and submitted by the maintainer. Mechanics changes
-are covered by the project's regression suite and remain subject to RuneLite's
-Plugin Hub review process.
-
-## Licence and data
-
-Plugin source is provided under the BSD 2-Clause License. Details for the bundled
-offline data pack are recorded in `WIKI-DATA-NOTES.txt` and its manifest.
-
-## Version history
-
-See the [full changelog](https://github.com/ZeroRuin/my-bis-finder/blob/main/CHANGELOG.md).
-
+The current catalogue has confirmed targets for all **159 researched task/area
+combinations**. The completed review resolves all **470 previously outstanding
+location decisions**. These counts do not guarantee every possible game variant
+is represented. Combat-data changes can require new verification. See the
+[coverage report](SLAYER-LOCATION-COVERAGE.md) and
+[Slayer data notes](SLAYER-DATA-NOTES.md).
 
 ## Item exclusions
 
-Right-click a generated sidebar equipment icon or an item in the recommended
-sections of the BiS bank view and choose **Exclude from My BiS Finder**. This
-also works on the item references shown between personal and group storage.
-Items in **Other items** and the ordinary bank view retain their normal menus.
+Right-click a generated sidebar gear icon or a recommended item in the BiS bank
+view and choose **Exclude from My BiS Finder**. Exclusions cover equipment,
+ammunition, runes, food, potions and other supplies, including references to items
+held in the other store. Ordinary bank items and **Other items** keep their usual menus.
 
-Exclusions cover equipment, ammunition, runes, food, potions and other supplies.
-The existing results stay visible while you exclude several items. A warning
-asks you to regenerate; the next generation applies the complete exclusion list.
-Switching combat styles before regeneration continues showing the existing results.
+Exclude several items before recalculating if needed. Existing results remain
+visible, including when switching styles, and a warning asks you to regenerate.
+The next generation applies the complete exclusion list.
 
-Manage the comma-separated **Excluded items** text box in the plugin settings.
-Delete a name to restore that item. Select all text and delete it to clear all
-exclusions. Names match exactly, ignoring case and surrounding spaces; potion
-doses and variants canonicalised by RuneLite are treated together. Exclusions
-use the current RuneLite configuration profile, like other plugin settings.
+Edit the comma-separated **Excluded items** field in RuneLite's plugin settings
+to remove an exclusion, or clear the field to clear all exclusions. Regenerate
+to restore eligibility. Names match exactly, ignoring case and surrounding
+spaces. Potion doses and variants canonicalised by RuneLite are treated together.
+Exclusions persist in the current RuneLite configuration profile.
 
-Excluded runes prevent spells that require them, unless eligible equipment
-provides those runes. Food and potions fall back to other supported owned items.
-An excluded supply is omitted if no eligible alternative is available.
+Excluded supplies use supported owned alternatives where available. Excluded
+runes block spells requiring them unless eligible equipment supplies those runes.
+Powered weapons' stored charges are separate from loose rune ownership.
+
+## Advanced options
+
+Expand **Advanced** beneath the target to see available options. It starts
+collapsed, and checked options appear green.
+
+- **Include Ruby bolts (e)** appears when suitable bolts are owned in the checked
+  ownership sources. Disable it to omit them from calculations.
+- **Include group storage** appears on GIM accounts and is off by default.
+
+Preferences persist across restarts. Changing an option requires regeneration;
+storage updates do not automatically recalculate loadouts.
+
+## Group Ironman shared storage
+
+Open your personal bank, enable **Include group storage**, then open group
+storage to capture its contents. The sidebar shows the shared snapshot's scan
+time. Generate a loadout and select a combat style as usual.
+
+The My BiS Finder button is available in both storage interfaces. Recommended
+items in the open store retain normal withdrawal actions. Items held elsewhere
+appear under **Stored in group storage** or **Stored in personal bank**. These
+reference icons show where to find an item; open that store to withdraw it.
+Recommended supplies can span both stores.
+
+Shared gear, ammunition, runes, food and potions are included when enabled.
+Deposits and withdrawals update the snapshot while storage is open. Changes
+made by teammates may require reopening it. Scan both stores after logging in:
+snapshots are session-only, while preferences and exclusions persist.
+
+## Understanding the results
+
+Time to kill and DPS are estimates for the supported combat model. The optimizer
+compares sustained attacks; it does not plan a full encounter strategy or
+special-attack rotation. Movement, downtime and mechanics outside the model can
+affect actual results.
+
+Recommendations depend on captured ownership data and supported account unlocks.
+Reopen storage and regenerate when something changes. New items, monsters or
+mechanics may need a data or code update.
+
+## Privacy and data updates
+
+Account, bank and loadout processing stays on your computer. The plugin does
+not transmit account or bank data or make external network requests.
+
+Combat data ships with the plugin. Repository automation checks published
+upstream data and proposes reviewed updates. Installed plugins receive changes
+through releases, rather than live Wiki downloads. See the
+[update documentation](scripts/WIKI-UPDATES.md).
+
+## Development and testing
+
+The project compiles for Java 11 and uses RuneLite `latest.release`. Open the
+source folder in IntelliJ, reload Gradle and run the Gradle **run** task for the
+development client. Disable the installed Plugin Hub copy while testing it.
+
+The [testing guide](docs/TESTING.md) covers automated verification and in-game
+checks. Data provenance and regeneration instructions are recorded in the
+Slayer data notes and scripts documentation. Historical combat-math work remains
+in the [Wiki DPS parity notes](WIKI_DPS_PARITY.md).
+
+## Licence and development disclosure
+
+Plugin source is provided under the [BSD 2-Clause License](LICENSE). Bundled
+data provenance is recorded in [WIKI-DATA-NOTES.txt](WIKI-DATA-NOTES.txt), the
+data manifest and the Slayer data notes. Third-party notices remain alongside
+the relevant resources.
+
+My BiS Finder was developed with substantial assistance from AI coding tools.
+The maintainer reviews and tests releases before submission to Plugin Hub;
+releases remain subject to its review process.
+
+See the [changelog](CHANGELOG.md) for version history.

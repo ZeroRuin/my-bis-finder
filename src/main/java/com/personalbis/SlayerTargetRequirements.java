@@ -13,6 +13,10 @@ public final class SlayerTargetRequirements {
     public static int requiredLevel(MonsterDefinition monster) {
         if (monster == null) return 0;
         String n = monster.getName().toLowerCase(Locale.ROOT);
+        if (n.contains("hydra")) return 95;
+        if (n.contains("cerberus")) return 91;
+        if (n.contains("abyssal sire")) return 85;
+        if (n.contains("gargoyle") || n.equals("dawn") || n.equals("dusk")) return 75;
         if (n.contains("smoke devil")) return 93;
         if (n.contains("basilisk knight")) return 60;
         if (n.contains("basilisk")) return 40;

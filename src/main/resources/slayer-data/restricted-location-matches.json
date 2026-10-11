@@ -1,0 +1,5197 @@
+{
+  "source": "https://github.com/mejrs/data_osrs/blob/6a3ca6f19d65c5609434b51cac8dee9d4af97c02/NPCList_OSRS.json",
+  "sourceCommit": "6a3ca6f19d65c5609434b51cac8dee9d4af97c02",
+  "sourceSha256": "3addfaa6a66a4e05b0a340d73a395cc794bfe444249f2cc1622a6a43c2dcb91b",
+  "sourceBlob": "1b01d6c11d298e275bd08a2823a81f2a17ba1e76",
+  "combatSourceSha256": "5419520721e4f1f6b4ee78f857f295de9203f42b10f3c9a1aabaa82f8be3a8a6",
+  "scopeSha256": "89b61e789413d29cd4b3c3dad2b21e32f2be37e66d7c90aae30223756d1de8e9",
+  "scope": [
+    "Konar",
+    "Krystilia"
+  ],
+  "positiveMatchesOnly": true,
+  "note": "Researched spawn facts within named interior footprints; incomplete. No nearest-location inference.",
+  "rows": [
+    {
+      "name": "Aberrant spectre",
+      "level": 96,
+      "location": "Slayer Tower",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aberrant spectres"
+      ],
+      "evidenceNpcIds": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "catalogueIds": [
+        2
+      ]
+    },
+    {
+      "name": "Aberrant spectre",
+      "level": 96,
+      "location": "Stronghold Slayer Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aberrant spectres"
+      ],
+      "evidenceNpcIds": [
+        6,
+        7
+      ],
+      "catalogueIds": [
+        2
+      ]
+    },
+    {
+      "name": "Abyssal demon",
+      "level": 124,
+      "location": "Abyss",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Abyssal demons"
+      ],
+      "evidenceNpcIds": [
+        415
+      ],
+      "catalogueIds": [
+        415,
+        7241,
+        11239
+      ]
+    },
+    {
+      "name": "Abyssal demon",
+      "level": 124,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Abyssal demons"
+      ],
+      "evidenceNpcIds": [
+        7241
+      ],
+      "catalogueIds": [
+        415,
+        7241,
+        11239
+      ]
+    },
+    {
+      "name": "Abyssal demon",
+      "level": 124,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Abyssal demons"
+      ],
+      "evidenceNpcIds": [
+        7241
+      ],
+      "catalogueIds": [
+        7241
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Abyssal demon",
+      "level": 124,
+      "location": "Slayer Tower",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Abyssal demons"
+      ],
+      "evidenceNpcIds": [
+        415,
+        416
+      ],
+      "catalogueIds": [
+        415,
+        7241,
+        11239
+      ]
+    },
+    {
+      "name": "Abyssal demon",
+      "level": 124,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Abyssal demons"
+      ],
+      "evidenceNpcIds": [
+        11239
+      ],
+      "catalogueIds": [
+        11239
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Adamant dragon",
+      "level": 338,
+      "location": "Lithkren Vault",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Adamant dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        8030
+      ],
+      "catalogueIds": [
+        8030
+      ]
+    },
+    {
+      "name": "Alchemical Hydra",
+      "level": 426,
+      "location": "Karuulm Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Hydras"
+      ],
+      "evidenceNpcIds": [
+        8615
+      ],
+      "catalogueIds": [
+        8615,
+        8619
+      ]
+    },
+    {
+      "name": "Ancient Wyvern",
+      "level": 210,
+      "location": "Wyvern Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fossil Island Wyverns"
+      ],
+      "evidenceNpcIds": [
+        7795
+      ],
+      "catalogueIds": [
+        7795
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 75,
+      "location": "Stronghold Slayer Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        2517
+      ],
+      "catalogueIds": [
+        2514
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 75,
+      "location": "Stronghold of Security",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        2514
+      ],
+      "catalogueIds": [
+        2514
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 82,
+      "location": "Stronghold Slayer Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        2518
+      ],
+      "catalogueIds": [
+        2515
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 82,
+      "location": "Stronghold of Security",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        2515
+      ],
+      "catalogueIds": [
+        2515
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 86,
+      "location": "Stronghold Slayer Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        2519
+      ],
+      "catalogueIds": [
+        2516
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 86,
+      "location": "Stronghold of Security",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        2516
+      ],
+      "catalogueIds": [
+        2516
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 86,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        6608
+      ],
+      "catalogueIds": [
+        2516
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 95,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        7257
+      ],
+      "catalogueIds": [
+        7257
+      ]
+    },
+    {
+      "name": "Ankou",
+      "level": 98,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Ankou"
+      ],
+      "evidenceNpcIds": [
+        7864
+      ],
+      "catalogueIds": [
+        7864
+      ]
+    },
+    {
+      "name": "Arrg",
+      "level": 113,
+      "location": "Troll Stronghold",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        642
+      ],
+      "catalogueIds": [
+        643
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 69,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3169
+      ],
+      "catalogueIds": [
+        3169
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 69,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3169
+      ],
+      "catalogueIds": [
+        3169
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 71,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3177
+      ],
+      "catalogueIds": [
+        3177
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 71,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3177
+      ],
+      "catalogueIds": [
+        3177
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 73,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3178
+      ],
+      "catalogueIds": [
+        3178
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 79,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3170,
+        3179
+      ],
+      "catalogueIds": [
+        3170,
+        3179
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 79,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3179
+      ],
+      "catalogueIds": [
+        3179
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 83,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3172
+      ],
+      "catalogueIds": [
+        3172
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 84,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3171
+      ],
+      "catalogueIds": [
+        3171
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 84,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3171
+      ],
+      "catalogueIds": [
+        3171
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 89,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3180
+      ],
+      "catalogueIds": [
+        3180
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 92,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3173
+      ],
+      "catalogueIds": [
+        3173
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 94,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3181
+      ],
+      "catalogueIds": [
+        3181
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 94,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3181
+      ],
+      "catalogueIds": [
+        3181
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 97,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3174,
+        3182
+      ],
+      "catalogueIds": [
+        3174,
+        3182
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 97,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3182
+      ],
+      "catalogueIds": [
+        3182
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 131,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3183
+      ],
+      "catalogueIds": [
+        3183
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 131,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3183
+      ],
+      "catalogueIds": [
+        3183
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 137,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3175
+      ],
+      "catalogueIds": [
+        3175
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 137,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3175
+      ],
+      "catalogueIds": [
+        3175
+      ]
+    },
+    {
+      "name": "Aviansie",
+      "level": 148,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3176
+      ],
+      "catalogueIds": [
+        3176
+      ]
+    },
+    {
+      "name": "Baby black dragon",
+      "level": 83,
+      "location": "Evil Chicken's Lair",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        1871
+      ],
+      "catalogueIds": [
+        1871
+      ]
+    },
+    {
+      "name": "Baby black dragon",
+      "level": 83,
+      "location": "Myths' Guild",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        7955
+      ],
+      "catalogueIds": [
+        7955
+      ]
+    },
+    {
+      "name": "Baby black dragon",
+      "level": 83,
+      "location": "Myths' Guild",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        7955
+      ],
+      "catalogueIds": [
+        7955
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Baby blue dragon",
+      "level": 48,
+      "location": "Isle of Souls",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        241,
+        242
+      ],
+      "catalogueIds": [
+        241,
+        242,
+        243
+      ]
+    },
+    {
+      "name": "Baby blue dragon",
+      "level": 48,
+      "location": "Myths' Guild",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        241,
+        242,
+        243
+      ],
+      "catalogueIds": [
+        241,
+        242,
+        243
+      ]
+    },
+    {
+      "name": "Baby blue dragon",
+      "level": 48,
+      "location": "Taverley Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        241,
+        242,
+        243
+      ],
+      "catalogueIds": [
+        241,
+        242,
+        243
+      ]
+    },
+    {
+      "name": "Baby red dragon",
+      "level": 48,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Red dragons"
+      ],
+      "evidenceNpcIds": [
+        244,
+        245,
+        246
+      ],
+      "catalogueIds": [
+        244,
+        245,
+        246
+      ]
+    },
+    {
+      "name": "Baby red dragon",
+      "level": 48,
+      "location": "Forthos Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Red dragons"
+      ],
+      "evidenceNpcIds": [
+        244
+      ],
+      "catalogueIds": [
+        244,
+        245,
+        246
+      ]
+    },
+    {
+      "name": "Baby red dragon",
+      "level": 48,
+      "location": "Myths' Guild",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Red dragons"
+      ],
+      "evidenceNpcIds": [
+        244,
+        246
+      ],
+      "catalogueIds": [
+        244,
+        245,
+        246
+      ]
+    },
+    {
+      "name": "Bandit",
+      "level": 22,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bandits"
+      ],
+      "evidenceNpcIds": [
+        1026
+      ],
+      "catalogueIds": [
+        1026
+      ]
+    },
+    {
+      "name": "Bandit",
+      "level": 130,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bandits"
+      ],
+      "evidenceNpcIds": [
+        6605
+      ],
+      "catalogueIds": [
+        6605
+      ]
+    },
+    {
+      "name": "Basilisk",
+      "level": 61,
+      "location": "Fremennik Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Basilisks"
+      ],
+      "evidenceNpcIds": [
+        417
+      ],
+      "catalogueIds": [
+        417
+      ]
+    },
+    {
+      "name": "Basilisk",
+      "level": 61,
+      "location": "Jormungand's Prison",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Basilisks"
+      ],
+      "evidenceNpcIds": [
+        417
+      ],
+      "catalogueIds": [
+        417
+      ]
+    },
+    {
+      "name": "Basilisk Knight",
+      "level": 204,
+      "location": "Jormungand's Prison",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Basilisks"
+      ],
+      "evidenceNpcIds": [
+        9293
+      ],
+      "catalogueIds": [
+        9293
+      ]
+    },
+    {
+      "name": "Berry",
+      "level": 71,
+      "location": "Troll Stronghold",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        4134
+      ],
+      "catalogueIds": [
+        4132,
+        4134
+      ]
+    },
+    {
+      "name": "Black demon",
+      "level": 172,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black demons"
+      ],
+      "evidenceNpcIds": [
+        2048,
+        2049,
+        2050
+      ],
+      "catalogueIds": [
+        240
+      ]
+    },
+    {
+      "name": "Black demon",
+      "level": 172,
+      "location": "Chasm of Fire",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black demons"
+      ],
+      "evidenceNpcIds": [
+        240,
+        5874,
+        5875,
+        5876,
+        5877
+      ],
+      "catalogueIds": [
+        240
+      ]
+    },
+    {
+      "name": "Black demon",
+      "level": 172,
+      "location": "Taverley Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black demons"
+      ],
+      "evidenceNpcIds": [
+        2048,
+        2049,
+        2050,
+        2051,
+        2052
+      ],
+      "catalogueIds": [
+        240
+      ]
+    },
+    {
+      "name": "Black demon",
+      "level": 172,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Black demons"
+      ],
+      "evidenceNpcIds": [
+        2049,
+        2050,
+        2052
+      ],
+      "catalogueIds": [
+        240
+      ]
+    },
+    {
+      "name": "Black demon",
+      "level": 178,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black demons"
+      ],
+      "evidenceNpcIds": [
+        7243
+      ],
+      "catalogueIds": [
+        7243
+      ]
+    },
+    {
+      "name": "Black demon",
+      "level": 184,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black demons"
+      ],
+      "evidenceNpcIds": [
+        7242
+      ],
+      "catalogueIds": [
+        7242
+      ]
+    },
+    {
+      "name": "Black demon",
+      "level": 188,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Black demons"
+      ],
+      "evidenceNpcIds": [
+        7876
+      ],
+      "catalogueIds": [
+        7874
+      ]
+    },
+    {
+      "name": "Black dragon",
+      "level": 227,
+      "location": "Evil Chicken's Lair",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        252,
+        254,
+        255,
+        256
+      ],
+      "catalogueIds": [
+        252
+      ]
+    },
+    {
+      "name": "Black dragon",
+      "level": 227,
+      "location": "Myths' Guild",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        252,
+        256
+      ],
+      "catalogueIds": [
+        252
+      ]
+    },
+    {
+      "name": "Black dragon",
+      "level": 227,
+      "location": "Taverley Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        252,
+        253
+      ],
+      "catalogueIds": [
+        252
+      ]
+    },
+    {
+      "name": "Black dragon",
+      "level": 227,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        255,
+        256
+      ],
+      "catalogueIds": [
+        252
+      ]
+    },
+    {
+      "name": "Black dragon",
+      "level": 247,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        7861
+      ],
+      "catalogueIds": [
+        7861
+      ]
+    },
+    {
+      "name": "Black Heather",
+      "level": 34,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bandits"
+      ],
+      "evidenceNpcIds": [
+        301
+      ],
+      "catalogueIds": [
+        301
+      ]
+    },
+    {
+      "name": "Black Knight",
+      "level": 33,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Black knights"
+      ],
+      "evidenceNpcIds": [
+        517
+      ],
+      "catalogueIds": [
+        516,
+        517,
+        11952,
+        11953
+      ]
+    },
+    {
+      "name": "Bloodveld",
+      "level": 76,
+      "location": "Meiyerditch Laboratories",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        484
+      ],
+      "catalogueIds": [
+        484
+      ]
+    },
+    {
+      "name": "Bloodveld",
+      "level": 76,
+      "location": "Slayer Tower",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        484,
+        485,
+        486,
+        487
+      ],
+      "catalogueIds": [
+        484
+      ]
+    },
+    {
+      "name": "Bloodveld",
+      "level": 76,
+      "location": "Stronghold Slayer Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        486,
+        487
+      ],
+      "catalogueIds": [
+        484
+      ]
+    },
+    {
+      "name": "Bloodveld",
+      "level": 81,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        3138
+      ],
+      "catalogueIds": [
+        3138
+      ]
+    },
+    {
+      "name": "Bloodveld",
+      "level": 81,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        3138
+      ],
+      "catalogueIds": [
+        3138
+      ]
+    },
+    {
+      "name": "Blue dragon",
+      "level": 111,
+      "location": "Isle of Souls",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        265,
+        266,
+        268
+      ],
+      "catalogueIds": [
+        265,
+        266,
+        267,
+        268,
+        269
+      ]
+    },
+    {
+      "name": "Blue dragon",
+      "level": 111,
+      "location": "Myths' Guild",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        265,
+        266,
+        267,
+        268,
+        269
+      ],
+      "catalogueIds": [
+        265,
+        266,
+        267,
+        268,
+        269
+      ]
+    },
+    {
+      "name": "Blue dragon",
+      "level": 111,
+      "location": "Ogre Enclave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        265,
+        266,
+        267,
+        268,
+        269
+      ],
+      "catalogueIds": [
+        265,
+        266,
+        267,
+        268,
+        269
+      ]
+    },
+    {
+      "name": "Blue dragon",
+      "level": 111,
+      "location": "Taverley Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        265,
+        266,
+        267,
+        268,
+        269,
+        5878,
+        5879,
+        5880,
+        5881,
+        5882
+      ],
+      "catalogueIds": [
+        265,
+        266,
+        267,
+        268,
+        269,
+        5878,
+        5879,
+        5880,
+        5881,
+        5882
+      ]
+    },
+    {
+      "name": "Brine rat",
+      "level": 70,
+      "location": "Brine Rat Cavern",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Brine rats"
+      ],
+      "evidenceNpcIds": [
+        4501
+      ],
+      "catalogueIds": [
+        4501
+      ]
+    },
+    {
+      "name": "Bronze dragon",
+      "level": 131,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bronze dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        270,
+        271
+      ],
+      "catalogueIds": [
+        270
+      ]
+    },
+    {
+      "name": "Bronze dragon",
+      "level": 143,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bronze dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        7253
+      ],
+      "catalogueIds": [
+        7253
+      ]
+    },
+    {
+      "name": "Bronze dragon",
+      "level": 143,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bronze dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        7253
+      ],
+      "catalogueIds": [
+        7253
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Brutal black dragon",
+      "level": 318,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Black dragons"
+      ],
+      "evidenceNpcIds": [
+        7275
+      ],
+      "catalogueIds": [
+        7275
+      ]
+    },
+    {
+      "name": "Brutal blue dragon",
+      "level": 271,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        7273
+      ],
+      "catalogueIds": [
+        7273
+      ]
+    },
+    {
+      "name": "Brutal blue dragon",
+      "level": 271,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Blue dragons"
+      ],
+      "evidenceNpcIds": [
+        7273
+      ],
+      "catalogueIds": [
+        7273
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Brutal red dragon",
+      "level": 289,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Red dragons"
+      ],
+      "evidenceNpcIds": [
+        7274
+      ],
+      "catalogueIds": [
+        7274
+      ]
+    },
+    {
+      "name": "Callisto",
+      "level": 470,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bears"
+      ],
+      "evidenceNpcIds": [
+        6609
+      ],
+      "catalogueIds": [
+        6609
+      ]
+    },
+    {
+      "name": "Cave kraken",
+      "level": 127,
+      "location": "Kraken Cove",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Cave kraken"
+      ],
+      "evidenceNpcIds": [
+        493
+      ],
+      "catalogueIds": [
+        493
+      ]
+    },
+    {
+      "name": "Chaos druid",
+      "level": 13,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Chaos druids"
+      ],
+      "evidenceNpcIds": [
+        520
+      ],
+      "catalogueIds": [
+        520
+      ]
+    },
+    {
+      "name": "Dad",
+      "level": 101,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        4130
+      ],
+      "catalogueIds": [
+        4130
+      ]
+    },
+    {
+      "name": "Dagannoth",
+      "level": 74,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        7259
+      ],
+      "catalogueIds": [
+        7259
+      ]
+    },
+    {
+      "name": "Dagannoth",
+      "level": 74,
+      "location": "Jormungand's Prison",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        7259
+      ],
+      "catalogueIds": [
+        7259
+      ]
+    },
+    {
+      "name": "Dagannoth",
+      "level": 74,
+      "location": "Lighthouse",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        970
+      ],
+      "catalogueIds": [
+        970
+      ]
+    },
+    {
+      "name": "Dagannoth",
+      "level": 92,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        7260
+      ],
+      "catalogueIds": [
+        973,
+        7260
+      ]
+    },
+    {
+      "name": "Dagannoth",
+      "level": 92,
+      "location": "Jormungand's Prison",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        7260
+      ],
+      "catalogueIds": [
+        973,
+        7260
+      ]
+    },
+    {
+      "name": "Dagannoth",
+      "level": 92,
+      "location": "Lighthouse",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        973,
+        974,
+        975
+      ],
+      "catalogueIds": [
+        973,
+        7260
+      ]
+    },
+    {
+      "name": "Dagannoth (Waterbirth Island)",
+      "level": 88,
+      "location": "Waterbirth Island",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        2259
+      ],
+      "catalogueIds": [
+        2259
+      ]
+    },
+    {
+      "name": "Dagannoth (Waterbirth Island)",
+      "level": 90,
+      "location": "Waterbirth Island",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        3185
+      ],
+      "catalogueIds": [
+        3185
+      ]
+    },
+    {
+      "name": "Dagannoth fledgeling",
+      "level": 70,
+      "location": "Waterbirth Island",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dagannoth"
+      ],
+      "evidenceNpcIds": [
+        2264
+      ],
+      "catalogueIds": [
+        2264
+      ]
+    },
+    {
+      "name": "Dark beast",
+      "level": 182,
+      "location": "Iorwerth Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dark beasts"
+      ],
+      "evidenceNpcIds": [
+        4005
+      ],
+      "catalogueIds": [
+        4005
+      ]
+    },
+    {
+      "name": "Dark beast",
+      "level": 182,
+      "location": "Mourner Tunnels",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dark beasts"
+      ],
+      "evidenceNpcIds": [
+        4005
+      ],
+      "catalogueIds": [
+        4005
+      ]
+    },
+    {
+      "name": "Dark warrior",
+      "level": 8,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Dark warriors"
+      ],
+      "evidenceNpcIds": [
+        531
+      ],
+      "catalogueIds": [
+        531
+      ]
+    },
+    {
+      "name": "Dark warrior",
+      "level": 145,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Dark warriors"
+      ],
+      "evidenceNpcIds": [
+        6606
+      ],
+      "catalogueIds": [
+        6606
+      ]
+    },
+    {
+      "name": "Deadly red spider",
+      "level": 34,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        3021
+      ],
+      "catalogueIds": [
+        3021
+      ]
+    },
+    {
+      "name": "Deviant spectre",
+      "level": 169,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aberrant spectres"
+      ],
+      "evidenceNpcIds": [
+        7279
+      ],
+      "catalogueIds": [
+        7279
+      ]
+    },
+    {
+      "name": "Donny the lad",
+      "level": 34,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bandits"
+      ],
+      "evidenceNpcIds": [
+        302
+      ],
+      "catalogueIds": [
+        302
+      ]
+    },
+    {
+      "name": "Drake",
+      "level": 192,
+      "location": "Karuulm Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Drakes"
+      ],
+      "evidenceNpcIds": [
+        8612
+      ],
+      "catalogueIds": [
+        8612
+      ]
+    },
+    {
+      "name": "Dust devil",
+      "level": 93,
+      "location": "Smoke Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dust devils"
+      ],
+      "evidenceNpcIds": [
+        423
+      ],
+      "catalogueIds": [
+        423,
+        11238
+      ]
+    },
+    {
+      "name": "Dust devil",
+      "level": 93,
+      "location": "Smoke Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dust devils"
+      ],
+      "evidenceNpcIds": [
+        423
+      ],
+      "catalogueIds": [
+        423
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Dust devil",
+      "level": 93,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Dust devils"
+      ],
+      "evidenceNpcIds": [
+        11238
+      ],
+      "catalogueIds": [
+        11238
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Dust devil",
+      "level": 110,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dust devils"
+      ],
+      "evidenceNpcIds": [
+        7249
+      ],
+      "catalogueIds": [
+        7249
+      ]
+    },
+    {
+      "name": "Dust devil",
+      "level": 110,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Dust devils"
+      ],
+      "evidenceNpcIds": [
+        7249
+      ],
+      "catalogueIds": [
+        7249
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Earth warrior",
+      "level": 51,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Earth warriors"
+      ],
+      "evidenceNpcIds": [
+        2840
+      ],
+      "catalogueIds": [
+        2840
+      ]
+    },
+    {
+      "name": "Elder Chaos druid",
+      "level": 129,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Chaos druids"
+      ],
+      "evidenceNpcIds": [
+        6607
+      ],
+      "catalogueIds": [
+        6607
+      ]
+    },
+    {
+      "name": "Ent",
+      "level": 101,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Ents"
+      ],
+      "evidenceNpcIds": [
+        6594
+      ],
+      "catalogueIds": [
+        6594
+      ]
+    },
+    {
+      "name": "Ent",
+      "level": 101,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Ents"
+      ],
+      "evidenceNpcIds": [
+        6594
+      ],
+      "catalogueIds": [
+        6594
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Fire giant",
+      "level": 86,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        2078,
+        2079,
+        2080
+      ],
+      "catalogueIds": [
+        2075
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 86,
+      "location": "Isle of Souls",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        2078,
+        2079,
+        2080
+      ],
+      "catalogueIds": [
+        2075
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 86,
+      "location": "Karuulm Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        2075,
+        2076,
+        2077,
+        2078,
+        2079,
+        2080
+      ],
+      "catalogueIds": [
+        2075
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 86,
+      "location": "Stronghold Slayer Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        2081,
+        2082,
+        2083
+      ],
+      "catalogueIds": [
+        2075
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 86,
+      "location": "Waterfall Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        2078,
+        2079,
+        2080
+      ],
+      "catalogueIds": [
+        2075
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 86,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        2078,
+        2079,
+        2080
+      ],
+      "catalogueIds": [
+        2075
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 104,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        7252
+      ],
+      "catalogueIds": [
+        7252
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 104,
+      "location": "Giants' Den",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        7252
+      ],
+      "catalogueIds": [
+        7252
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 109,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        7251
+      ],
+      "catalogueIds": [
+        7251
+      ]
+    },
+    {
+      "name": "Fire giant",
+      "level": 109,
+      "location": "Giants' Den",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fire giants"
+      ],
+      "evidenceNpcIds": [
+        7251
+      ],
+      "catalogueIds": [
+        7251
+      ]
+    },
+    {
+      "name": "Flight Kilisa",
+      "level": 159,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3165
+      ],
+      "catalogueIds": [
+        3165
+      ]
+    },
+    {
+      "name": "Flockleader Geerin",
+      "level": 149,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3164
+      ],
+      "catalogueIds": [
+        3164
+      ]
+    },
+    {
+      "name": "Gargoyle",
+      "level": 111,
+      "location": "Slayer Tower",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Gargoyles"
+      ],
+      "evidenceNpcIds": [
+        412,
+        1543
+      ],
+      "catalogueIds": [
+        412,
+        1543
+      ]
+    },
+    {
+      "name": "Giant spider",
+      "level": 2,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        3017
+      ],
+      "catalogueIds": [
+        3017
+      ]
+    },
+    {
+      "name": "Giant spider",
+      "level": 27,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        3018
+      ],
+      "catalogueIds": [
+        3018
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 92,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        2025,
+        2026,
+        2027,
+        2028,
+        2029
+      ],
+      "catalogueIds": [
+        2025
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 92,
+      "location": "Chasm of Fire",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        2030,
+        2031,
+        2032
+      ],
+      "catalogueIds": [
+        2025
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 92,
+      "location": "Isle of Souls",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        2025,
+        2026,
+        2027,
+        2028,
+        2029
+      ],
+      "catalogueIds": [
+        2025
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 92,
+      "location": "Karuulm Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        2025,
+        2026,
+        2027,
+        2028,
+        2029
+      ],
+      "catalogueIds": [
+        2025
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 92,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        2026,
+        2027,
+        2028,
+        2029
+      ],
+      "catalogueIds": [
+        2025
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 100,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        7245
+      ],
+      "catalogueIds": [
+        7245
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 101,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        7244
+      ],
+      "catalogueIds": [
+        7244
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 104,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        7871,
+        7872,
+        7873
+      ],
+      "catalogueIds": [
+        7871
+      ]
+    },
+    {
+      "name": "Greater demon",
+      "level": 113,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Greater demons"
+      ],
+      "evidenceNpcIds": [
+        7246
+      ],
+      "catalogueIds": [
+        7246
+      ]
+    },
+    {
+      "name": "Greater Nechryael",
+      "level": 200,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Nechryael"
+      ],
+      "evidenceNpcIds": [
+        7278
+      ],
+      "catalogueIds": [
+        7278,
+        11240
+      ]
+    },
+    {
+      "name": "Greater Nechryael",
+      "level": 200,
+      "location": "Iorwerth Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Nechryael"
+      ],
+      "evidenceNpcIds": [
+        7278
+      ],
+      "catalogueIds": [
+        7278,
+        11240
+      ]
+    },
+    {
+      "name": "Greater Nechryael",
+      "level": 200,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Nechryael"
+      ],
+      "evidenceNpcIds": [
+        11240
+      ],
+      "catalogueIds": [
+        11240
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Green dragon",
+      "level": 79,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Green dragons"
+      ],
+      "evidenceNpcIds": [
+        260,
+        261,
+        262,
+        263,
+        264
+      ],
+      "catalogueIds": [
+        260
+      ]
+    },
+    {
+      "name": "Green dragon",
+      "level": 88,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Green dragons"
+      ],
+      "evidenceNpcIds": [
+        7868,
+        7869,
+        7870
+      ],
+      "catalogueIds": [
+        7868
+      ]
+    },
+    {
+      "name": "Grizzly bear",
+      "level": 21,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bears"
+      ],
+      "evidenceNpcIds": [
+        2838
+      ],
+      "catalogueIds": [
+        2838
+      ]
+    },
+    {
+      "name": "Guard Bandit",
+      "level": 22,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bandits"
+      ],
+      "evidenceNpcIds": [
+        1027
+      ],
+      "catalogueIds": [
+        1027
+      ]
+    },
+    {
+      "name": "Hellhound",
+      "level": 122,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Hellhounds"
+      ],
+      "evidenceNpcIds": [
+        7256
+      ],
+      "catalogueIds": [
+        104
+      ]
+    },
+    {
+      "name": "Hellhound",
+      "level": 122,
+      "location": "Karuulm Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Hellhounds"
+      ],
+      "evidenceNpcIds": [
+        104
+      ],
+      "catalogueIds": [
+        104
+      ]
+    },
+    {
+      "name": "Hellhound",
+      "level": 122,
+      "location": "Stronghold Slayer Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Hellhounds"
+      ],
+      "evidenceNpcIds": [
+        105
+      ],
+      "catalogueIds": [
+        104
+      ]
+    },
+    {
+      "name": "Hellhound",
+      "level": 122,
+      "location": "Taverley Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Hellhounds"
+      ],
+      "evidenceNpcIds": [
+        104
+      ],
+      "catalogueIds": [
+        104
+      ]
+    },
+    {
+      "name": "Hellhound",
+      "level": 122,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Hellhounds"
+      ],
+      "evidenceNpcIds": [
+        104
+      ],
+      "catalogueIds": [
+        104
+      ]
+    },
+    {
+      "name": "Hellhound",
+      "level": 122,
+      "location": "Witchaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Hellhounds"
+      ],
+      "evidenceNpcIds": [
+        104
+      ],
+      "catalogueIds": [
+        104
+      ]
+    },
+    {
+      "name": "Hellhound",
+      "level": 136,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Hellhounds"
+      ],
+      "evidenceNpcIds": [
+        7877
+      ],
+      "catalogueIds": [
+        7877
+      ]
+    },
+    {
+      "name": "Hill Giant",
+      "level": 28,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Hill giants"
+      ],
+      "evidenceNpcIds": [
+        2098,
+        2099,
+        2100,
+        2101,
+        2102,
+        2103
+      ],
+      "catalogueIds": [
+        2098,
+        2099,
+        2100,
+        2101,
+        2102,
+        2103,
+        7261,
+        10374,
+        10375,
+        10376,
+        12848,
+        12849,
+        12850
+      ]
+    },
+    {
+      "name": "Hydra",
+      "level": 194,
+      "location": "Karuulm Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Hydras"
+      ],
+      "evidenceNpcIds": [
+        8609
+      ],
+      "catalogueIds": [
+        8609
+      ]
+    },
+    {
+      "name": "Ice giant",
+      "level": 53,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Ice giants"
+      ],
+      "evidenceNpcIds": [
+        2085,
+        2086,
+        2087
+      ],
+      "catalogueIds": [
+        2085,
+        2086,
+        2087,
+        2088,
+        2089,
+        13796,
+        13797
+      ]
+    },
+    {
+      "name": "Ice giant",
+      "level": 67,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Ice giants"
+      ],
+      "evidenceNpcIds": [
+        7878,
+        7879,
+        7880
+      ],
+      "catalogueIds": [
+        7878,
+        7879,
+        7880
+      ]
+    },
+    {
+      "name": "Ice spider",
+      "level": 61,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        3022
+      ],
+      "catalogueIds": [
+        3022,
+        10722,
+        13798
+      ]
+    },
+    {
+      "name": "Ice warrior",
+      "level": 57,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Ice warriors"
+      ],
+      "evidenceNpcIds": [
+        2841
+      ],
+      "catalogueIds": [
+        2841,
+        2842,
+        2851,
+        13802
+      ]
+    },
+    {
+      "name": "Iron dragon",
+      "level": 189,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Iron dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        272,
+        273
+      ],
+      "catalogueIds": [
+        272
+      ]
+    },
+    {
+      "name": "Iron dragon",
+      "level": 189,
+      "location": "Isle of Souls",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Iron dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        272
+      ],
+      "catalogueIds": [
+        272
+      ]
+    },
+    {
+      "name": "Iron dragon",
+      "level": 215,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Iron dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        7254
+      ],
+      "catalogueIds": [
+        7254
+      ]
+    },
+    {
+      "name": "Iron dragon",
+      "level": 215,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Iron dragons",
+        "Metal dragons"
+      ],
+      "evidenceNpcIds": [
+        7254
+      ],
+      "catalogueIds": [
+        7254
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Jelly",
+      "level": 78,
+      "location": "Fremennik Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Jellies"
+      ],
+      "evidenceNpcIds": [
+        437,
+        438,
+        439,
+        440,
+        441,
+        442
+      ],
+      "catalogueIds": [
+        437,
+        438,
+        439,
+        440,
+        441,
+        442,
+        11241,
+        11242,
+        11243,
+        11244,
+        11245
+      ]
+    },
+    {
+      "name": "Kalphite Guardian",
+      "level": 141,
+      "location": "Kalphite Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        960
+      ],
+      "catalogueIds": [
+        959,
+        960,
+        962
+      ]
+    },
+    {
+      "name": "Kalphite Guardian",
+      "level": 141,
+      "location": "Kalphite Lair",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        959,
+        962
+      ],
+      "catalogueIds": [
+        959,
+        960,
+        962
+      ]
+    },
+    {
+      "name": "Kalphite Queen",
+      "level": 333,
+      "location": "Kalphite Lair",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        963
+      ],
+      "catalogueIds": [
+        963
+      ]
+    },
+    {
+      "name": "Kalphite Soldier",
+      "level": 85,
+      "location": "Kalphite Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        958
+      ],
+      "catalogueIds": [
+        957,
+        958
+      ]
+    },
+    {
+      "name": "Kalphite Soldier",
+      "level": 85,
+      "location": "Kalphite Lair",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        957
+      ],
+      "catalogueIds": [
+        957,
+        958
+      ]
+    },
+    {
+      "name": "Kalphite Soldier",
+      "level": 85,
+      "location": "Kalphite Lair",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        957
+      ],
+      "catalogueIds": [
+        957
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Kalphite Worker",
+      "level": 28,
+      "location": "Kalphite Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        956
+      ],
+      "catalogueIds": [
+        955
+      ]
+    },
+    {
+      "name": "Kalphite Worker",
+      "level": 28,
+      "location": "Kalphite Lair",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kalphites"
+      ],
+      "evidenceNpcIds": [
+        955
+      ],
+      "catalogueIds": [
+        955
+      ]
+    },
+    {
+      "name": "King Scorpion",
+      "level": 32,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Scorpions"
+      ],
+      "evidenceNpcIds": [
+        3027
+      ],
+      "catalogueIds": [
+        3027
+      ]
+    },
+    {
+      "name": "Kraka",
+      "level": 91,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        928
+      ],
+      "catalogueIds": [
+        928
+      ]
+    },
+    {
+      "name": "Kree'arra",
+      "level": 580,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3162
+      ],
+      "catalogueIds": [
+        3162
+      ]
+    },
+    {
+      "name": "Kurask",
+      "level": 106,
+      "location": "Fremennik Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kurasks"
+      ],
+      "evidenceNpcIds": [
+        410,
+        411
+      ],
+      "catalogueIds": [
+        410,
+        411
+      ]
+    },
+    {
+      "name": "Kurask",
+      "level": 106,
+      "location": "Iorwerth Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Kurasks"
+      ],
+      "evidenceNpcIds": [
+        410
+      ],
+      "catalogueIds": [
+        410,
+        411
+      ]
+    },
+    {
+      "name": "Lava dragon",
+      "level": 252,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Lava dragons"
+      ],
+      "evidenceNpcIds": [
+        6593
+      ],
+      "catalogueIds": [
+        6593
+      ]
+    },
+    {
+      "name": "Lesser demon",
+      "level": 82,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Lesser demons"
+      ],
+      "evidenceNpcIds": [
+        2005,
+        2006,
+        2007,
+        2008,
+        2018
+      ],
+      "catalogueIds": [
+        2005
+      ]
+    },
+    {
+      "name": "Lesser demon",
+      "level": 94,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Lesser demons"
+      ],
+      "evidenceNpcIds": [
+        7865
+      ],
+      "catalogueIds": [
+        7865
+      ]
+    },
+    {
+      "name": "Lizardman",
+      "level": 53,
+      "location": "Battlefront",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6914,
+        6915
+      ],
+      "catalogueIds": [
+        6914
+      ]
+    },
+    {
+      "name": "Lizardman",
+      "level": 53,
+      "location": "Lizardman Canyon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6914,
+        6915
+      ],
+      "catalogueIds": [
+        6914
+      ]
+    },
+    {
+      "name": "Lizardman",
+      "level": 53,
+      "location": "Lizardman Settlement",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6914,
+        6915
+      ],
+      "catalogueIds": [
+        6914
+      ]
+    },
+    {
+      "name": "Lizardman",
+      "level": 62,
+      "location": "Battlefront",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6916,
+        6917
+      ],
+      "catalogueIds": [
+        6916
+      ]
+    },
+    {
+      "name": "Lizardman",
+      "level": 62,
+      "location": "Lizardman Canyon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6916,
+        6917
+      ],
+      "catalogueIds": [
+        6916
+      ]
+    },
+    {
+      "name": "Lizardman",
+      "level": 62,
+      "location": "Lizardman Settlement",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6916,
+        6917
+      ],
+      "catalogueIds": [
+        6916
+      ]
+    },
+    {
+      "name": "Lizardman brute",
+      "level": 75,
+      "location": "Battlefront",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6918,
+        6919
+      ],
+      "catalogueIds": [
+        6918,
+        8564
+      ]
+    },
+    {
+      "name": "Lizardman brute",
+      "level": 75,
+      "location": "Battlefront",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        8564
+      ],
+      "catalogueIds": [
+        8564
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Lizardman brute",
+      "level": 75,
+      "location": "Lizardman Canyon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6918,
+        6919
+      ],
+      "catalogueIds": [
+        6918,
+        8564
+      ]
+    },
+    {
+      "name": "Lizardman brute",
+      "level": 75,
+      "location": "Lizardman Settlement",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6919
+      ],
+      "catalogueIds": [
+        6918,
+        8564
+      ]
+    },
+    {
+      "name": "Lizardman shaman",
+      "level": 150,
+      "location": "Lizardman Canyon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        6766
+      ],
+      "catalogueIds": [
+        6766
+      ]
+    },
+    {
+      "name": "Lizardman shaman",
+      "level": 150,
+      "location": "Molch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Lizardmen"
+      ],
+      "evidenceNpcIds": [
+        8565
+      ],
+      "catalogueIds": [
+        8565
+      ]
+    },
+    {
+      "name": "Long-tailed Wyvern",
+      "level": 152,
+      "location": "Wyvern Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fossil Island Wyverns"
+      ],
+      "evidenceNpcIds": [
+        7792
+      ],
+      "catalogueIds": [
+        7792
+      ]
+    },
+    {
+      "name": "Magic axe",
+      "level": 42,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Magic axes"
+      ],
+      "evidenceNpcIds": [
+        2844
+      ],
+      "catalogueIds": [
+        2844,
+        7269
+      ]
+    },
+    {
+      "name": "Mammoth",
+      "level": 80,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Mammoths"
+      ],
+      "evidenceNpcIds": [
+        6604
+      ],
+      "catalogueIds": [
+        6604
+      ]
+    },
+    {
+      "name": "Moss giant",
+      "level": 42,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Moss giants"
+      ],
+      "evidenceNpcIds": [
+        2090,
+        2091,
+        2093
+      ],
+      "catalogueIds": [
+        2090,
+        12844
+      ]
+    },
+    {
+      "name": "Mountain troll",
+      "level": 69,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        936,
+        937,
+        938,
+        939,
+        940,
+        941,
+        942
+      ],
+      "catalogueIds": [
+        936
+      ]
+    },
+    {
+      "name": "Mountain troll",
+      "level": 69,
+      "location": "Keldagrim",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        936,
+        937,
+        938,
+        939,
+        940,
+        941
+      ],
+      "catalogueIds": [
+        936
+      ]
+    },
+    {
+      "name": "Mountain troll",
+      "level": 69,
+      "location": "South of Mount Quidamortem",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        936,
+        937,
+        938,
+        939,
+        941
+      ],
+      "catalogueIds": [
+        936
+      ]
+    },
+    {
+      "name": "Mountain troll",
+      "level": 69,
+      "location": "Troll Stronghold",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        936,
+        937,
+        938,
+        939,
+        940,
+        941,
+        942
+      ],
+      "catalogueIds": [
+        936
+      ]
+    },
+    {
+      "name": "Mountain troll",
+      "level": 71,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        4143
+      ],
+      "catalogueIds": [
+        4143
+      ]
+    },
+    {
+      "name": "Mountain troll",
+      "level": 71,
+      "location": "Troll Stronghold",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        4143
+      ],
+      "catalogueIds": [
+        4143
+      ]
+    },
+    {
+      "name": "Mutated Bloodveld",
+      "level": 123,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        7276
+      ],
+      "catalogueIds": [
+        7276
+      ]
+    },
+    {
+      "name": "Mutated Bloodveld",
+      "level": 123,
+      "location": "Iorwerth Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        7276
+      ],
+      "catalogueIds": [
+        7276
+      ]
+    },
+    {
+      "name": "Mutated Bloodveld",
+      "level": 123,
+      "location": "Meiyerditch Laboratories",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Bloodveld"
+      ],
+      "evidenceNpcIds": [
+        7276
+      ],
+      "catalogueIds": [
+        7276
+      ]
+    },
+    {
+      "name": "Nechryael",
+      "level": 115,
+      "location": "Slayer Tower",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Nechryael"
+      ],
+      "evidenceNpcIds": [
+        8,
+        11
+      ],
+      "catalogueIds": [
+        8,
+        11
+      ]
+    },
+    {
+      "name": "Pee Hat",
+      "level": 91,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        927
+      ],
+      "catalogueIds": [
+        927
+      ]
+    },
+    {
+      "name": "Pirate",
+      "level": 26,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Pirates"
+      ],
+      "evidenceNpcIds": [
+        523
+      ],
+      "catalogueIds": [
+        523
+      ]
+    },
+    {
+      "name": "Poison spider",
+      "level": 64,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        3023
+      ],
+      "catalogueIds": [
+        3023
+      ]
+    },
+    {
+      "name": "Red dragon",
+      "level": 152,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Red dragons"
+      ],
+      "evidenceNpcIds": [
+        247,
+        248,
+        249,
+        250,
+        251
+      ],
+      "catalogueIds": [
+        247,
+        248,
+        249,
+        250,
+        251
+      ]
+    },
+    {
+      "name": "Red dragon",
+      "level": 152,
+      "location": "Forthos Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Red dragons"
+      ],
+      "evidenceNpcIds": [
+        247,
+        248,
+        249,
+        250
+      ],
+      "catalogueIds": [
+        247,
+        248,
+        249,
+        250,
+        251
+      ]
+    },
+    {
+      "name": "Red dragon",
+      "level": 152,
+      "location": "Myths' Guild",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Red dragons"
+      ],
+      "evidenceNpcIds": [
+        248,
+        250,
+        251
+      ],
+      "catalogueIds": [
+        247,
+        248,
+        249,
+        250,
+        251
+      ]
+    },
+    {
+      "name": "Revenant cyclops",
+      "level": 82,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Hill giants",
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7934
+      ],
+      "catalogueIds": [
+        7934
+      ]
+    },
+    {
+      "name": "Revenant dark beast",
+      "level": 120,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Dark beasts",
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7938
+      ],
+      "catalogueIds": [
+        7938
+      ]
+    },
+    {
+      "name": "Revenant demon",
+      "level": 98,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7936
+      ],
+      "catalogueIds": [
+        7936
+      ]
+    },
+    {
+      "name": "Revenant dragon",
+      "level": 135,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7940
+      ],
+      "catalogueIds": [
+        7940
+      ]
+    },
+    {
+      "name": "Revenant goblin",
+      "level": 15,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7931
+      ],
+      "catalogueIds": [
+        7931
+      ]
+    },
+    {
+      "name": "Revenant hellhound",
+      "level": 90,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Hellhounds",
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7935
+      ],
+      "catalogueIds": [
+        7935
+      ]
+    },
+    {
+      "name": "Revenant hobgoblin",
+      "level": 60,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7933
+      ],
+      "catalogueIds": [
+        7933
+      ]
+    },
+    {
+      "name": "Revenant imp",
+      "level": 7,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7881
+      ],
+      "catalogueIds": [
+        7881
+      ]
+    },
+    {
+      "name": "Revenant knight",
+      "level": 126,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7939
+      ],
+      "catalogueIds": [
+        7939
+      ]
+    },
+    {
+      "name": "Revenant ork",
+      "level": 105,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7937
+      ],
+      "catalogueIds": [
+        7937
+      ]
+    },
+    {
+      "name": "Revenant pyrefiend",
+      "level": 52,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Revenants"
+      ],
+      "evidenceNpcIds": [
+        7932
+      ],
+      "catalogueIds": [
+        7932
+      ]
+    },
+    {
+      "name": "Rock (Troll)",
+      "level": 111,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        925
+      ],
+      "catalogueIds": [
+        925
+      ]
+    },
+    {
+      "name": "Rogue",
+      "level": 15,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Rogues"
+      ],
+      "evidenceNpcIds": [
+        526
+      ],
+      "catalogueIds": [
+        526
+      ]
+    },
+    {
+      "name": "Rogue",
+      "level": 135,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Rogues"
+      ],
+      "evidenceNpcIds": [
+        6603
+      ],
+      "catalogueIds": [
+        6603
+      ]
+    },
+    {
+      "name": "Rune dragon",
+      "level": 380,
+      "location": "Lithkren Vault",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Metal dragons",
+        "Rune dragons"
+      ],
+      "evidenceNpcIds": [
+        8031
+      ],
+      "catalogueIds": [
+        8031
+      ]
+    },
+    {
+      "name": "Scorpion",
+      "level": 14,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Scorpions"
+      ],
+      "evidenceNpcIds": [
+        3024
+      ],
+      "catalogueIds": [
+        3024
+      ]
+    },
+    {
+      "name": "Shadow spider",
+      "level": 52,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        3016
+      ],
+      "catalogueIds": [
+        3016
+      ]
+    },
+    {
+      "name": "Skeletal Wyvern",
+      "level": 140,
+      "location": "Asgarnian Ice Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Skeletal Wyverns"
+      ],
+      "evidenceNpcIds": [
+        465,
+        466,
+        467,
+        468
+      ],
+      "catalogueIds": [
+        465,
+        466,
+        467,
+        468
+      ]
+    },
+    {
+      "name": "Skeleton",
+      "level": 22,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Skeletons"
+      ],
+      "evidenceNpcIds": [
+        70,
+        71,
+        72,
+        73
+      ],
+      "catalogueIds": [
+        70,
+        71,
+        72,
+        73
+      ]
+    },
+    {
+      "name": "Skeleton",
+      "level": 25,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Skeletons"
+      ],
+      "evidenceNpcIds": [
+        77,
+        78,
+        79,
+        80,
+        81
+      ],
+      "catalogueIds": [
+        77,
+        78,
+        79,
+        80,
+        81
+      ]
+    },
+    {
+      "name": "Skeleton",
+      "level": 45,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Skeletons"
+      ],
+      "evidenceNpcIds": [
+        82
+      ],
+      "catalogueIds": [
+        82,
+        83
+      ]
+    },
+    {
+      "name": "Smoke devil",
+      "level": 160,
+      "location": "Smoke Devil Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Smoke devils"
+      ],
+      "evidenceNpcIds": [
+        498
+      ],
+      "catalogueIds": [
+        498
+      ]
+    },
+    {
+      "name": "Speedy Keith",
+      "level": 34,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Bandits"
+      ],
+      "evidenceNpcIds": [
+        303
+      ],
+      "catalogueIds": [
+        303
+      ]
+    },
+    {
+      "name": "Spider",
+      "level": 1,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        3019
+      ],
+      "catalogueIds": [
+        3019,
+        4561
+      ]
+    },
+    {
+      "name": "Spiritual mage",
+      "level": 120,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        2212
+      ],
+      "catalogueIds": [
+        2212
+      ]
+    },
+    {
+      "name": "Spiritual mage",
+      "level": 121,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        2244,
+        3161
+      ],
+      "catalogueIds": [
+        2244,
+        3161
+      ]
+    },
+    {
+      "name": "Spiritual ranger",
+      "level": 115,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        2242
+      ],
+      "catalogueIds": [
+        2242
+      ]
+    },
+    {
+      "name": "Spiritual ranger",
+      "level": 118,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        3160
+      ],
+      "catalogueIds": [
+        3160
+      ]
+    },
+    {
+      "name": "Spiritual ranger",
+      "level": 122,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        2211
+      ],
+      "catalogueIds": [
+        2211
+      ]
+    },
+    {
+      "name": "Spiritual ranger",
+      "level": 127,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        3167
+      ],
+      "catalogueIds": [
+        3167
+      ]
+    },
+    {
+      "name": "Spiritual warrior",
+      "level": 115,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        3159
+      ],
+      "catalogueIds": [
+        3159
+      ]
+    },
+    {
+      "name": "Spiritual warrior",
+      "level": 123,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        3166
+      ],
+      "catalogueIds": [
+        3166
+      ]
+    },
+    {
+      "name": "Spiritual warrior",
+      "level": 125,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        2210
+      ],
+      "catalogueIds": [
+        2210
+      ]
+    },
+    {
+      "name": "Spiritual warrior",
+      "level": 134,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiritual creatures"
+      ],
+      "evidenceNpcIds": [
+        2243
+      ],
+      "catalogueIds": [
+        2243
+      ]
+    },
+    {
+      "name": "Spitting Wyvern",
+      "level": 139,
+      "location": "Wyvern Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fossil Island Wyverns"
+      ],
+      "evidenceNpcIds": [
+        7794
+      ],
+      "catalogueIds": [
+        7794
+      ]
+    },
+    {
+      "name": "Steel dragon",
+      "level": 246,
+      "location": "Brimhaven Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Metal dragons",
+        "Steel dragons"
+      ],
+      "evidenceNpcIds": [
+        274,
+        275
+      ],
+      "catalogueIds": [
+        274,
+        275
+      ]
+    },
+    {
+      "name": "Steel dragon",
+      "level": 274,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Metal dragons",
+        "Steel dragons"
+      ],
+      "evidenceNpcIds": [
+        7255
+      ],
+      "catalogueIds": [
+        7255
+      ]
+    },
+    {
+      "name": "Stick",
+      "level": 104,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        926
+      ],
+      "catalogueIds": [
+        926
+      ]
+    },
+    {
+      "name": "Taloned Wyvern",
+      "level": 147,
+      "location": "Wyvern Cave",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Fossil Island Wyverns"
+      ],
+      "evidenceNpcIds": [
+        7793
+      ],
+      "catalogueIds": [
+        7793
+      ]
+    },
+    {
+      "name": "Thermonuclear smoke devil",
+      "level": 301,
+      "location": "Smoke Devil Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Smoke devils"
+      ],
+      "evidenceNpcIds": [
+        499
+      ],
+      "catalogueIds": [
+        499
+      ]
+    },
+    {
+      "name": "Thrower Troll",
+      "level": 67,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        931,
+        932,
+        933,
+        934,
+        935
+      ],
+      "catalogueIds": [
+        931
+      ]
+    },
+    {
+      "name": "Troll general",
+      "level": 113,
+      "location": "Troll Stronghold",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        4120,
+        4121,
+        4122
+      ],
+      "catalogueIds": [
+        4120,
+        4121,
+        4122
+      ]
+    },
+    {
+      "name": "Troll spectator",
+      "level": 71,
+      "location": "Death Plateau",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        4123,
+        4124,
+        4125,
+        4126,
+        4127,
+        4128,
+        4129
+      ],
+      "catalogueIds": [
+        4123
+      ]
+    },
+    {
+      "name": "Turoth",
+      "level": 83,
+      "location": "Fremennik Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Turoth"
+      ],
+      "evidenceNpcIds": [
+        430
+      ],
+      "catalogueIds": [
+        430
+      ]
+    },
+    {
+      "name": "Turoth",
+      "level": 85,
+      "location": "Fremennik Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Turoth"
+      ],
+      "evidenceNpcIds": [
+        429
+      ],
+      "catalogueIds": [
+        429
+      ]
+    },
+    {
+      "name": "Turoth",
+      "level": 87,
+      "location": "Fremennik Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Turoth"
+      ],
+      "evidenceNpcIds": [
+        428
+      ],
+      "catalogueIds": [
+        428
+      ]
+    },
+    {
+      "name": "Turoth",
+      "level": 89,
+      "location": "Fremennik Slayer Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Turoth"
+      ],
+      "evidenceNpcIds": [
+        427
+      ],
+      "catalogueIds": [
+        427
+      ]
+    },
+    {
+      "name": "Twig",
+      "level": 71,
+      "location": "Troll Stronghold",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Trolls"
+      ],
+      "evidenceNpcIds": [
+        4133
+      ],
+      "catalogueIds": [
+        4131,
+        4133
+      ]
+    },
+    {
+      "name": "Vampyre Juvenile",
+      "level": 45,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        3692,
+        3693
+      ],
+      "catalogueIds": [
+        3692,
+        4436,
+        9731
+      ]
+    },
+    {
+      "name": "Vampyre Juvenile",
+      "level": 45,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        3692
+      ],
+      "catalogueIds": [
+        3692
+      ],
+      "evidence": "Literal area-labelled Wiki combat version"
+    },
+    {
+      "name": "Vampyre Juvenile",
+      "level": 45,
+      "location": "Slepe",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        4436,
+        4437,
+        4438
+      ],
+      "catalogueIds": [
+        3692,
+        4436,
+        9731
+      ]
+    },
+    {
+      "name": "Vampyre Juvinate",
+      "level": 54,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        3694,
+        3695
+      ],
+      "catalogueIds": [
+        3694,
+        4427,
+        9727
+      ]
+    },
+    {
+      "name": "Venenatis",
+      "level": 464,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Spiders"
+      ],
+      "evidenceNpcIds": [
+        6610
+      ],
+      "catalogueIds": [
+        6610
+      ]
+    },
+    {
+      "name": "Vet'ion",
+      "level": 454,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Skeletons"
+      ],
+      "evidenceNpcIds": [
+        6611
+      ],
+      "catalogueIds": [
+        6611
+      ]
+    },
+    {
+      "name": "Vyrewatch",
+      "level": 105,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        3717,
+        3729,
+        3748,
+        3752
+      ],
+      "catalogueIds": [
+        3709
+      ]
+    },
+    {
+      "name": "Vyrewatch",
+      "level": 105,
+      "location": "Slepe",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        8300,
+        8301,
+        8302,
+        8303,
+        8304,
+        8305,
+        8306,
+        8307
+      ],
+      "catalogueIds": [
+        3709
+      ]
+    },
+    {
+      "name": "Vyrewatch",
+      "level": 110,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        3718,
+        3730,
+        3749,
+        3753
+      ],
+      "catalogueIds": [
+        3710
+      ]
+    },
+    {
+      "name": "Vyrewatch",
+      "level": 120,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        3719,
+        3731,
+        3750,
+        3754
+      ],
+      "catalogueIds": [
+        3711
+      ]
+    },
+    {
+      "name": "Vyrewatch",
+      "level": 125,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        3732,
+        3751,
+        3755
+      ],
+      "catalogueIds": [
+        3712
+      ]
+    },
+    {
+      "name": "Vyrewatch Sentinel",
+      "level": 151,
+      "location": "Meiyerditch",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Vampyres"
+      ],
+      "evidenceNpcIds": [
+        9759,
+        9761
+      ],
+      "catalogueIds": [
+        9756,
+        9757,
+        9758,
+        9759,
+        9760,
+        9761,
+        9762,
+        9763
+      ]
+    },
+    {
+      "name": "Warped Jelly",
+      "level": 112,
+      "location": "Catacombs of Kourend",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Jellies"
+      ],
+      "evidenceNpcIds": [
+        7277
+      ],
+      "catalogueIds": [
+        7277
+      ]
+    },
+    {
+      "name": "Waterfiend",
+      "level": 115,
+      "location": "Ancient Cavern",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Waterfiends"
+      ],
+      "evidenceNpcIds": [
+        2916
+      ],
+      "catalogueIds": [
+        2916,
+        2917
+      ]
+    },
+    {
+      "name": "Waterfiend",
+      "level": 115,
+      "location": "Iorwerth Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Waterfiends"
+      ],
+      "evidenceNpcIds": [
+        2916
+      ],
+      "catalogueIds": [
+        2916,
+        2917
+      ]
+    },
+    {
+      "name": "Waterfiend",
+      "level": 115,
+      "location": "Kraken Cove",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Waterfiends"
+      ],
+      "evidenceNpcIds": [
+        2917
+      ],
+      "catalogueIds": [
+        2916,
+        2917
+      ]
+    },
+    {
+      "name": "Wingman Skree",
+      "level": 143,
+      "location": "God Wars Dungeon",
+      "masters": [
+        "Konar"
+      ],
+      "tasks": [
+        "Aviansies"
+      ],
+      "evidenceNpcIds": [
+        3163
+      ],
+      "catalogueIds": [
+        3163
+      ]
+    },
+    {
+      "name": "Zombie",
+      "level": 18,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Zombies"
+      ],
+      "evidenceNpcIds": [
+        45,
+        46,
+        47,
+        48,
+        6596,
+        6597,
+        6598
+      ],
+      "catalogueIds": [
+        42,
+        43,
+        44
+      ]
+    },
+    {
+      "name": "Zombie",
+      "level": 24,
+      "location": "Wilderness",
+      "masters": [
+        "Krystilia"
+      ],
+      "tasks": [
+        "Zombies"
+      ],
+      "evidenceNpcIds": [
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "catalogueIds": [
+        49,
+        50,
+        51,
+        52,
+        54,
+        55,
+        56,
+        57,
+        58
+      ]
+    }
+  ]
+}

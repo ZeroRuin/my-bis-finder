@@ -1,0 +1,346 @@
+{
+  "sources": [
+    "https://oldschool.runescape.wiki/w/Konar_quo_Maten",
+    "https://oldschool.runescape.wiki/w/Krystilia"
+  ],
+  "reviewedAt": "2026-10-11",
+  "note": "Task families only, including optional unlocks and legacy individual metal-dragon assignments. Boss tasks are resolved to their actual boss by RuneLite. This is a location-research scope, not an assignment probability or unlock table.",
+  "masters": {
+    "Konar": [
+      "Aberrant spectres",
+      "Abyssal demons",
+      "Adamant dragons",
+      "Ankou",
+      "Aviansies",
+      "Basilisks",
+      "Black demons",
+      "Black dragons",
+      "Bloodveld",
+      "Blue dragons",
+      "Brine rats",
+      "Bronze dragons",
+      "Cave kraken",
+      "Dagannoth",
+      "Dark beasts",
+      "Drakes",
+      "Dust devils",
+      "Fire giants",
+      "Fossil Island Wyverns",
+      "Gargoyles",
+      "Greater demons",
+      "Hellhounds",
+      "Hydras",
+      "Iron dragons",
+      "Jellies",
+      "Kalphites",
+      "Kurasks",
+      "Lesser Nagua",
+      "Lizardmen",
+      "Metal dragons",
+      "Mutated zygomites",
+      "Nechryael",
+      "Red dragons",
+      "Rune dragons",
+      "Skeletal Wyverns",
+      "Smoke devils",
+      "Steel dragons",
+      "Trolls",
+      "Turoth",
+      "Vampyres",
+      "Venators",
+      "Warped Creatures",
+      "Waterfiends",
+      "Wyrms"
+    ],
+    "Krystilia": [
+      "Abyssal demons",
+      "Ankou",
+      "Aviansies",
+      "Bandits",
+      "Bears",
+      "Black demons",
+      "Black dragons",
+      "Black knights",
+      "Bloodveld",
+      "Chaos druids",
+      "Dark warriors",
+      "Dust devils",
+      "Earth warriors",
+      "Ents",
+      "Fire giants",
+      "Greater demons",
+      "Green dragons",
+      "Hellhounds",
+      "Hill giants",
+      "Ice giants",
+      "Ice warriors",
+      "Jellies",
+      "Lava dragons",
+      "Lesser demons",
+      "Magic axes",
+      "Mammoths",
+      "Moss giants",
+      "Nechryael",
+      "Pirates",
+      "Revenants",
+      "Rogues",
+      "Scorpions",
+      "Skeletons",
+      "Spiders",
+      "Spiritual creatures",
+      "Zombies"
+    ]
+  },
+  "locationFreeBossTasks": [
+    "Abyssal Sire",
+    "Alchemical Hydra",
+    "Araxxor",
+    "Barrows Brothers",
+    "Callisto",
+    "Cerberus",
+    "Chaos Elemental",
+    "Chaos Fanatic",
+    "Commander Zilyana",
+    "Corporeal Beast",
+    "Crazy archaeologist",
+    "Dagannoth Kings",
+    "Duke Sucellus",
+    "General Graardor",
+    "Giant Mole",
+    "Grotesque Guardians",
+    "Kalphite Queen",
+    "King Black Dragon",
+    "Kraken",
+    "Kree'arra",
+    "K'ril Tsutsaroth",
+    "Leviathan",
+    "Phantom Muspah",
+    "Scorpia",
+    "Scurrius",
+    "Skotizo",
+    "Thermonuclear Smoke Devil",
+    "Whisperer",
+    "Vardorvis",
+    "Venenatis",
+    "Vet'ion",
+    "Vorkath",
+    "Zulrah",
+    "The Hueycoatl",
+    "Amoxliatl",
+    "Mokhaiotl",
+    "Yama"
+  ],
+  "konarLocations": {
+    "Aberrant spectres": [
+      "Catacombs of Kourend",
+      "Slayer Tower",
+      "Stronghold Slayer Cave"
+    ],
+    "Abyssal demons": [
+      "Catacombs of Kourend",
+      "Abyss",
+      "Slayer Tower"
+    ],
+    "Adamant dragons": [
+      "Lithkren Vault"
+    ],
+    "Ankou": [
+      "Stronghold of Security",
+      "Stronghold Slayer Cave",
+      "Catacombs of Kourend"
+    ],
+    "Aviansies": [
+      "God Wars Dungeon"
+    ],
+    "Basilisks": [
+      "Fremennik Slayer Dungeon",
+      "Jormungand's Prison"
+    ],
+    "Black demons": [
+      "Catacombs of Kourend",
+      "Chasm of Fire",
+      "Taverley Dungeon",
+      "Brimhaven Dungeon"
+    ],
+    "Black dragons": [
+      "Catacombs of Kourend",
+      "Myths' Guild",
+      "Evil Chicken's Lair",
+      "Taverley Dungeon"
+    ],
+    "Bloodveld": [
+      "Catacombs of Kourend",
+      "God Wars Dungeon",
+      "Iorwerth Dungeon",
+      "Meiyerditch Laboratories",
+      "Slayer Tower",
+      "Stronghold Slayer Cave"
+    ],
+    "Blue dragons": [
+      "Catacombs of Kourend",
+      "Isle of Souls",
+      "Myths' Guild",
+      "Ogre Enclave",
+      "Ruins of Tapoyauik",
+      "Taverley Dungeon"
+    ],
+    "Brine rats": [
+      "Brine Rat Cavern"
+    ],
+    "Bronze dragons": [
+      "Brimhaven Dungeon",
+      "Catacombs of Kourend"
+    ],
+    "Cave kraken": [
+      "Kraken Cove"
+    ],
+    "Dagannoth": [
+      "Catacombs of Kourend",
+      "Lighthouse",
+      "Waterbirth Island",
+      "Jormungand's Prison"
+    ],
+    "Dark beasts": [
+      "Mourner Tunnels",
+      "Iorwerth Dungeon"
+    ],
+    "Drakes": [
+      "Karuulm Slayer Dungeon"
+    ],
+    "Dust devils": [
+      "Catacombs of Kourend",
+      "Smoke Dungeon"
+    ],
+    "Fire giants": [
+      "Brimhaven Dungeon",
+      "Catacombs of Kourend",
+      "Isle of Souls",
+      "Giants' Den",
+      "Karuulm Slayer Dungeon",
+      "Stronghold Slayer Cave",
+      "Waterfall Dungeon"
+    ],
+    "Fossil Island Wyverns": [
+      "Wyvern Cave"
+    ],
+    "Gargoyles": [
+      "Slayer Tower"
+    ],
+    "Greater demons": [
+      "Catacombs of Kourend",
+      "Chasm of Fire",
+      "Isle of Souls",
+      "Karuulm Slayer Dungeon",
+      "Brimhaven Dungeon"
+    ],
+    "Hellhounds": [
+      "Karuulm Slayer Dungeon",
+      "Catacombs of Kourend",
+      "Stronghold Slayer Cave",
+      "Taverley Dungeon",
+      "Witchaven Dungeon"
+    ],
+    "Hydras": [
+      "Karuulm Slayer Dungeon"
+    ],
+    "Iron dragons": [
+      "Brimhaven Dungeon",
+      "Catacombs of Kourend",
+      "Isle of Souls"
+    ],
+    "Jellies": [
+      "Fremennik Slayer Dungeon",
+      "Catacombs of Kourend",
+      "Ruins of Tapoyauik"
+    ],
+    "Kalphites": [
+      "Kalphite Lair",
+      "Kalphite Cave"
+    ],
+    "Kurasks": [
+      "Fremennik Slayer Dungeon",
+      "Iorwerth Dungeon"
+    ],
+    "Lesser Nagua": [
+      "Neypotzli",
+      "Ruins of Tapoyauik",
+      "Crypt of Tonali"
+    ],
+    "Lizardmen": [
+      "Battlefront",
+      "Lizardman Canyon",
+      "Lizardman Settlement",
+      "Kebos Swamp",
+      "Molch"
+    ],
+    "Metal dragons": [
+      "Brimhaven Dungeon",
+      "Catacombs of Kourend",
+      "Isle of Souls",
+      "Lithkren Vault"
+    ],
+    "Mutated zygomites": [
+      "Fossil Island",
+      "Zanaris"
+    ],
+    "Nechryael": [
+      "Catacombs of Kourend",
+      "Iorwerth Dungeon",
+      "Slayer Tower"
+    ],
+    "Red dragons": [
+      "Brimhaven Dungeon",
+      "Catacombs of Kourend",
+      "Forthos Dungeon",
+      "Myths' Guild"
+    ],
+    "Rune dragons": [
+      "Lithkren Vault"
+    ],
+    "Skeletal Wyverns": [
+      "Asgarnian Ice Dungeon"
+    ],
+    "Smoke devils": [
+      "Smoke Devil Dungeon"
+    ],
+    "Steel dragons": [
+      "Brimhaven Dungeon",
+      "Catacombs of Kourend"
+    ],
+    "Trolls": [
+      "Troll Stronghold",
+      "Keldagrim",
+      "Death Plateau",
+      "South of Mount Quidamortem",
+      "Fremennik Isles",
+      "Wyrmscraig Cavern"
+    ],
+    "Turoth": [
+      "Fremennik Slayer Dungeon"
+    ],
+    "Vampyres": [
+      "Darkmeyer",
+      "Meiyerditch",
+      "Slepe",
+      "Vampyrium"
+    ],
+    "Venators": [
+      "Apsul Hunting Ground",
+      "Virer Hunting Ground"
+    ],
+    "Warped Creatures": [
+      "Poison Waste Dungeon"
+    ],
+    "Waterfiends": [
+      "Ancient Cavern",
+      "Iorwerth Dungeon",
+      "Kraken Cove"
+    ],
+    "Wyrms": [
+      "Karuulm Slayer Dungeon",
+      "Neypotzli",
+      "Charred Dungeon",
+      "Wyrmscraig Cavern"
+    ]
+  }
+}
