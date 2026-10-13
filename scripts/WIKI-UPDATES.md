@@ -12,4 +12,4 @@ Upstream regeneration also uses review PRs, so the published main files may lag 
 
 Merging a data PR updates bundled data for a future plugin release; it does not update installed plugins or the current Plugin Hub submission automatically. Review attribution and existing dataset notices alongside data changes. This setup changes automation only, leaving the bundled v0.9.3 data intact.
 
-GitHub schedules can be delayed and public-repository schedules can be disabled after inactivity. Check failed workflow notifications and the Actions page. No new ChatGPT reminder is required; this schedule runs in GitHub.
+GitHub schedules can be delayed and public-repository schedules can be disabled after inactivity. Check failed workflow notifications and the Actions page. This schedule runs in GitHub.

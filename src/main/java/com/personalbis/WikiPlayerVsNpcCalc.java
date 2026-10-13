@@ -16,10 +16,20 @@ public final class WikiPlayerVsNpcCalc {
         String spellElement,
         boolean demonbane)
     {
+        return finalDistribution(attacker, monster, style, weapon, spellElement, demonbane, null);
+    }
+
+    public static HitDistribution.AttackDistribution finalDistribution(
+        HitDistribution.AttackDistribution attacker, MonsterDefinition monster, AttackStyle style,
+        EquipmentCandidate weapon, String spellElement, boolean demonbane,
+        java.util.Collection<EquipmentCandidate> gear)
+    {
         if (attacker == null || monster == null) return attacker;
         java.util.List<HitDistribution> out = new java.util.ArrayList<>();
+        boolean tailCrush = monster.getId() == 14014 && HueycoatlRules.qualifyingCrush(style, gear);
         for (HitDistribution d : attacker.dists())
-            out.add(WikiNpcTransforms.apply(d, monster, style, weapon, spellElement, demonbane));
+            out.add(HueycoatlRules.tail(WikiNpcTransforms.apply(d, monster, style, weapon, spellElement, demonbane),
+                monster, style, spellElement, tailCrush));
         return new HitDistribution.AttackDistribution(out).flatten();
     }
 
@@ -31,7 +41,8 @@ public final class WikiPlayerVsNpcCalc {
         if (attacker == null || monster == null) return attacker;
         java.util.List<HitDistribution> out = new java.util.ArrayList<>();
         for (HitDistribution d : attacker.dists())
-            out.add(WikiNpcTransforms.applyByWeaponName(d, monster, style, weaponName, spellElement, demonbane));
+            out.add(HueycoatlRules.tail(WikiNpcTransforms.applyByWeaponName(d, monster, style, weaponName, spellElement, demonbane),
+                monster, style, spellElement, false));
         return new HitDistribution.AttackDistribution(out).flatten();
     }
 

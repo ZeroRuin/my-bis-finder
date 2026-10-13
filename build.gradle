@@ -26,7 +26,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.6'
+version = '0.9.6.1'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -120,4 +120,12 @@ tasks.register('slayerGsonSelfTest', JavaExec) {
     description = 'Checks that Slayer loaders use RuneLite\'s supplied Gson.'
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.personalbis.SlayerGsonSelfTest'
+}
+
+tasks.register('hueycoatlSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks Hueycoatl target labels and per-hitsplat tail damage rules.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.HueycoatlSelfTest'
+    enableAssertions = true
 }

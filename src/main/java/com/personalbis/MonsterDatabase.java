@@ -84,7 +84,7 @@ public class MonsterDatabase
     {
         String name = wiki.name == null ? "" : wiki.name.toLowerCase(Locale.ROOT);
         String version = wiki.version == null ? "" : wiki.version.toLowerCase(Locale.ROOT);
-        return name.contains("unused") || version.contains("unused");
+        return name.contains("unused") || version.contains("unused") || HueycoatlRules.nonAttackable(wiki.id);
     }
 
     static String combatKey(MonsterDefinition m)
@@ -124,7 +124,7 @@ public class MonsterDatabase
     static MonsterDefinition fromWiki(WikiMonster wiki)
     {
         return new MonsterDefinition(
-            wiki.id, wiki.name.trim(), wiki.version, wiki.level, wiki.skills.def,
+            wiki.id, wiki.name.trim(), HueycoatlRules.part(wiki.id, wiki.version), wiki.level, wiki.skills.def,
             wiki.skills.magic, wiki.skills.ranged, wiki.skills.hp,
             wiki.defensive == null ? 0 : wiki.defensive.stab,
             wiki.defensive == null ? 0 : wiki.defensive.slash,

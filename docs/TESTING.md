@@ -17,6 +17,7 @@ loadoutStatsSizingSelfTest
 slayerTaskSelfTest
 reviewedSlayerLocationsSelfTest
 slayerGsonSelfTest
+hueycoatlSelfTest
 ```
 
 Run the data-tool checks with:
@@ -89,3 +90,13 @@ and tests. Do not just update hashes to bypass validation. See the
    stale Konar restriction. Named Konar boss tasks without an area roll remain usable.
 7. An undetected area must keep the picker empty. Unknown variants stay hidden
    with a readable note; restricted tasks must not fall back to unrestricted choices.
+
+## Hueycoatl targets
+
+Search for The Hueycoatl. Confirm three targets: Body (phase 1), Head and Tail.
+Generate melee setups for each, including Crush on the Tail. A qualifying single
+hit is limited to 9; two-hit weapons can show a combined max of 18. Crush must
+strictly exceed the equipped stab, slash, ranged and magic attack bonuses. Other attacks are
+limited to 4 per hitsplat, including Earth spells, without the crush zero-to-one
+benefit. Body/Head retain normal damage. Test switching parts
+and regenerating, and both bank recommendation views. No push is authorized.

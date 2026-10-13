@@ -1,7 +1,13 @@
 package com.personalbis;
-import java.util.*;
-public final class RangedOptimizationReport {
- private final OptimizedRangedLoadout best; private final List<RangedWeaponComparison> comparisons;
- public RangedOptimizationReport(OptimizedRangedLoadout b,List<RangedWeaponComparison> c){best=b;comparisons=Collections.unmodifiableList(c);}
- public OptimizedRangedLoadout getBest(){return best;} public List<RangedWeaponComparison> getComparisons(){return comparisons;}
+
+public final class RangedOptimizationReport
+{
+    private final OptimizedRangedLoadout best;
+
+    public RangedOptimizationReport(OptimizedRangedLoadout best)
+    {
+        this.best = best;
+    }
+
+    public OptimizedRangedLoadout getBest() { return best; }
 }

@@ -22,16 +22,7 @@ public class MagicLoadoutOptimizer {
   // strong caster such as Blue moon spear.
   List<MagicSpell> attackCandidates=topAttackCandidates(bank,m,15);
   List<EquipmentCandidate> weapons=weaponsForAttacks(ranked.get(EquipmentSlot.WEAPON),attackCandidates,m);
-  List<MagicLoadoutComparison> comps=new ArrayList<>(); List<MagicAuditLine> audit=new ArrayList<>(); OptimizedMagicLoadout global=null;
-  StringBuilder attackAudit=new StringBuilder("ATTACK-FIRST TOP ").append(attackCandidates.size()).append(": ");
-  for(int ai=0;ai<attackCandidates.size();ai++){if(ai>0)attackAudit.append(" | ");attackAudit.append(attackCandidates.get(ai).name);}
-  audit.add(new MagicAuditLine(attackAudit.toString()));
-  if(ranked.get(EquipmentSlot.WEAPON)!=null){
-   for(EquipmentCandidate c:ranked.get(EquipmentSlot.WEAPON)){
-    RequirementResult rr=c.getRequirementResult();
-    audit.add(new MagicAuditLine(c.getItem().getName()+" — "+(rr.isBlocked()?"BLOCKED: ":"owned/eligible: ")+rr.getMessage()));
-   }
-  }
+  OptimizedMagicLoadout global=null;
   for(EquipmentCandidate weapon:weapons){
    if(requiredSlot==EquipmentSlot.SHIELD&&weapon!=null&&weapon.isTwoHanded())continue;
    // Alpha 50.2: optimise complete loadout families independently.
@@ -50,14 +41,8 @@ public class MagicLoadoutOptimizer {
    Map<EquipmentSlot,EquipmentCandidate> ahrimSeed=ahrimBundle(ranked,weapon);
    if(ahrimSeed!=null&&requiredEquipment!=null)ahrimSeed.put(requiredEquipment.getSlot(),requiredEquipment);
    if(ahrimSeed!=null)familySeeds.add(ahrimSeed);
-   String wn=weapon==null?"No weapon":weapon.getItem().getName();
-   auditOnce(audit,wn+" — LOADOUT FAMILIES: ordinary + "+voidSeeds.size()+" complete Void Mage bundle(s)"
-     +(ahrimSeed==null?"":" + complete Ahrim/Amulet bundle"));
-
    OptimizedMagicLoadout weaponBest=null;
    for(Map<EquipmentSlot,EquipmentCandidate> familySeed:familySeeds){
-    boolean voidFamily=isVoidFamily(familySeed);
-    boolean eliteVoidFamily=isEliteVoidFamily(familySeed);
     List<Map<EquipmentSlot,EquipmentCandidate>> beam=new ArrayList<>();
     beam.add(new EnumMap<>(familySeed));
 
@@ -78,19 +63,9 @@ public class MagicLoadoutOptimizer {
      beam=new ArrayList<>(next.subList(0,Math.min(BEAM_WIDTH,next.size())));
     }
 
-    OptimizedMagicLoadout familyBest=evaluateFamily(beam,bank,m,task,weapon,audit,attackCandidates);
+    OptimizedMagicLoadout familyBest=evaluateFamily(beam,bank,m,task,weapon,attackCandidates);
     if(familyBest!=null){
      familyBest=completeNeutralSlots(familyBest,ranked,m,task,weapon);
-     String family=eliteVoidFamily?"Elite Void Mage":voidFamily?"Void Mage":"Ordinary";
-     MagicLoadoutEffects.Effect effect=MagicLoadoutEffects.evaluate(
-       familyBest.getItems().values(),m,task,familyBest.getSpell());
-     auditOnce(audit,String.format(Locale.ROOT,
-       "%s — FAMILY RESULT: %s / %s | %.4f DPS | %.2f%% | max %d | effect acc x%.4f dmg x%.4f",
-       wn,family,familyBest.getSpell().name,familyBest.getResult().getDps(),
-       familyBest.getResult().getAccuracy()*100.0,familyBest.getResult().getMaxHit(),
-       effect.accuracy,effect.damage));
-     comps.add(new MagicLoadoutComparison(
-       family+" | "+wn,familyBest.getSpell().name,familyBest.getResult()));
      if(weaponBest==null||FinalLoadoutSelection.betterTtk(
        familyBest.getResult().getExpectedTtkSeconds(),familyBest.getResult().getDps(),weaponBest.getResult().getExpectedTtkSeconds(),weaponBest.getResult().getDps()))weaponBest=familyBest;
     }
@@ -99,12 +74,11 @@ public class MagicLoadoutOptimizer {
       &&(global==null||FinalLoadoutSelection.betterTtk(
         weaponBest.getResult().getExpectedTtkSeconds(),weaponBest.getResult().getDps(),global.getResult().getExpectedTtkSeconds(),global.getResult().getDps())))global=weaponBest;
   }
-  comps.sort((a,b)->FinalLoadoutSelection.compareTtk(a.getResult().getExpectedTtkSeconds(),a.getResult().getDps(),b.getResult().getExpectedTtkSeconds(),b.getResult().getDps()));
-  return new MagicOptimizationReport(global,comps,audit);
+  return new MagicOptimizationReport(global);
  }
 
  private OptimizedMagicLoadout evaluateFamily(List<Map<EquipmentSlot,EquipmentCandidate>> beam,
-   List<BankItem> bank,MonsterDefinition m,boolean task,EquipmentCandidate weapon,List<MagicAuditLine> audit,List<MagicSpell> attackCandidates){
+   List<BankItem> bank,MonsterDefinition m,boolean task,EquipmentCandidate weapon,List<MagicSpell> attackCandidates){
   OptimizedMagicLoadout best=null;
   PoweredStaff powered=weapon==null?null:PoweredStaff.forWeapon(weapon.getItem().getName());
   for(Map<EquipmentSlot,EquipmentCandidate> gear:beam){
@@ -116,9 +90,7 @@ public class MagicLoadoutOptimizer {
     continue;
    }
    for(MagicSpell sp:attackCandidates){
-    String wn=weapon==null?"No weapon":weapon.getItem().getName();
     if(sp.level>account.real(Skill.MAGIC)){
-     if(sp.name.endsWith("Surge"))auditOnce(audit,wn+" / "+sp.name+" — BLOCKED: requires "+sp.level+" Magic (base "+account.real(Skill.MAGIC)+")");
      continue;
     }
     if("ancient".equals(sp.spellbook)&&!account.isAncientMagicksUnlocked())continue;
@@ -128,11 +100,9 @@ public class MagicLoadoutOptimizer {
        &&!account.isKingdomDividedUnlocked())continue;
     }
     if(!MagicSpellCompatibility.canAutocast(weapon==null?null:weapon.getItem().getName(),sp)){
-     if(!sp.element().isEmpty()&&m!=null&&m.weakTo(sp.element()))auditOnce(audit,wn+" / "+sp.name+" — BLOCKED: weapon cannot autocast");
      continue;
     }
     if(!runesAvailable(sp,bank,weapon,gear.values())){
-     if(!sp.element().isEmpty()&&m!=null&&m.weakTo(sp.element()))auditOnce(audit,wn+" / "+sp.name+" — BLOCKED: required runes unavailable");
      continue;
     }
     MagicCombatResult r=calc.calculate(gear,m,sp,task);
@@ -143,16 +113,6 @@ public class MagicLoadoutOptimizer {
   return best;
  }
 
- private boolean isVoidFamily(Map<EquipmentSlot,EquipmentCandidate> g){
-  return named(g.get(EquipmentSlot.HEAD),"void mage helm")
-    &&named(g.get(EquipmentSlot.HANDS),"void knight gloves")
-    &&(named(g.get(EquipmentSlot.BODY),"void knight top")||named(g.get(EquipmentSlot.BODY),"elite void top"))
-    &&(named(g.get(EquipmentSlot.LEGS),"void knight robe")||named(g.get(EquipmentSlot.LEGS),"elite void robe"));
- }
- private boolean isEliteVoidFamily(Map<EquipmentSlot,EquipmentCandidate> g){
-  return isVoidFamily(g)&&named(g.get(EquipmentSlot.BODY),"elite void top")
-    &&named(g.get(EquipmentSlot.LEGS),"elite void robe");
- }
  private boolean named(EquipmentCandidate c,String n){
   return c!=null&&c.getItem()!=null&&c.getItem().getName().equalsIgnoreCase(n);
  }
@@ -298,22 +258,6 @@ public class MagicLoadoutOptimizer {
    for(EquipmentCandidate c:x)if(!c.getRequirementResult().isBlocked()&&MagicLoadoutEffects.synergy(c)&&!r.contains(c))r.add(c);
   }
   return r;
- }
- private boolean canAutocastStandard(EquipmentCandidate weapon){
-  if(weapon==null)return false;
-  String n=weapon.getItem().getName().toLowerCase();
-  if(PoweredStaff.forWeapon(n)!=null||PoweredStaff.requiresContext(n))return false;
-  // Standard elemental combat spells are supported by ordinary staves,
-  // battlestaves, mystic staves and common autocast-capable magic weapons.
-  if(n.contains("staff")||n.contains("battlestaff"))return true;
-  if(n.contains("wand"))return true;
-  if(n.contains("ancient sceptre")||n.contains("skull sceptre"))return true;
-  return false;
- }
-
- private void auditOnce(List<MagicAuditLine> audit,String text){
-  for(MagicAuditLine x:audit)if(x.getText().equals(text))return;
-  audit.add(new MagicAuditLine(text));
  }
 
  private boolean runesAvailable(MagicSpell sp,List<BankItem> bank,EquipmentCandidate weapon,Collection<EquipmentCandidate> gear){

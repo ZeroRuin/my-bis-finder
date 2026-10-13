@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.6.1 — Hueycoatl and Code Cleanup
+
+- Separates Hueycoatl Body (phase 1), Head and Tail targets; hides non-attackable states.
+- Models the tail damage transform per hitsplat, including multi-hit attacks and expected time to kill.
+- Requires a Crush attack style and Crush bonus strictly higher than Stab, Slash, Ranged and Magic for the tail’s higher damage limit and minimum-hit benefit.
+- Keeps Earth spells on the standard tail damage limit.
+- Removes unused diagnostics, comparison reports and profiling bookkeeping while preserving optimizer search caches.
+- Expands README feature descriptions and explains Prayer-bonus preferences.
+- Removes the historical local cleanup report and adds permanent Hueycoatl regression coverage.
+
 ## 0.9.6 — Slayer Task Alternatives
 
 - Expands current Slayer assignments into selectable combat variants, monsters and boss alternatives.
@@ -85,8 +95,7 @@
 
 - Moves the detailed release history out of the Plugin Hub description and into
   this dedicated changelog.
-- Adds a public AI-development and resource-use disclosure explaining that Wiki
-  data is bundled, calculations run locally, and releases are tested and reviewed.
+- Documents bundled Wiki data, local calculations, and release testing and review.
 - Publishes the 13 September 2026 date of the bundled equipment and monster data
   snapshot.
 

@@ -134,7 +134,6 @@ public class PersonalBisBankFilter
         }
     }
 
-
     public void setBestStyle(AttackStyle style)
     {
         bestStyle = style;
@@ -506,31 +505,6 @@ public class PersonalBisBankFilter
             scrollY));
     }
 
-    private Widget nextUsableItemWidget(Widget[] children, int start)
-    {
-        for (int i = Math.max(0, start); i < children.length; i++)
-        {
-            Widget child = children[i];
-            if (child != null && child.getItemId() >= 0)
-            {
-                return child;
-            }
-        }
-        return null;
-    }
-
-    private int indexAfter(Widget[] children, Widget widget, int start)
-    {
-        for (int i = Math.max(0, start); i < children.length; i++)
-        {
-            if (children[i] == widget)
-            {
-                return i + 1;
-            }
-        }
-        return start + 1;
-    }
-
     private void configureBankItem(Widget widget, int itemId, int quantity)
     {
         int canonicalId = itemManager.canonicalize(itemId);
@@ -572,30 +546,6 @@ public class PersonalBisBankFilter
         }
         widget.setAction(10, "Examine");
         widget.revalidate();
-    }
-
-    private void configureRecommendedItem(Widget widget, int itemId, int owned, int recommended)
-    {
-        configureBankItem(widget, itemId, owned);
-        ItemComposition def = client.getItemDefinition(itemManager.canonicalize(itemId));
-        widget.setItemQuantity(Math.max(1, recommended));
-        widget.setItemQuantityMode(ItemQuantityMode.ALWAYS);
-        widget.setName("<col=ff9040>" + def.getName() + "</col><br><col=ffff00>Recommended: " + recommended + "</col><br>Bank: " + owned);
-        widget.revalidate();
-    }
-
-    private int countOwned(ItemContainer bank, int canonicalId)
-    {
-        int count = 0;
-        for (Item item : bank.getItems())
-        {
-            if (item != null && item.getId() > 0 && item.getQuantity() > 0
-                && itemManager.canonicalize(item.getId()) == canonicalId)
-            {
-                count += item.getQuantity();
-            }
-        }
-        return count;
     }
 
     private int findRealIndex(ItemContainer bank, int displayedItemId)

@@ -11,12 +11,8 @@ public class RangedLoadoutOptimizer {
  // supporting-gear coverage and exact final comparison.
  private static final int SLOT=12, BEAM=128, EXACT_FINALISTS=48;
  private final EquipmentIntelligence intel; private final RangedCombatCalculator calc; private final AccountSnapshot account;
- private volatile String lastProfileSummary="";
- private final ThreadLocal<Profile> activeProfile=new ThreadLocal<>();
- private static final class Profile {
-  long started=System.nanoTime(), trimNanos, finalNanos, completionNanos;
-  int weapons, ammoBranches, trimCalls, dpsCalls, fastScoreCalls, statesScored, uniqueStatesScored, dedupedStates, scoreCacheHits, finalStates, completionTrials;
-  int slotCandidatesBefore, slotCandidatesAfter, slotCandidatesPruned;
+ private final ThreadLocal<SearchContext> activeSearch=new ThreadLocal<>();
+ private static final class SearchContext {
   final Map<String,Double> scoreCache=new HashMap<>();
   final Map<String,RangedCombatResult> exactCache=new HashMap<>();
   final EnumMap<EquipmentSlot,List<EquipmentCandidate>> choiceCache=new EnumMap<>(EquipmentSlot.class);
@@ -25,7 +21,6 @@ public class RangedLoadoutOptimizer {
   final EquipmentCandidate weapon; final OptimizedRangedLoadout loadout;
   WeaponResult(EquipmentCandidate w,OptimizedRangedLoadout l){weapon=w;loadout=l;}
  }
- public String getLastProfileSummary(){return lastProfileSummary;}
  @Inject public RangedLoadoutOptimizer(EquipmentIntelligence i,RangedCombatCalculator c,AccountSnapshot a){intel=i;calc=c;account=a;}
 
  public OptimizedRangedLoadout optimize(List<BankItem>b,MonsterDefinition m,boolean task){return optimizeWithReport(b,m,task).getBest();}
@@ -35,7 +30,7 @@ public class RangedLoadoutOptimizer {
   return optimizeWithReportRanked(ranked,m,task);
  }
  public RangedOptimizationReport optimizeWithReportRanked(Map<EquipmentSlot,List<EquipmentCandidate>> ranked,MonsterDefinition m,boolean task){
-  Profile profile=new Profile(); activeProfile.set(profile);
+  SearchContext context=new SearchContext(); activeSearch.set(context);
   try {
   ranked=SlayerTargetRequirements.constrainRanked(m,ranked);
   EquipmentSlot requiredSlot=SlayerTargetRequirements.requiredEquipmentSlot(m);
@@ -44,54 +39,26 @@ public class RangedLoadoutOptimizer {
   // weapon. Exact target DPS, ammo compatibility and complete gear decide BiS;
   // raw Equipment Intelligence rank no longer excludes a weapon up front.
   List<EquipmentCandidate> weapons=allUsable(ranked.get(EquipmentSlot.WEAPON));
-  profile.weapons=weapons.size();
-  List<RangedWeaponComparison> comps=new ArrayList<>(); OptimizedRangedLoadout best=null;
+  OptimizedRangedLoadout best=null;
   final Map<EquipmentSlot,List<EquipmentCandidate>> searchRanked=ranked;
-  final Profile masterProfile=profile;
   List<WeaponResult> weaponResults=IntStream.range(0,weapons.size()).parallel().mapToObj(i->{
    EquipmentCandidate w=weapons.get(i);
    if(requiredSlot==EquipmentSlot.SHIELD&&RangedAmmoRules.occupiesBothHands(w))return new WeaponResult(w,null);
-   Profile branch=new Profile();activeProfile.set(branch);
+   activeSearch.set(new SearchContext());
    try{return new WeaponResult(w,optimizeWeapon(searchRanked,w,m,task,requiredEquipment));}
-   finally{activeProfile.remove();mergeProfile(masterProfile,branch);}
+   finally{activeSearch.remove();}
   }).collect(java.util.stream.Collectors.toList());
-  activeProfile.set(profile);
+  activeSearch.set(context);
   for(WeaponResult wr:weaponResults){
-   EquipmentCandidate w=wr.weapon;OptimizedRangedLoadout one=wr.loadout;
+   OptimizedRangedLoadout one=wr.loadout;
    if(one==null)continue;
-   EquipmentCandidate ammo=one.getLoadedAmmo()!=null?one.getLoadedAmmo():one.getItems().get(EquipmentSlot.AMMO);
-   comps.add(new RangedWeaponComparison(w.getItem().getName(),ammo==null?RangedAmmoRules.ammoDisplay(w):ammo.getItem().getName(),RangedAmmoRules.weaponAmmo(w),RangedAmmoRules.defenceClass(w),
-    ammo==null?"":EnchantedBoltEffects.effectLabel(ammo),one.getResult(),gearSummary(one.getItems()),one.getItems()));
    if(best==null||FinalLoadoutSelection.betterTtk(one.getResult().getExpectedTtkSeconds(),one.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps()))best=one;
   }
-  comps.sort((a,z)->FinalLoadoutSelection.compareTtk(a.getResult().getExpectedTtkSeconds(),a.getResult().getDps(),z.getResult().getExpectedTtkSeconds(),z.getResult().getDps()));
-  return new RangedOptimizationReport(best,comps);
+  return new RangedOptimizationReport(best);
   } finally {
-   long total=System.nanoTime()-profile.started;
-   long other=Math.max(0,total-profile.trimNanos-profile.finalNanos-profile.completionNanos);
-   lastProfileSummary="Ranged detail:"+System.lineSeparator()+
-    "  Weapons: "+profile.weapons+" | ammo branches: "+profile.ammoBranches+System.lineSeparator()+
-    "  Beam trims: "+profile.trimCalls+" | states scored: "+profile.statesScored+System.lineSeparator()+
-    "  Unique states: "+profile.uniqueStatesScored+" | deduped: "+profile.dedupedStates+System.lineSeparator()+
-    "  DPS calculations: "+profile.dpsCalls+" | fast scores: "+profile.fastScoreCalls+System.lineSeparator()+
-    "  Score-cache hits: "+profile.scoreCacheHits+System.lineSeparator()+
-    "  Slot candidates: "+profile.slotCandidatesBefore+" -> "+profile.slotCandidatesAfter+" (pruned "+profile.slotCandidatesPruned+")"+System.lineSeparator()+
-    "  Beam score/trim: "+(profile.trimNanos/1_000_000L)+" ms"+System.lineSeparator()+
-    "  Final beam eval: "+(profile.finalNanos/1_000_000L)+" ms ("+profile.finalStates+" states)"+System.lineSeparator()+
-    "  Neutral completion: "+(profile.completionNanos/1_000_000L)+" ms ("+profile.completionTrials+" trials)"+System.lineSeparator()+
-    "  Branch/other: "+(other/1_000_000L)+" ms";
-   activeProfile.remove();
+   activeSearch.remove();
   }
  }
-
- private void mergeProfile(Profile into,Profile from){synchronized(into){
-  into.trimNanos+=from.trimNanos;into.finalNanos+=from.finalNanos;into.completionNanos+=from.completionNanos;
-  into.ammoBranches+=from.ammoBranches;into.trimCalls+=from.trimCalls;into.dpsCalls+=from.dpsCalls;
-  into.fastScoreCalls+=from.fastScoreCalls;into.statesScored+=from.statesScored;into.uniqueStatesScored+=from.uniqueStatesScored;
-  into.dedupedStates+=from.dedupedStates;into.scoreCacheHits+=from.scoreCacheHits;into.finalStates+=from.finalStates;
-  into.completionTrials+=from.completionTrials;into.slotCandidatesBefore+=from.slotCandidatesBefore;
-  into.slotCandidatesAfter+=from.slotCandidatesAfter;into.slotCandidatesPruned+=from.slotCandidatesPruned;
- }}
 
  private OptimizedRangedLoadout optimizeWeapon(Map<EquipmentSlot,List<EquipmentCandidate>> ranked,EquipmentCandidate weapon,MonsterDefinition m,boolean task,EquipmentCandidate requiredEquipment){
   // Alpha 50.4.8: weapon/ammo anchored search.  Ammo is selected before any
@@ -104,14 +71,12 @@ public class RangedLoadoutOptimizer {
    for(EquipmentCandidate rawAmmo:ammunition){
     EquipmentCandidate ammo=RangedAmmoRules.usesLoadedDarts(weapon)?asLoadedDart(rawAmmo):rawAmmo;
     if(!RangedAmmoRules.compatible(weapon,ammo))continue;
-    Profile p=activeProfile.get(); if(p!=null)p.ammoBranches++;
     OptimizedRangedLoadout one=optimizeWeaponAmmo(ranked,weapon,ammo,m,task,requiredEquipment);
     if(one!=null&&(best==null||FinalLoadoutSelection.betterTtk(one.getResult().getExpectedTtkSeconds(),one.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())
       ||(Double.compare(one.getResult().getExpectedTtkSeconds(),best.getResult().getExpectedTtkSeconds())==0&&prayerBonus(one.getItems())>prayerBonus(best.getItems()))))best=one;
    }
    return best;
   }
-  Profile p=activeProfile.get(); if(p!=null)p.ammoBranches++;
   return optimizeWeaponAmmo(ranked,weapon,null,m,task,requiredEquipment);
  }
 
@@ -164,14 +129,10 @@ public class RangedLoadoutOptimizer {
   }
   OptimizedRangedLoadout best=null;
   int finalists=Math.min(EXACT_FINALISTS,beam.size());
-  Profile prof=activeProfile.get(); long finalStart=System.nanoTime(); if(prof!=null)prof.finalStates+=finalists;
   for(int i=0;i<finalists;i++){Map<EquipmentSlot,EquipmentCandidate>g=beam.get(i);RangedCombatResult r=exactCached(g,m,task);
    if(r!=null&&Double.isFinite(r.getDps())&&(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())
     ||(Double.compare(r.getExpectedTtkSeconds(),best.getResult().getExpectedTtkSeconds())==0&&prayerBonus(g)>prayerBonus(best.getItems()))))best=new OptimizedRangedLoadout(g,r);}
-  if(prof!=null)prof.finalNanos+=System.nanoTime()-finalStart;
-  long completionStart=System.nanoTime();
   OptimizedRangedLoadout completed=completeNeutralSlots(best,ranked,weapon,m,task);
-  if(prof!=null)prof.completionNanos+=System.nanoTime()-completionStart;
   if(completed!=null&&anchoredAmmo!=null&&RangedAmmoRules.usesLoadedDarts(weapon)){
    Map<EquipmentSlot,EquipmentCandidate> displayGear=new EnumMap<>(completed.getItems());
    displayGear.remove(EquipmentSlot.AMMO);
@@ -206,7 +167,6 @@ public class RangedLoadoutOptimizer {
     if(slot==EquipmentSlot.AMMO&&RangedAmmoRules.requiresEquippedAmmo(weapon)
       &&!RangedAmmoRules.compatible(weapon,c))continue;
     Map<EquipmentSlot,EquipmentCandidate> trial=new EnumMap<>(gear);trial.put(slot,c);
-    Profile prof=activeProfile.get(); if(prof!=null)prof.completionTrials++;
     RangedCombatResult r=exactCached(trial,m,task);
     if(r==null||FinalLoadoutSelection.betterTtk(current.getExpectedTtkSeconds(),current.getDps(),r.getExpectedTtkSeconds(),r.getDps()))continue;
     if(chosen==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),chosenResult.getExpectedTtkSeconds(),chosenResult.getDps())
@@ -220,15 +180,13 @@ public class RangedLoadoutOptimizer {
  }
 
  private RangedCombatResult exactCached(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
-  Profile p=activeProfile.get();StringBuilder key=new StringBuilder();
+  SearchContext p=activeSearch.get();StringBuilder key=new StringBuilder();
   for(EquipmentSlot slot:EquipmentSlot.values()){EquipmentCandidate c=gear.get(slot);key.append(c==null?0:c.getItem().getItemId()).append(',');}
-  String k=key.toString();if(p!=null){RangedCombatResult hit=p.exactCache.get(k);if(hit!=null)return hit;p.dpsCalls++;}
+  String k=key.toString();if(p!=null){RangedCombatResult hit=p.exactCache.get(k);if(hit!=null)return hit;}
   RangedCombatResult r=calc.calculate(gear,m,task);if(p!=null)p.exactCache.put(k,r);return r;
  }
 
  private List<Map<EquipmentSlot,EquipmentCandidate>> trim(List<Map<EquipmentSlot,EquipmentCandidate>> list,MonsterDefinition m,boolean task){
-  Profile prof=activeProfile.get(); long started=System.nanoTime();
-  if(prof!=null){prof.trimCalls++;prof.statesScored+=list.size();}
   // alpha50.4.16: collapse offensively equivalent partial states before the
   // expensive combat calculation.  The signature retains every identity that
   // can change a later ranged mechanic/set bonus; among equivalent states we
@@ -238,7 +196,6 @@ public class RangedLoadoutOptimizer {
    String k=combatStateKey(g); Map<EquipmentSlot,EquipmentCandidate> prior=unique.get(k);
    if(prior==null||prayerBonus(g)>prayerBonus(prior))unique.put(k,g);
   }
-  if(prof!=null){prof.uniqueStatesScored+=unique.size();prof.dedupedStates+=list.size()-unique.size();}
   // alpha50.4.18: bounded top-K selection.  We only need the best BEAM
   // states, so sorting every unique partial state is wasted work.  Score each
   // state once, keep a min-heap of the best BEAM states, then sort only those for a
@@ -259,13 +216,12 @@ public class RangedLoadoutOptimizer {
   winners.sort(ascending.reversed());
   List<Map<EquipmentSlot,EquipmentCandidate>> result=new ArrayList<>(winners.size());
   for(ScoredState ss:winners)result.add(ss.gear);
-  if(prof!=null)prof.trimNanos+=System.nanoTime()-started;
   return result;
  }
  private double safeDpsCached(Map<EquipmentSlot,EquipmentCandidate>g,MonsterDefinition m,boolean task){
-  Profile p=activeProfile.get(); String k=combatStateKey(g);
-  if(p!=null){Double hit=p.scoreCache.get(k);if(hit!=null){p.scoreCacheHits++;return hit;}}
-  if(p!=null)p.fastScoreCalls++; double d=fastDps(g,m,task); if(p!=null)p.scoreCache.put(k,d); return d;
+  SearchContext p=activeSearch.get(); String k=combatStateKey(g);
+  if(p!=null){Double hit=p.scoreCache.get(k);if(hit!=null)return hit;}
+  double d=fastDps(g,m,task); if(p!=null)p.scoreCache.put(k,d); return d;
  }
  private double fastDps(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
   int atk=0,str=0,speed=4; boolean slayer=false; EquipmentCandidate weapon=gear.get(EquipmentSlot.WEAPON);
@@ -362,12 +318,11 @@ public class RangedLoadoutOptimizer {
  // Ranged DPS first and Prayer on exact DPS ties, making RA/RS/Prayer dominance
  // safe for ordinary supporting items.
  private List<EquipmentCandidate> choicesFor(Map<EquipmentSlot,List<EquipmentCandidate>> ranked,EquipmentSlot slot){
-  Profile p=activeProfile.get();
+  SearchContext p=activeSearch.get();
   if(p!=null){List<EquipmentCandidate> cached=p.choiceCache.get(slot);if(cached!=null)return cached;}
   List<EquipmentCandidate> raw=usable(ranked.get(slot),SLOT);
   List<EquipmentCandidate> pruned=dominancePrune(raw);
   if(p!=null){
-   p.slotCandidatesBefore+=raw.size();p.slotCandidatesAfter+=pruned.size();p.slotCandidatesPruned+=raw.size()-pruned.size();
    p.choiceCache.put(slot,pruned);
   }
   return pruned;
@@ -447,18 +402,6 @@ public class RangedLoadoutOptimizer {
   }
   return x;
  }
- private String gearSummary(Map<EquipmentSlot,EquipmentCandidate> g){
-  StringBuilder s=new StringBuilder();
-  for(EquipmentSlot slot:EquipmentSlot.values()){
-   EquipmentCandidate c=g.get(slot); if(c==null)continue;
-   if(s.length()>0)s.append(" | ");
-   s.append(slot.name()).append(": ").append(c.getItem().getName())
-    .append(" [RA ").append(c.getRangedAttack()>=0?"+":"").append(c.getRangedAttack())
-    .append(", RS ").append(c.getRangedStrength()>=0?"+":"").append(c.getRangedStrength()).append("]");
-  }
-  return s.toString();
- }
-
  private int prayerBonus(Map<EquipmentSlot,EquipmentCandidate>g){int p=0;for(EquipmentCandidate c:g.values())if(c!=null)p+=c.getPrayer();return p;}
  private boolean special(EquipmentCandidate c){String n=c.getItem().getName().toLowerCase();return n.contains("twisted bow")||n.contains("bow of faerdhinen")||n.contains("crystal bow")||n.contains("blowpipe")||n.contains("dragon hunter crossbow");}
 }

@@ -10,16 +10,47 @@ You do not need to enter your bank into a separate calculator.
 
 ## Features
 
-- Owned equipment, compatible ammunition and available runes.
-- Slash, Stab, Crush, Ranged and Magic comparisons, with a **BEST** indicator
-  and cached results for switching styles.
-- Supported spells, offensive prayers, food, potions and Slayer supplies.
-- Target defence, elemental weaknesses, immunities, weapon passives, enchanted
-  bolt effects and multi-hit attacks.
-- Current Slayer task alternatives, including differently named monsters and
-  bosses, with location filtering for Konar and Krystilia.
-- A bank view for finding recommended items and optional GIM shared storage.
-- Persistent item exclusions and a statistics panel that expands for wrapped text.
+- **Loadouts from gear you own:** considers your scanned bank, equipped items
+  and inventory, together with supported level and unlock requirements. Selects
+  compatible ammunition and spells using available runes or equipment rune sources.
+- **Five combat styles:** compares Slash, Stab, Crush, Ranged and Magic, then
+  marks the style with the lowest estimated time to kill as **BEST**. Generated
+  results are cached so you can switch styles without recalculating.
+- **Time to kill and sustained DPS:** estimates finite-fight kill time from hit
+  distributions, including misses, multi-hit attacks and overkill. Sustained DPS
+  is also displayed and helps distinguish otherwise equal results.
+- **Prayer-aware equipment choices:** favours higher equipment Prayer bonus when
+  combat results tie. Eligible owned items can fill unused slots when they preserve
+  the calculated offensive result; weapon, shield and ammunition restrictions
+  still apply. This is a preference within the search, rather than a guarantee
+  of the highest possible Prayer bonus in every slot.
+- **Target-specific combat calculations:** accounts for supported defence stats,
+  elemental weaknesses, immunities, weapon passives and multi-hit mechanics.
+  Examples include Fang, Scythe, demonbane and dragonbane weapons, and separate
+  Hueycoatl Body, Head and Tail targets with per-hitsplat tail damage rules.
+- **Enchanted bolts and ammunition:** models supported Ruby, Diamond, Onyx and
+  Dragonstone bolt effects, including supported diary bonuses and target
+  restrictions. Ruby bolt damage changes as enemy HP falls during TTK calculations;
+  an option lets you exclude Ruby bolts from the search.
+- **Spells, prayers and supplies:** selects supported spells and offensive prayers,
+  and recommends owned food, combo food, dose-aware potions and target-specific
+  supplies such as antifire, anti-venom, Slayer equipment and finishing tools.
+- **Slayer task alternatives:** detects your assignment and offers supported
+  monsters, combat variants and boss alternatives. Konar choices are filtered by
+  assigned area, and Krystilia choices by confirmed Wilderness locations; manual
+  target search remains available outside task mode.
+- **Recommended-item bank view:** the bank button groups the selected loadout's
+  equipment, ammunition and supplies so you can find and withdraw them using
+  normal bank interactions. Toggle it off to restore the normal bank layout.
+- **Optional GIM shared storage:** includes scanned shared gear and supplies in
+  calculations. Both storage interfaces show recommendations and references to
+  items held in the other store, with the shared snapshot time shown in the sidebar.
+- **Persistent item exclusions:** right-click recommended items to exclude them,
+  or edit the exclusions list in settings. Results stay visible while you make
+  several exclusions, with a warning to regenerate before applying the changes.
+- **Readable loadout summaries:** shows selected gear, combat statistics, spell
+  or ammunition and prayer. The statistics panel expands to fit wrapped text,
+  including longer spell names.
 
 ## Getting started
 
@@ -153,15 +184,11 @@ checks. Data provenance and regeneration instructions are recorded in the
 Slayer data notes and scripts documentation. Historical combat-math work remains
 in the [Wiki DPS parity notes](WIKI_DPS_PARITY.md).
 
-## Licence and development disclosure
+## Licence
 
 Plugin source is provided under the [BSD 2-Clause License](LICENSE). Bundled
 data provenance is recorded in [WIKI-DATA-NOTES.txt](WIKI-DATA-NOTES.txt), the
 data manifest and the Slayer data notes. Third-party notices remain alongside
 the relevant resources.
-
-My BiS Finder was developed with substantial assistance from AI coding tools.
-The maintainer reviews and tests releases before submission to Plugin Hub;
-releases remain subject to its review process.
 
 See the [changelog](CHANGELOG.md) for version history.

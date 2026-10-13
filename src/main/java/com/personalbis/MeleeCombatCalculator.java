@@ -215,7 +215,7 @@ public class MeleeCombatCalculator
             attackDist=WikiPlayerVsNpcCalc.standardAttacker(displayedMaxHit,accuracy);
 
         attackDist=WikiPlayerVsNpcCalc.applyCorp(attackDist,monster,weapon,style);
-        attackDist=WikiPlayerVsNpcCalc.finalDistribution(attackDist,monster,style,weapon,null,false);
+        attackDist=WikiPlayerVsNpcCalc.finalDistribution(attackDist,monster,style,weapon,null,false,gear.values());
         double dps=WikiPlayerVsNpcCalc.expectedDamage(attackDist)/seconds;
         int targetHp=monster==null?1:Math.max(1,monster.getHitpoints());
         double ttk=ExpectedKillTime.seconds(attackDist,targetHp,speed);
