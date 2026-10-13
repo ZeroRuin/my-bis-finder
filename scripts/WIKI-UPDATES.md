@@ -1,6 +1,6 @@
 # Weekly Wiki data updates
 
-`.github/workflows/weekly-wiki-data.yml` checks the OSRS Wiki DPS Calculator's published equipment, monster and spell JSON every Friday at 04:17 UTC (Friday afternoon in Adelaide). It can also be run from Actions → Weekly Wiki data update → Run workflow.
+`.github/workflows/weekly-wiki-data.yml` checks the OSRS Wiki DPS Calculator's published equipment, monster and spell JSON every Wednesday at 11 pm Adelaide time (`Australia/Adelaide`, automatically accounting for daylight saving). It can also be run from Actions → Weekly Wiki data update → Run workflow.
 
 The job uses GitHub's built-in token, needs no custom secrets, and makes no requests to the Wiki. In repository Settings → Actions → General → Workflow permissions, **Allow GitHub Actions to create and approve pull requests** must be enabled for PR creation. The workflow never approves or merges PRs.
 
