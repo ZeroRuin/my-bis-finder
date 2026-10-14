@@ -18,6 +18,9 @@ slayerTaskSelfTest
 reviewedSlayerLocationsSelfTest
 slayerGsonSelfTest
 hueycoatlSelfTest
+theatreOfBloodSelfTest
+raidOptionsSelfTest
+targetStyleImmunitySelfTest
 ```
 
 Run the data-tool checks with:
@@ -100,3 +103,56 @@ strictly exceed the equipped stab, slash, ranged and magic attack bonuses. Other
 limited to 4 per hitsplat, including Earth spells, without the crush zero-to-one
 benefit. Body/Head retain normal damage. Test switching parts
 and regenerating, and both bank recommendation views. No push is authorized.
+
+## Seren and Theatre of Blood
+
+1. Search each main Theatre boss: Maiden, Bloat, Nylocas Vasilias, Sotetseg,
+   Xarpus and Verzik. Confirm Entry Mode, Normal Mode and Hard Mode are separate.
+2. Check all three Verzik phases in each difficulty. Phase 1 has melee max 10
+   and ranged/magic max 3 per hitsplat; phases 2 and 3 have no phase-one limiter.
+   Multi-hit weapons may display a total max above the per-hitsplat limit.
+3. Select each Nylocas Vasilias form. Only its matching style should be available
+   as a damaging result; check all three Hard Mode Prinkipas forms too.
+4. Switch equal-stat Normal/Hard targets, then regenerate. Check the selected
+   mode/form remains labelled correctly and previous results are invalidated.
+5. Check Seren with a setup whose pre-transform max is 24 or higher. Damage
+   through 24 is unchanged; only higher hits reroll to 22–24.
+
+These are selected-state comparisons at bundled HP, without party-size scaling,
+whole-raid timing, room downtime, damage from teammates or Dawnbringer.
+
+## CoX and ToA options
+
+1. Select a non-raid target: no raid controls should appear. Select a CoX target:
+   only party HP 99, combat 126, size 1 and unchecked Challenge Mode should appear.
+2. Select a ToA boss: only raid level 0, path level 0, size 1 and unchecked Exclude
+   Smelling salts should appear. Values must remain separate between the raids.
+3. Generate, change any raid input, and confirm the existing result becomes stale
+   and needs regeneration. Test changing an input while generation is running too.
+4. Compare Tekton solo normal/CM, Olm hands/head and parties of 2–3. Confirm HP,
+   target Defence, resulting accuracy and TTK change appropriately after generation.
+5. Compare ToA levels 0/150/300 and path levels 0/2. Path changes should not affect
+   Warden HP. Check the target HP line and the resulting DPS/TTK.
+6. Compare salts on/off with supported potions present, then excluded. Excluding
+   salts should use the supported owned boost or base levels, without retaining an
+   observed salt boost. Confirm non-ToA targets retain their captured levels.
+7. Check all Akkha vulnerability phases, final melee phase, Warden phase labels,
+   Zebak Normal/Enraged, and CoX part/variant labels. Confirm wrong styles cannot win.
+8. Check input bounds and invalid typed values; an invalid edit must block generation.
+   Resize the sidebar and confirm all fields, checkbox labels and stats remain visible.
+9. Check phase-two Warden and core-ejected notices. These snapshots still lack
+   phase-two accuracy-based damage and actual exposed-core attack mechanics.
+
+## Style immunity and raid input styling
+
+1. Select Tekton and generate. Ranged should be grey, without a calculated Ranged
+   loadout; allowed styles must still produce a BEST indicator when available.
+2. Click grey Ranged. The gear/stats should be replaced with Tekton's immunity
+   message, and the bank view must not retain the previous style's recommendations.
+3. Switch to an allowed style, then repeat target/phase switches with Nylocas,
+   Akkha and Guardians. Check all three melee buttons where melee is immune.
+4. Confirm Zulrah's polearm exception, Guardian pickaxes and leafy weapon/spell
+   restrictions are not blanket-labelled immune. No owned equipment should still
+   show the existing no-usable-loadout state rather than an immunity message.
+5. Check CoX and ToA number fields: outer borders should be gold with dark input
+   backgrounds and subdued arrow borders, matching the sidebar rather than white.

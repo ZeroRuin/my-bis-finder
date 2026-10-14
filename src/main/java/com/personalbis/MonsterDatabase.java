@@ -57,18 +57,21 @@ public class MonsterDatabase
         for (WikiMonster wiki : source)
         {
             if (wiki == null || wiki.name == null || wiki.skills == null || isUnused(wiki)) continue;
-            MonsterDefinition candidate = fromWiki(wiki);
-            String key = combatKey(candidate);
-            MonsterDefinition existing = unique.get(key);
-            if (existing == null)
+            for (String version : RaidTargetVariants.versions(wiki))
             {
-                unique.put(key, candidate);
-            }
-            else if (!existing.getVersion().equalsIgnoreCase(candidate.getVersion()))
-            {
-                // These records differ only by model/location/version text. They
-                // produce the same combat result, so expose one neutral entry.
-                unique.put(key, withoutVersion(existing));
+                MonsterDefinition candidate = fromWiki(wiki, version);
+                String key = combatKey(candidate);
+                MonsterDefinition existing = unique.get(key);
+                if (existing == null)
+                {
+                    unique.put(key, candidate);
+                }
+                else if (!existing.getVersion().equalsIgnoreCase(candidate.getVersion()))
+                {
+                    // These records differ only by model/location/version text. They
+                    // produce the same combat result, so expose one neutral entry.
+                    unique.put(key, withoutVersion(existing));
+                }
             }
         }
 
@@ -84,7 +87,7 @@ public class MonsterDatabase
     {
         String name = wiki.name == null ? "" : wiki.name.toLowerCase(Locale.ROOT);
         String version = wiki.version == null ? "" : wiki.version.toLowerCase(Locale.ROOT);
-        return name.contains("unused") || version.contains("unused") || HueycoatlRules.nonAttackable(wiki.id);
+        return name.contains("unused") || version.contains("unused") || HueycoatlRules.nonAttackable(wiki.id) || RaidTargetVariants.hidden(wiki);
     }
 
     static String combatKey(MonsterDefinition m)
@@ -96,7 +99,8 @@ public class MonsterDatabase
             + '|' + m.getMagicDefence() + '|' + m.getLightDefence()
             + '|' + m.getStandardDefence() + '|' + m.getHeavyDefence()
             + '|' + m.getSize() + '|' + m.getWeaknessElement() + '|' + m.getWeaknessSeverity()
-            + '|' + m.getAttributes().toString().toLowerCase(Locale.ROOT);
+            + '|' + m.getAttributes().toString().toLowerCase(Locale.ROOT)
+            + TheatreOfBloodRules.catalogueKey(m) + RaidTargetVariants.key(m);
     }
 
     static boolean sameCatalogueEntry(MonsterDefinition left, MonsterDefinition right)
@@ -123,9 +127,14 @@ public class MonsterDatabase
 
     static MonsterDefinition fromWiki(WikiMonster wiki)
     {
+        return fromWiki(wiki, RaidTargetVariants.versions(wiki).get(0));
+    }
+
+    private static MonsterDefinition fromWiki(WikiMonster wiki, String version)
+    {
         return new MonsterDefinition(
-            wiki.id, wiki.name.trim(), HueycoatlRules.part(wiki.id, wiki.version), wiki.level, wiki.skills.def,
-            wiki.skills.magic, wiki.skills.ranged, wiki.skills.hp,
+            wiki.id, wiki.name.trim(), version, wiki.level, wiki.skills.def,
+            wiki.skills.magic, wiki.skills.ranged, RaidTargetVariants.hp(wiki, version),
             wiki.defensive == null ? 0 : wiki.defensive.stab,
             wiki.defensive == null ? 0 : wiki.defensive.slash,
             wiki.defensive == null ? 0 : wiki.defensive.crush,

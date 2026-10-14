@@ -26,8 +26,6 @@ You do not need to enter your bank into a separate calculator.
   of the highest possible Prayer bonus in every slot.
 - **Target-specific combat calculations:** accounts for supported defence stats,
   elemental weaknesses, immunities, weapon passives and multi-hit mechanics.
-  Examples include Fang, Scythe, demonbane and dragonbane weapons, and separate
-  Hueycoatl Body, Head and Tail targets with per-hitsplat tail damage rules.
 - **Enchanted bolts and ammunition:** models supported Ruby, Diamond, Onyx and
   Dragonstone bolt effects, including supported diary bonuses and target
   restrictions. Ruby bolt damage changes as enemy HP falls during TTK calculations;
@@ -35,19 +33,23 @@ You do not need to enter your bank into a separate calculator.
 - **Spells, prayers and supplies:** selects supported spells and offensive prayers,
   and recommends owned food, combo food, dose-aware potions and target-specific
   supplies such as antifire, anti-venom, Slayer equipment and finishing tools.
-- **Slayer task alternatives:** detects your assignment and offers supported
-  monsters, combat variants and boss alternatives. Konar choices are filtered by
-  assigned area, and Krystilia choices by confirmed Wilderness locations; manual
-  target search remains available outside task mode.
+- **Slayer task alternatives:** enable **Load Slayer Task** to use your detected
+  assignment and choose from supported monsters, combat variants and boss
+  alternatives. Konar choices respect the assigned area, while Krystilia choices
+  use confirmed Wilderness locations. If a task has not been detected, check it
+  with your Slayer gem, helmet or master; disable task mode to search manually.
 - **Recommended-item bank view:** the bank button groups the selected loadout's
   equipment, ammunition and supplies so you can find and withdraw them using
   normal bank interactions. Toggle it off to restore the normal bank layout.
-- **Optional GIM shared storage:** includes scanned shared gear and supplies in
-  calculations. Both storage interfaces show recommendations and references to
-  items held in the other store, with the shared snapshot time shown in the sidebar.
-- **Persistent item exclusions:** right-click recommended items to exclude them,
-  or edit the exclusions list in settings. Results stay visible while you make
-  several exclusions, with a warning to regenerate before applying the changes.
+- **Optional GIM shared storage:** enable **Include group storage** under
+  **Advanced**, then scan your personal bank and shared storage to include their
+  gear and supplies. Both storage interfaces show recommendations and references
+  to items held in the other store. The sidebar shows the shared scan time;
+  scan both stores again after logging in.
+- **Persistent item exclusions:** exclude equipment, ammunition, runes, food,
+  potions and other recommended supplies from the sidebar or BiS bank view.
+  Make several exclusions while keeping the current results visible, then
+  regenerate to apply them. The editable list persists in your RuneLite profile.
 - **Readable loadout summaries:** shows selected gear, combat statistics, spell
   or ammunition and prayer. The statistics panel expands to fit wrapped text,
   including longer spell names.
@@ -74,54 +76,35 @@ and validation appear once a target, bank scan and generated style are available
 Regenerate after changes to the target, assignment, ownership or calculation
 options. Switching generated styles reuses the current results.
 
-## Slayer tasks and locations
+## How to exclude items
 
-Enable **Load Slayer Task** to use your detected assignment. The dropdown lists
-matching combat profiles and supported alternatives from the bundled catalogue.
-For example, an unrestricted Greater demons task can offer Greater demons,
-K'ril Tsutsaroth, Tstanon Karlak, Skotizo and Tormented demons.
+1. **Generate a loadout** and select the combat style you want to view.
+2. **Right-click an item** in the sidebar gear grid or the recommended section
+   of the BiS bank view.
+3. Select **Exclude from My BiS Finder**.
+4. Repeat for any other items you want to exclude. Your current results stay
+   visible, and a warning reminds you that regeneration is needed.
+5. Click **Regenerate Loadout** to calculate a new setup using the exclusions.
+   Supported owned alternatives are used where available.
 
-- **Konar:** targets are filtered to the assigned area and its permitted species.
-- **Krystilia:** targets are filtered to confirmed Wilderness variants.
-- **Other masters:** task-family matching applies without an assigned-area filter.
+Exclusions also apply to recommended ammunition, runes, food, potions and other
+supplies, including references to items held in the other store. Ordinary bank
+items and **Other items** keep their usual right-click menus.
 
-The note below the picker shows the detected assignment location. If RuneLite
-has not detected the task, check it with your Slayer gem, helmet or master.
-Supported Slayer level requirements apply; quest access and special killing
-requirements still matter.
+### Restoring excluded items
 
-Only confirmed targets appear for restricted assignments. Unknown variants stay
-hidden with a note, and an undetected area keeps the picker empty. Named Konar
-boss assignments without an area roll remain available. Task changes refresh the
-choices and require regeneration. Disable task mode to return to manual search.
+1. Open **My BiS Finder's settings** in RuneLite.
+2. Find the comma-separated **Excluded items** list and remove the name you
+   want to restore. Clear the field to remove every exclusion.
+3. **Regenerate the loadout** to include those items again.
 
-The current catalogue has confirmed targets for all **159 researched task/area
-combinations**. The completed review resolves all **470 previously outstanding
-location decisions**. These counts do not guarantee every possible game variant
-is represented. Combat-data changes can require new verification. See the
-[coverage report](SLAYER-LOCATION-COVERAGE.md) and
-[Slayer data notes](SLAYER-DATA-NOTES.md).
+You can also add names directly to this list. Names match exactly, ignoring
+capitalisation and surrounding spaces. Potion doses and variants canonicalised
+by RuneLite are treated together.
 
-## Item exclusions
-
-Right-click a generated sidebar gear icon or a recommended item in the BiS bank
-view and choose **Exclude from My BiS Finder**. Exclusions cover equipment,
-ammunition, runes, food, potions and other supplies, including references to items
-held in the other store. Ordinary bank items and **Other items** keep their usual menus.
-
-Exclude several items before recalculating if needed. Existing results remain
-visible, including when switching styles, and a warning asks you to regenerate.
-The next generation applies the complete exclusion list.
-
-Edit the comma-separated **Excluded items** field in RuneLite's plugin settings
-to remove an exclusion, or clear the field to clear all exclusions. Regenerate
-to restore eligibility. Names match exactly, ignoring case and surrounding
-spaces. Potion doses and variants canonicalised by RuneLite are treated together.
-Exclusions persist in the current RuneLite configuration profile.
-
-Excluded supplies use supported owned alternatives where available. Excluded
-runes block spells requiring them unless eligible equipment supplies those runes.
-Powered weapons' stored charges are separate from loose rune ownership.
+Excluded runes prevent spells that require them unless eligible equipment
+provides those runes. Powered weapons' stored charges are separate from loose
+rune ownership.
 
 ## Advanced options
 
@@ -134,23 +117,6 @@ collapsed, and checked options appear green.
 
 Preferences persist across restarts. Changing an option requires regeneration;
 storage updates do not automatically recalculate loadouts.
-
-## Group Ironman shared storage
-
-Open your personal bank, enable **Include group storage**, then open group
-storage to capture its contents. The sidebar shows the shared snapshot's scan
-time. Generate a loadout and select a combat style as usual.
-
-The My BiS Finder button is available in both storage interfaces. Recommended
-items in the open store retain normal withdrawal actions. Items held elsewhere
-appear under **Stored in group storage** or **Stored in personal bank**. These
-reference icons show where to find an item; open that store to withdraw it.
-Recommended supplies can span both stores.
-
-Shared gear, ammunition, runes, food and potions are included when enabled.
-Deposits and withdrawals update the snapshot while storage is open. Changes
-made by teammates may require reopening it. Scan both stores after logging in:
-snapshots are session-only, while preferences and exclusions persist.
 
 ## Understanding the results
 

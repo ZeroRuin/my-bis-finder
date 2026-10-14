@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.6.2 — Raid Targets and Options
+
+- Rerolls only Seren hits above 24 to 22–24; preserves hits at or below the cap.
+- Preserves Entry Mode, Normal Mode and Hard Mode target labels for all six Theatre bosses, including equal-stat variants.
+- Retains all nine Verzik phase targets and adds phase-one per-hitsplat damage limits.
+- Adds selectable style-locked Nylocas Vasilias forms and labels Hard Mode Prinkipas forms.
+- Adds catalogue, damage-boundary, multi-hit, DPS and TTK regression checks.
+- Adds conditional CoX party HP/combat/size and Challenge Mode controls.
+- Matches raid input borders to the sidebar gold palette.
+- Skips searches for target-wide immune combat styles; muted style buttons remain clickable to show a target-specific explanation.
+- Adds ToA raid level, path level, party size and Smelling salts exclusion controls.
+- Applies raid scaling to generated targets and applicable defence rolls; includes raid context in result caching.
+- Preserves CoX/ToA phase labels and adds vulnerable-style choices for Akkha and active Wardens.
+- Uses the ToA-specific Fang accuracy formula and supported owned boosts when salts are excluded.
+
 ## 0.9.6.1 — Hueycoatl and Code Cleanup
 
 - Separates Hueycoatl Body (phase 1), Head and Tail targets; hides non-attackable states.

@@ -667,7 +667,7 @@ public final class MechanicsSelfTest
         MonsterDefinition zulrah509=new MonsterDefinition(2042,"Zulrah",725,300,300,300,500);
         near("alpha50.4.50.9 Zulrah capped reroll 60", WikiNpcTransforms.apply(HitDistribution.single(60,true),zulrah509,AttackStyle.RANGED,null,null,false).expectedHit(),47.5,1e-12);
         MonsterDefinition seren509=new MonsterDefinition(8917,"Fragment of Seren",606,100,100,100,1000);
-        near("alpha50.4.50.9 Seren linear limiter hit30", WikiNpcTransforms.apply(HitDistribution.single(30,true),seren509,AttackStyle.MELEE_SLASH,null,null,false).expectedHit(),23.0,1e-12);
+        near("Seren above-cap reroll hit30", WikiNpcTransforms.apply(HitDistribution.single(30,true),seren509,AttackStyle.MELEE_SLASH,null,null,false).expectedHit(),23.0,1e-12);
         MonsterDefinition kraken509=new MonsterDefinition(494,"Kraken",291,130,1,1,255);
         near("alpha50.4.50.9 Kraken ranged divide7 min1", WikiNpcTransforms.apply(HitDistribution.single(35,true),kraken509,AttackStyle.RANGED,null,null,false).expectedHit(),5.0,1e-12);
         MonsterDefinition tekton509=new MonsterDefinition(7540,"Tekton",300,205,205,205,300);

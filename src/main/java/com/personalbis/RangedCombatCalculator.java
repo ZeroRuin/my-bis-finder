@@ -23,7 +23,7 @@ public class RangedCombatCalculator {
   // strength must occupy the second numeric channel. Passing it as melee Str
   // zeroed every weapon/ammo Ranged Strength during the exact final evaluation.
   WikiEquipmentEngine.Totals wikiEq=WikiEquipmentEngine.transform(gear,m,null,0,str,0,0.0,atk); atk=wikiEq.rangedAttack; str=wikiEq.rangedStr;
-  int level=Math.max(1,account.boosted(Skill.RANGED));
+  int level=Math.max(1,RaidScaling.boosted(account,Skill.RANGED,m));
   boolean voidRanged=RangedLoadoutEffects.voidRanged(gear), eliteVoid=RangedLoadoutEffects.eliteVoidRanged(gear);
   int eff=CombatEffectiveLevels.ranged(level,p.getRanged(),st.getRangedBoost(),voidRanged);
   boolean salve=RangedLoadoutEffects.rangedSalveActive(gear,m);
@@ -32,7 +32,7 @@ public class RangedCombatCalculator {
   roll=WikiRangedEffects.accuracyAfterExclusive(roll,gear.values(),m,task,slayer);
   roll=WikiRangedEffects.postAccuracy(roll,weapon,m,st,4);
   int def=m==null?1:Math.max(1,m.getDefenceLevel()), bonus=RangedAmmoRules.targetDefence(m,weapon);
-  int defRoll=(def+9)*(bonus+64);
+  int defRoll=RaidScaling.defenceRoll(m,(def+9)*(bonus+64));
   double acc=WikiAccuracyRoll.normal(roll,defRoll);
   int dmgEff=CombatEffectiveLevels.rangedDamage(level,p.getRangedStrength(),st.getRangedBoost(),voidRanged,eliteVoid);
   int max=WikiIntegerStages.maxHitFromEffective(dmgEff,str+64);

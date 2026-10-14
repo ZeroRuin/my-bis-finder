@@ -26,7 +26,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.6.1'
+version = '0.9.6.2'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -127,5 +127,32 @@ tasks.register('hueycoatlSelfTest', JavaExec) {
     description = 'Checks Hueycoatl target labels and per-hitsplat tail damage rules.'
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.personalbis.HueycoatlSelfTest'
+    enableAssertions = true
+}
+
+tasks.register('theatreOfBloodSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks Seren reroll boundaries, Theatre of Blood modes, forms and phase-one caps.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.TheatreOfBloodSelfTest'
+    systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
+}
+
+tasks.register('raidOptionsSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks CoX/ToA scaling, raid variants, salts and conditional controls.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.RaidOptionsSelfTest'
+    systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
+}
+
+tasks.register('targetStyleImmunitySelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks target style immunity, skipped searches, clickable messages and raid input styling.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.TargetStyleImmunitySelfTest'
+    systemProperty 'java.awt.headless', 'true'
     enableAssertions = true
 }

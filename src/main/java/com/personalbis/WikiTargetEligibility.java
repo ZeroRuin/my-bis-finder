@@ -28,7 +28,19 @@ public final class WikiTargetEligibility {
  public static boolean salamander(EquipmentCandidate w){ return cat(w).equals("salamander"); }
  public static boolean pickaxe(EquipmentCandidate w){ return cat(w).equals("pickaxe"); }
 
+ /** Target-wide immunity only. Weapon-dependent exceptions remain searchable. */
+ public static boolean styleImmune(MonsterDefinition m, AttackStyle style){
+  if(m==null||style==null)return false;
+  if(style==AttackStyle.MAGIC)return !magicCanDamage(m);
+  if(style==AttackStyle.RANGED)return !rangedCanDamage(m);
+  if(!TheatreOfBloodRules.canDamage(m,style)||!RaidTargetVariants.canDamage(m,style))return true;
+  return (MELEE_IMMUNE.contains(m.getId())&&!ZULRAH.contains(m.getId()))
+   ||(m.hasAttribute("flying")&&VESPULA.contains(m.getId()));
+ }
+
  public static boolean meleeCanDamage(MonsterDefinition m, EquipmentCandidate w){
+  if(!TheatreOfBloodRules.canDamage(m,AttackStyle.MELEE_SLASH))return false;
+  if(!RaidTargetVariants.canDamage(m,AttackStyle.MELEE_SLASH))return false;
   if(m==null)return true; int id=m.getId();
   if(MELEE_IMMUNE.contains(id)){
    // Wiki exception: Zulrah may be hit by polearms.
@@ -45,12 +57,16 @@ public final class WikiTargetEligibility {
   return true;
  }
  public static boolean rangedCanDamage(MonsterDefinition m){
+  if(!TheatreOfBloodRules.canDamage(m,AttackStyle.RANGED))return false;
+  if(!RaidTargetVariants.canDamage(m,AttackStyle.RANGED))return false;
   if(m==null)return true;
   if(RANGED_IMMUNE.contains(m.getId()))return false;
   if(GUARDIANS.contains(m.getId()))return false;
   return true;
  }
  public static boolean magicCanDamage(MonsterDefinition m){
+  if(!TheatreOfBloodRules.canDamage(m,AttackStyle.MAGIC))return false;
+  if(!RaidTargetVariants.canDamage(m,AttackStyle.MAGIC))return false;
   if(m==null)return true;
   if(MAGIC_IMMUNE.contains(m.getId()))return false;
   if(GUARDIANS.contains(m.getId()))return false;

@@ -84,7 +84,7 @@ public class MagicLoadoutOptimizer {
   for(Map<EquipmentSlot,EquipmentCandidate> gear:beam){
    if(powered!=null&&account.real(Skill.MAGIC)>=powered.minLevel){
     MagicCombatResult r=calc.calculatePowered(gear,m,powered,task);
-    MagicSpell pseudo=new MagicSpell(powered.label,powered.minLevel,powered.baseMaxHit(account.boosted(Skill.MAGIC)));
+    MagicSpell pseudo=new MagicSpell(powered.label,powered.minLevel,powered.baseMaxHit(RaidScaling.boosted(account,Skill.MAGIC,m)));
     if(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps()))
      best=new OptimizedMagicLoadout(gear,r,pseudo);
     continue;
@@ -209,7 +209,7 @@ public class MagicLoadoutOptimizer {
   return all;
  }
  private double attackPotential(MagicSpell sp,MonsterDefinition m){
-  double base=sp.scaledBaseMax(account.boosted(Skill.MAGIC));
+  double base=sp.scaledBaseMax(RaidScaling.boosted(account,Skill.MAGIC,m));
   double speed=5.0;
   double weakness=ElementalWeaknessEffects.multiplier(m,sp);
   double mult=1.0+weakness;

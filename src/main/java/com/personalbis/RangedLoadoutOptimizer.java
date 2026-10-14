@@ -232,8 +232,8 @@ public class RangedLoadoutOptimizer {
    String n=c.getItem().getName().toLowerCase();
    if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;
   }
-  int level=Math.max(1,account.boosted(Skill.RANGED)); boolean voidRanged=RangedLoadoutEffects.voidRanged(gear),eliteVoid=RangedLoadoutEffects.eliteVoidRanged(gear);
-  boolean salve=RangedLoadoutEffects.rangedSalveActive(gear,m); int def=m==null?1:Math.max(1,m.getDefenceLevel()),bonus=RangedAmmoRules.targetDefence(m,weapon); int defRoll=(def+9)*(bonus+64);
+  int level=Math.max(1,RaidScaling.boosted(account,Skill.RANGED,m)); boolean voidRanged=RangedLoadoutEffects.voidRanged(gear),eliteVoid=RangedLoadoutEffects.eliteVoidRanged(gear);
+  boolean salve=RangedLoadoutEffects.rangedSalveActive(gear,m); int def=m==null?1:Math.max(1,m.getDefenceLevel()),bonus=RangedAmmoRules.targetDefence(m,weapon); int defRoll=RaidScaling.defenceRoll(m,(def+9)*(bonus+64));
   EquipmentCandidate ammo=gear.get(EquipmentSlot.AMMO); double best=-1;
   for(RangedStance st:RangedStance.values())for(RangedPrayer p:fastPrayers()){
    int eff=CombatEffectiveLevels.ranged(level,p.getRanged(),st.getRangedBoost(),voidRanged); int roll=eff*(atk+64);

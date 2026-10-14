@@ -105,6 +105,7 @@ public class PersonalBisPanel extends PluginPanel
     private final JLabel resultTitle = new JLabel("Best owned setup");
     private final JLabel monsterInfo = new JLabel("Target: —");
     private final JTextArea meleeValidation = new AutoSizingTextArea();
+    private final JTextArea immunityNotice = new AutoSizingTextArea();
     private final JLabel slayerItemWarning = new JLabel();
     private final JLabel[] gear = new JLabel[EquipmentSlot.values().length];
     private final JLabel prayerIcon = new JLabel("", JLabel.CENTER);
@@ -128,6 +129,7 @@ public class PersonalBisPanel extends PluginPanel
     private final JButton advancedToggle = osrsButton("Advanced ▸");
     private final JPanel advancedOptions = new JPanel();
     private final JPanel groupStorageOptions = new JPanel();
+    private final RaidOptionsPanel raidOptions = new RaidOptionsPanel(this::raidOptionsChanged);
     private boolean advancedExpanded;
     private volatile boolean groupStorageAvailable = false;
     private final net.runelite.client.config.ConfigManager preferenceConfig;
@@ -185,6 +187,7 @@ public class PersonalBisPanel extends PluginPanel
             .append('|').append(monster == null ? 1 : monster.getSize())
             .append('|').append(monster == null ? "" : monster.getVersion())
             .append('|').append(slayer).append('|').append(includeRubyBoltsEnabled);
+        k.append('|').append(MonsterDatabase.combatKey(monster));
         Skill[] combatSkills = {Skill.ATTACK, Skill.STRENGTH, Skill.DEFENCE, Skill.RANGED, Skill.MAGIC, Skill.PRAYER, Skill.HITPOINTS};
         for (Skill skill : combatSkills)
             k.append('|').append(account.real(skill)).append('/').append(account.boosted(skill));
@@ -410,6 +413,7 @@ public class PersonalBisPanel extends PluginPanel
             });
         });
         content.add(targetCard);
+        content.add(raidOptions);
         content.add(Box.createVerticalStrut(4));
         targetCard.setVisible(false);
         monsterCountLabel.setVisible(false);
@@ -574,6 +578,12 @@ content.add(Box.createVerticalStrut(5));
         setStyleControlsEnabled(false);
         content.add(styles);
         content.add(Box.createVerticalStrut(8));
+        immunityNotice.setEditable(false);immunityNotice.setFocusable(false);immunityNotice.setOpaque(false);
+        immunityNotice.setLineWrap(true);immunityNotice.setWrapStyleWord(true);
+        immunityNotice.setFont(FontManager.getRunescapeFont());immunityNotice.setForeground(OSRS_CREAM);
+        immunityNotice.setAlignmentX(Component.LEFT_ALIGNMENT);
+        immunityNotice.setBorder(new CompoundBorder(new LineBorder(OSRS_BORDER),new EmptyBorder(8,6,8,6)));
+        immunityNotice.setVisible(false);content.add(immunityNotice);
 
         JSeparator sep = new JSeparator();
         sep.setForeground(OSRS_BORDER);
@@ -949,8 +959,15 @@ content.add(Box.createVerticalStrut(5));
         ensureStatePanels();
         boolean loggedIn=client.getGameState()==GameState.LOGGED_IN;
         boolean targetReady=loggedIn && targetExplicitlySelected && monsterBox.getSelectedItem() instanceof MonsterDefinition;
+        raidOptions.showFor(targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null);
         boolean stylesReady=RecommendationReadiness.stylesVisible(targetReady);
-        boolean resultsReady=RecommendationReadiness.resultsVisible(targetReady,bankChecked,styleExplicitlySelected) && loadoutReady;
+        MonsterDefinition currentTarget=targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null;
+        boolean immune=TargetStyleImmunity.immune(currentTarget,selectedStyle);
+        boolean showImmunity=targetReady&&loadoutsGenerated&&styleExplicitlySelected&&immune;
+        immunityNotice.setText(showImmunity?TargetStyleImmunity.message(currentTarget,selectedStyle):"");
+        immunityNotice.setVisible(showImmunity);
+        boolean resultsReady=RecommendationReadiness.resultsVisible(targetReady,bankChecked,styleExplicitlySelected) && loadoutReady && !immune;
+        updateStyleHighlight();
         if(targetCard!=null)targetCard.setVisible(loggedIn);
         if(monsterCountLabel!=null){
             monsterCountLabel.setVisible(loggedIn);
@@ -997,6 +1014,20 @@ content.add(Box.createVerticalStrut(5));
         loadoutHeading.setText("Your best loadout ("+displayAttackStyle(style)+")");
         updateStyleHighlight();
 
+        MonsterDefinition target=monsterBox.getSelectedItem() instanceof MonsterDefinition?(MonsterDefinition)monsterBox.getSelectedItem():null;
+        if(TargetStyleImmunity.immune(target,style))
+        {
+            long generation=calculationGeneration.incrementAndGet();
+            loadoutReady=false;
+            generateMessage.setText(" ");
+            updateProgressiveVisibility();
+            clientThread.invokeLater(()->{
+                if(generation!=calculationGeneration.get())return;
+                bankFilter.setRecommendations(Collections.emptyMap(),Collections.emptyList(),Collections.emptySet());
+                bankFilter.setSupplies(Collections.emptyList());
+            });
+            return;
+        }
         loadoutReady = false;
         generateMessage.setForeground(OSRS_CREAM);
         generateMessage.setText("Loading " + displayAttackStyle(style) + " loadout...");
@@ -1006,6 +1037,13 @@ content.add(Box.createVerticalStrut(5));
 
     private void generateLoadouts()
     {
+        try { raidOptions.commitEditors(); }
+        catch (java.text.ParseException ex)
+        {
+            generateMessage.setText("Enter valid raid options, then try again.");
+            generateMessage.setForeground(Color.RED);
+            return;
+        }
         if (groupStorageAvailable && includeGroupStorageEnabled && !groupSnapshot.hasSnapshot())
         {
             generateMessage.setText("Open group storage first, then try again.");
@@ -1051,6 +1089,15 @@ content.add(Box.createVerticalStrut(5));
         content.repaint();
     }
 
+    private void raidOptionsChanged()
+    {
+        invalidateOptimizerCache();
+        styleExplicitlySelected=false;
+        calculatedBestStyle=null;
+        clearStyleSelection();
+        markLoadoutStale("Raid options changed — regenerate.");
+    }
+
     private void markLoadoutStale(String message)
     {
         calculationGeneration.incrementAndGet();
@@ -1080,18 +1127,21 @@ content.add(Box.createVerticalStrut(5));
         {
             JRadioButton button=buttons[i];
             boolean selected=button.isSelected();
-            boolean best=calculatedBestStyle==styles[i];
-            button.setForeground(best ? OSRS_GREEN : (selected ? OSRS_GOLD : OSRS_CREAM));
+            MonsterDefinition target=monsterBox.getSelectedItem() instanceof MonsterDefinition?(MonsterDefinition)monsterBox.getSelectedItem():null;
+            boolean immune=TargetStyleImmunity.immune(target,styles[i]);
+            boolean best=!immune&&calculatedBestStyle==styles[i];
+            TargetStyleImmunity.icon(button,immune);
+            button.setForeground(immune ? TargetStyleImmunity.MUTED : best ? OSRS_GREEN : (selected ? OSRS_GOLD : OSRS_CREAM));
             button.setFont((selected||best) ? FontManager.getRunescapeBoldFont() : FontManager.getRunescapeFont());
-            button.setBackground(selected ? new Color(67, 58, 38) : (best ? new Color(39, 58, 39) : new Color(38, 38, 38)));
+            button.setBackground(immune ? new Color(31,31,31) : selected ? new Color(67, 58, 38) : (best ? new Color(39, 58, 39) : new Color(38, 38, 38)));
             if(bestStyleBadges[i]!=null)bestStyleBadges[i].setText(best?"BEST":" ");
             Container tile=button.getParent();
             if(tile instanceof JPanel)
             {
                 ((JPanel)tile).setBorder(new LineBorder(best?OSRS_GOLD:new Color(0,0,0,0),best?2:1));
-                ((JPanel)tile).setBackground(best?new Color(39,58,39):new Color(38,38,38));
+                ((JPanel)tile).setBackground(immune?new Color(31,31,31):best?new Color(39,58,39):new Color(38,38,38));
             }
-            button.setToolTipText(best ? "Best style for this target with your owned gear" : null);
+            button.setToolTipText(immune ? TargetStyleImmunity.message(target,styles[i]) : best ? "Best style for this target with your owned gear" : null);
         }
     }
 
@@ -1389,10 +1439,11 @@ content.add(Box.createVerticalStrut(5));
     private void refreshRecommendationsAsync(boolean calculateAllStyles)
     {
         final long generation=calculationGeneration.incrementAndGet();
-        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles));
+        final RaidSettings requestedRaid=raidOptions.settings();
+        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid));
     }
 
-    private void captureAndCalculate(long generation, boolean calculateAllStyles)
+    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid)
     {
         if (client.getGameState() != GameState.LOGGED_IN) return;
         if (!targetExplicitlySelected || !bankChecked || (!calculateAllStyles && !styleExplicitlySelected))
@@ -1401,8 +1452,8 @@ content.add(Box.createVerticalStrut(5));
             return;
         }
         MonsterDefinition selectedMonster=(MonsterDefinition) monsterBox.getSelectedItem();
-        MonsterDefinition monster = monsterDatabase.canonical(selectedMonster);
-        if (!validTarget(monster))
+        MonsterDefinition unscaledMonster = monsterDatabase.canonical(selectedMonster);
+        if (!validTarget(unscaledMonster))
         {
             SwingUtilities.invokeLater(() ->
             {
@@ -1427,12 +1478,13 @@ content.add(Box.createVerticalStrut(5));
         // generation, even while the user batches changes in the settings list.
         final List<BankItem> bankSnapshot = new ArrayList<>(generationBank);
         final List<BankItem> ownedGearSnapshot = new ArrayList<>(generationOwned);
+        final MonsterDefinition monster=RaidScaling.withOwnedBoosts(RaidScaling.apply(unscaledMonster,requestedRaid),account,ownedGearSnapshot);
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
         final Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot=new EnumMap<>(AttackStyle.class);
         for(AttackStyle style:AttackStyle.values()){
             List<BankItem> styleBank=ownedGearSnapshot;
             if(style==AttackStyle.RANGED&&!includeRuby){styleBank=new ArrayList<>(ownedGearSnapshot);styleBank.removeIf(this::rubyBoltItem);}
-            rankedSnapshot.put(style,intelligence.rank(styleBank,style,slayerMode));
+            rankedSnapshot.put(style,TargetStyleImmunity.immune(monster,style)?Collections.emptyMap():intelligence.rank(styleBank,style,slayerMode));
         }
         final AttackStyle requestedStyle=selectedStyle;
         final boolean requestedSlayerMode=slayerMode;
@@ -1477,7 +1529,7 @@ content.add(Box.createVerticalStrut(5));
                 MeleeOptimizationReport report = optimizerCacheHit ? cachedMeleeReports.get(style) : null;
                 if (report == null)
                 {
-                    report = meleeOptimizer.optimizeWithReportRanked(ranked, style, monster, requestedSlayerMode);
+                    report = TargetStyleImmunity.calculate(monster,style,()->meleeOptimizer.optimizeWithReportRanked(ranked, style, monster, requestedSlayerMode),()->new MeleeOptimizationReport(null));
                     cachedMeleeReports.put(style, report);
                 }
                 OptimizedLoadout load = report == null ? null : report.getBest();
@@ -1490,7 +1542,7 @@ content.add(Box.createVerticalStrut(5));
                 RangedOptimizationReport report = optimizerCacheHit ? cachedRangedReports.get(style) : null;
                 if (report == null)
                 {
-                    report = rangedOptimizer.optimizeWithReportRanked(ranked, monster, requestedSlayerMode);
+                    report = TargetStyleImmunity.calculate(monster,style,()->rangedOptimizer.optimizeWithReportRanked(ranked, monster, requestedSlayerMode),()->new RangedOptimizationReport(null));
                     cachedRangedReports.put(style, report);
                 }
                 OptimizedRangedLoadout load = report == null ? null : report.getBest();
@@ -1503,7 +1555,7 @@ content.add(Box.createVerticalStrut(5));
                 MagicOptimizationReport mr = optimizerCacheHit ? cachedMagicReports.get(style) : null;
                 if (mr == null)
                 {
-                    mr = magicOptimizer.optimizeWithReportRanked(ownedGearSnapshot, ranked, monster, requestedSlayerMode);
+                    mr = TargetStyleImmunity.calculate(monster,style,()->magicOptimizer.optimizeWithReportRanked(ownedGearSnapshot, ranked, monster, requestedSlayerMode),()->new MagicOptimizationReport(null));
                     cachedMagicReports.put(style, mr);
                 }
                 OptimizedMagicLoadout load = mr == null ? null : mr.getBest();
@@ -1532,7 +1584,7 @@ content.add(Box.createVerticalStrut(5));
         selectedBankRecommendations.put(requestedStyle,new ArrayList<>(selectedIds));
         Set<Integer> selectedRecommendedIds=new HashSet<>();
         for(Integer id:selectedIds)if(bankOwnedIds.contains(id))selectedRecommendedIds.add(id);
-        final List<RecommendedSupply> resultSupplies=SimpleSupplyRecommender.recommend(
+        final List<RecommendedSupply> resultSupplies=TargetStyleImmunity.immune(monster,requestedStyle)?Collections.emptyList():SimpleSupplyRecommender.recommend(
             requestedStyle, magicLoads.get(requestedStyle), rangedLoads.get(requestedStyle), bankSnapshot, monster, account.real(Skill.PRAYER));
         clientThread.invokeLater(() -> {
             if(generation!=calculationGeneration.get())return;
@@ -1553,6 +1605,7 @@ content.add(Box.createVerticalStrut(5));
         else if(requestedStyle==AttackStyle.MAGIC && magicLoads.get(requestedStyle)!=null){
             OptimizedMagicLoadout ml=magicLoads.get(requestedStyle);selectedGear.putAll(ml.getItems());selectedCombat=null;selectedRanged=null;
         }
+        else if(TargetStyleImmunity.immune(monster,requestedStyle)){selectedCombat=null;selectedRanged=null;}
         else {if(selectedRanked==null)selectedRanked=rankedSnapshot.get(requestedStyle);selectedRanked=SlayerTargetRequirements.constrainRanked(monster,selectedRanked);for(EquipmentSlot s:EquipmentSlot.values()){EquipmentCandidate c=firstUsable(selectedRanked.get(s));if(c!=null)selectedGear.put(s,c);}selectedCombat=null;selectedRanged=null;}
         String prayer=account.recommendedPrayer(requestedStyle);
         final OptimizedRangedLoadout selectedRangedLoad = rangedLoads.get(requestedStyle);
@@ -1661,6 +1714,9 @@ content.add(Box.createVerticalStrut(5));
                     ? "No castable combat spell found with your current Magic level and bank runes."
                     : "No calculated loadout is available for this style.");
             }
+            if(RaidScaling.isCox(monster)||RaidScaling.isToa(monster)) summary.append("\nTarget HP: ").append(monster.getHitpoints());
+            String raidNote=RaidTargetVariants.note(monster);
+            if(!raidNote.isEmpty())summary.append("\n").append(raidNote);
             meleeValidation.setText(summary.toString());
             meleeValidation.setCaretPosition(0);
 
@@ -1669,7 +1725,7 @@ content.add(Box.createVerticalStrut(5));
             generateLoadoutButton.setEnabled(true);
             setStyleControlsEnabled(true);
             generateMessage.setForeground(OSRS_CREAM);
-            generateMessage.setText(selectedCombat == null && uiRanged == null && uiMagic == null
+            generateMessage.setText(TargetStyleImmunity.immune(monster,requestedStyle) ? "Choose an available combat style." : selectedCombat == null && uiRanged == null && uiMagic == null
                 ? "<html>No usable setup.<br>Check ownership and exclusions.</html>"
                 : (calculateAllStyles ? "Loadouts ready." : " "));
             updateExclusionWarning();
@@ -1721,15 +1777,15 @@ content.add(Box.createVerticalStrut(5));
             if(style==AttackStyle.MELEE_STAB||style==AttackStyle.MELEE_SLASH||style==AttackStyle.MELEE_CRUSH)
             {
                 if(!cachedMeleeReports.containsKey(style))
-                    cachedMeleeReports.put(style,meleeOptimizer.optimizeWithReportRanked(ranked,style,monster,requestedSlayerMode));
+                    cachedMeleeReports.put(style,TargetStyleImmunity.calculate(monster,style,()->meleeOptimizer.optimizeWithReportRanked(ranked,style,monster,requestedSlayerMode),()->new MeleeOptimizationReport(null)));
             }
             else if(style==AttackStyle.RANGED)
             {
                 if(!cachedRangedReports.containsKey(style))
-                    cachedRangedReports.put(style,rangedOptimizer.optimizeWithReportRanked(ranked,monster,requestedSlayerMode));
+                    cachedRangedReports.put(style,TargetStyleImmunity.calculate(monster,style,()->rangedOptimizer.optimizeWithReportRanked(ranked,monster,requestedSlayerMode),()->new RangedOptimizationReport(null)));
             }
             else if(!cachedMagicReports.containsKey(style))
-                cachedMagicReports.put(style,magicOptimizer.optimizeWithReportRanked(bankSnapshot,ranked,monster,requestedSlayerMode));
+                cachedMagicReports.put(style,TargetStyleImmunity.calculate(monster,style,()->magicOptimizer.optimizeWithReportRanked(bankSnapshot,ranked,monster,requestedSlayerMode),()->new MagicOptimizationReport(null)));
         }
         AttackStyle best=cachedBestStyleIfComplete();
         if(best==null||generation!=calculationGeneration.get()||!cacheKey.equals(optimizerCacheKey))return;

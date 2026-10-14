@@ -20,7 +20,11 @@ public final class WikiNpcTransforms {
  private static HitDistribution applyInternal(HitDistribution d, MonsterDefinition m, AttackStyle style, String weaponName, String weaponCategory, String spellElement, boolean demonbane){
   if(d==null||m==null)return d; int id=m.getId(); String n=m.getName();
   if("Zulrah".equalsIgnoreCase(n)) d=d.transform(HitDistribution.cappedReroll(50,5,45));
-  if("Fragment of Seren".equalsIgnoreCase(n)) d=d.transform(HitDistribution.linearMin(2,22));
+  if("Fragment of Seren".equalsIgnoreCase(n)) d=d.transform(HitDistribution.cappedReroll(24,2,22));
+  if(TheatreOfBloodRules.phaseOne(m) && !"Dawnbringer".equalsIgnoreCase(weaponName)){
+   int cap=style==AttackStyle.MAGIC||style==AttackStyle.RANGED?3:10;
+   d=d.transform(HitDistribution.cappedReroll(cap,cap,0));
+  }
   if(("Kraken".equalsIgnoreCase(n)||"Cave kraken".equalsIgnoreCase(n))&&style==AttackStyle.RANGED) d=d.transform(HitDistribution.divide(7,1));
   if(TEKTON.contains(id)&&style==AttackStyle.MAGIC) d=d.transform(HitDistribution.divide(5,1));
   if(GLOWING.contains(id)&&style==AttackStyle.MAGIC) d=d.transform(HitDistribution.divide(3,0));

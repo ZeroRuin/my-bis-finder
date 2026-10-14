@@ -7,14 +7,14 @@ public class MagicCombatCalculator {
   int bonus=0; double md=0; boolean slayer=false; String weaponName="";
   for(EquipmentCandidate c:gear.values()){if(c==null)continue;bonus+=c.getMagicAttack();md+=c.getMagicDamage();String n=c.getItem().getName().toLowerCase();if(c.getSlot()==EquipmentSlot.WEAPON)weaponName=c.getItem().getName();if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
   WikiEquipmentEngine.Totals wikiEq=WikiEquipmentEngine.transform(gear,m,spell.spellbook,0,0,bonus,md,0); bonus=wikiEq.magicAttack; md=wikiEq.magicDamage;
-  int lvl=Math.max(1,account.boosted(Skill.MAGIC)); MagicPrayer mp=MagicPrayer.best(account); String pn=mp.name;
+  int lvl=Math.max(1,RaidScaling.boosted(account,Skill.MAGIC,m)); MagicPrayer mp=MagicPrayer.best(account); String pn=mp.name;
   int eff;
   MagicLoadoutEffects.Effect loadout=MagicLoadoutEffects.evaluate(gear.values(),m,task,spell);
   WikiMagicAccuracy.Result magicAccuracy=WikiMagicAccuracy.calculate(lvl,mp.accuracy,bonus,gear.values(),m,spell,task);
   eff=magicAccuracy.effectiveLevel;
   int roll=magicAccuracy.attackRoll;
   int ml=m==null?1:Math.max(1,m.getMagicLevel());
-  int deff=ml+9, dr=deff*(m==null?64:m.getMagicDefence()+64);
+  int deff=ml+9, dr=RaidScaling.defenceRoll(m,deff*(m==null?64:m.getMagicDefence()+64));
   double weakness=ElementalWeaknessEffects.multiplier(m,spell);
   boolean demonbane=spell.isDemonbane()&&m!=null&&m.hasAttribute("demon");
   MagicTomeEffects.Effect tome=MagicTomeEffects.evaluate(gear.values(),spell);
@@ -43,14 +43,14 @@ public class MagicCombatCalculator {
   for(EquipmentCandidate c:gear.values()){if(c==null)continue;bonus+=c.getMagicAttack();md+=c.getMagicDamage();String n=c.getItem().getName().toLowerCase();if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
   boolean shadow="Tumeken's shadow".equals(staff.label);
   WikiEquipmentEngine.Totals wikiEq=WikiEquipmentEngine.transform(gear,m,null,0,0,bonus,md,0); bonus=wikiEq.magicAttack; md=wikiEq.magicDamage;
-  int lvl=Math.max(1,account.boosted(Skill.MAGIC)); MagicPrayer mp=MagicPrayer.best(account); String pn=mp.name;
+  int lvl=Math.max(1,RaidScaling.boosted(account,Skill.MAGIC,m)); MagicPrayer mp=MagicPrayer.best(account); String pn=mp.name;
   int eff;
   MagicLoadoutEffects.Effect loadout=MagicLoadoutEffects.evaluate(gear.values(),m,task);
   WikiMagicAccuracy.Result magicAccuracy=WikiMagicAccuracy.calculate(lvl,mp.accuracy,bonus,gear.values(),m,null,task);
   eff=magicAccuracy.effectiveLevel;
   int roll=magicAccuracy.attackRoll;
   int ml=m==null?1:Math.max(1,m.getMagicLevel());
-  int deff=ml+9, dr=deff*(m==null?64:m.getMagicDefence()+64);
+  int deff=ml+9, dr=RaidScaling.defenceRoll(m,deff*(m==null?64:m.getMagicDefence()+64));
   double acc=WikiAccuracyRoll.normal(roll,dr);
   int base=staff.baseMaxHit(lvl);
   WikiMagicDamage.Result magicDamage=WikiMagicDamage.powered(base,md,mp.damage,gear.values(),m,task);

@@ -58,8 +58,8 @@ public class MeleeCombatCalculator
         attackBonus=WikiEquipmentEngine.transformMeleeAttack(gear,monster,attackBonus);
         WikiEquipmentEngine.Totals wikiEq=WikiEquipmentEngine.transform(gear,monster,null,strBonus,0,0,0.0,0); strBonus=wikiEq.str;
 
-        int atk=Math.max(1,account.boosted(Skill.ATTACK));
-        int str=Math.max(1,account.boosted(Skill.STRENGTH));
+        int atk=Math.max(1,RaidScaling.boosted(account,Skill.ATTACK,monster));
+        int str=Math.max(1,RaidScaling.boosted(account,Skill.STRENGTH,monster));
 
         // No prayer multiplier yet. Alpha4 makes the stance contribution explicit so close
         // weapon comparisons can be audited instead of hiding the +3/+1 style bonuses.
@@ -98,11 +98,13 @@ public class MeleeCombatCalculator
         attackRoll=WikiMeleeEffects.postAccuracy(attackRoll,weapon,monster);
         int defLevel=monster==null ? 1 : Math.max(1,monster.getDefenceLevel());
         int defBonus=monster==null ? 0 : monster.defenceFor(style);
-        int defenceRoll=(defLevel+9)*(defBonus+64);
+        int defenceRoll=RaidScaling.defenceRoll(monster,(defLevel+9)*(defBonus+64));
 
         double accuracy=WikiAccuracyRoll.normal(attackRoll,defenceRoll);
         if(MeleeWeaponEffects.isFang(weapon)&&style==AttackStyle.MELEE_STAB)
-            accuracy=WikiAccuracyRoll.fang(attackRoll,defenceRoll);
+            accuracy=RaidScaling.isToa(monster)
+                ? 1.0-Math.pow(1.0-WikiAccuracyRoll.normal(attackRoll,defenceRoll),2)
+                : WikiAccuracyRoll.fang(attackRoll,defenceRoll);
 
         int maxHit=WikiIntegerStages.maxHitFromEffective(effStr,strBonus+64);
         maxHit=WikiMeleeEffects.maxAfterCrystalBlessing(maxHit,gear.values());

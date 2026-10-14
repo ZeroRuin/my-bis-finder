@@ -1,5 +1,9 @@
 # OSRS Wiki DPS parity programme
 
+Current test-build exception: Seren and Verzik phase-one limiters follow the
+maintainer-supplied above-cap reroll descriptions, rather than the upstream
+linear-min transforms. See [the current mechanics notes](docs/THEATRE-OF-BLOOD-MECHANICS.md).
+
 Reference snapshot supplied by the user: `weirdgloop/osrs-dps-calc` main-branch ZIP.
 Upstream project: https://github.com/weirdgloop/osrs-dps-calc
 Upstream license: GPL-3.0.
