@@ -1798,12 +1798,12 @@ content.add(Box.createVerticalStrut(5));
         actionRow.spell.setToolTipText("Spell recommendation appears for magic gear.");
         if(magic!=null){
             String spell=magic.getSpell();actionRow.spell.setToolTipText("Recommended spell: "+spell);
-            try{
-                int sprite=SpriteID.class.getField("SPELL_"+spell.toUpperCase(java.util.Locale.ROOT).replace(' ','_')).getInt(null);
+            int sprite=SpellSpriteIds.forSpell(spell);
+            if(sprite>=0){
                 actionRow.spell.setText("");spriteManager.getSpriteAsync(sprite,0,image -> SwingUtilities.invokeLater(() -> {
                     if(generation==calculationGeneration.get())actionRow.spell.setIcon(image==null?null:new ImageIcon(image));
                 }));
-            }catch(ReflectiveOperationException ex){
+            }else{
                 EquipmentCandidate weapon=items.get(EquipmentSlot.WEAPON);
                 if(weapon!=null){actionRow.spell.setText("");itemManager.getImage(weapon.getItem().getItemId(),1,false).addTo(actionRow.spell);}
             }

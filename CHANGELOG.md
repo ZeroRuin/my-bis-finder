@@ -1,7 +1,8 @@
 # Changelog
 
-## Unreleased — Combat, Search and Special Attacks
+## 0.9.6.3 — Combat, Search and Special Attacks
 
+- Replace reflective spell-icon lookup with explicit RuneLite sprite constants for Plugin Hub compatibility.
 - Add a fourth equipment row with a separate owned special-weapon recommendation, the selected magic spell and a double-width game-style attack button.
 - Rank supported direct-damage specials using expected damage per attack interval in the displayed armour; show energy cost and required ammo in the tooltip. This is burst DPS, not an energy-regeneration or rotation simulation.
 - Add supported melee specials, common ranged specials including Zaryte enchanted bolts, and Eye of Ayak / Nightmare staff specials. Unmodelled specials are explicitly excluded from the recommendation.

@@ -19,6 +19,11 @@ public final class SpecialAttackSelfTest
             w.bonuses.prayer,w.speed,w.isTwoHanded,w.category,RequirementResult.usable("fixture"));
     }
     public static void main(String[] args)throws Exception{
+        for(MagicSpell spell:MagicSpell.combat())check(SpellSpriteIds.forSpell(spell.name)>=0,"Combat spell icon: "+spell.name);
+        check(SpellSpriteIds.forSpell("Fire Surge")==net.runelite.api.SpriteID.SPELL_FIRE_SURGE,"Explicit standard spell sprite");
+        check(SpellSpriteIds.forSpell("Ice Barrage")==net.runelite.api.SpriteID.SPELL_ICE_BARRAGE,"Explicit ancient spell sprite");
+        check(SpellSpriteIds.forSpell("Dark Demonbane + Mark of Darkness")==net.runelite.api.SpriteID.SPELL_DARK_DEMONBANE,"Marked spell keeps base icon");
+        check(SpellSpriteIds.forSpell("Tumeken's shadow")==-1&&SpellSpriteIds.forSpell(null)==-1,"Powered and missing spell fallback");
         close(SpecialAttackRules.melee("Dragon dagger",40,1,1,1).expectedDamage(),46+2.0/47,"DDS two independent 46-max hits, including accurate zero");
         close(SpecialAttackRules.melee("Abyssal dagger",40,0,0,1).expectedDamage(),0,"Abyssal dagger cannot land second hit after miss");
         close(SpecialAttackRules.melee("Voidwaker",40,0,0,1).expectedDamage(),40,"Voidwaker ignores accuracy and rolls 20..60");
