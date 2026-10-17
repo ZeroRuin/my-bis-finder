@@ -86,7 +86,7 @@ public final class TheatreOfBloodSelfTest
             for (String version : TheatreOfBloodRules.versions(wiki.name, wiki.version))
             {
                 MonsterDefinition m = target(targets, wiki.name, version);
-                check(m.getId() == wiki.id && m.getHitpoints() == wiki.skills.hp
+                check(m.getId() == TheatreOfBloodRules.npcId(wiki.id,wiki.name,version) && m.getHitpoints() == wiki.skills.hp
                     && m.getDefenceLevel() == wiki.skills.def
                     && m.getMagicLevel() == wiki.skills.magic, "Source identity and stats retained " + m);
             }

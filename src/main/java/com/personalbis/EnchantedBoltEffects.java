@@ -36,7 +36,10 @@ public final class EnchantedBoltEffects {
 
  /** Wiki bolt stage before modern accurate-zero conversion. Ruby is deliberately excluded. */
  public static HitDistribution preAccurateZeroDistribution(EquipmentCandidate ammo, MonsterDefinition m, int rangedLevel, int normalMax, double accuracy, boolean kandarinHard){
-  HitDistribution dist=HitDistribution.linear(Math.max(0.0,Math.min(1.0,accuracy)),0,Math.max(0,normalMax));
+  return preAccurateZeroDistribution(ammo,m,rangedLevel,0,normalMax,accuracy,kandarinHard);
+ }
+ public static HitDistribution preAccurateZeroDistribution(EquipmentCandidate ammo, MonsterDefinition m, int rangedLevel, int normalMin, int normalMax, double accuracy, boolean kandarinHard){
+  HitDistribution dist=HitDistribution.linear(Math.max(0.0,Math.min(1.0,accuracy)),normalMin,Math.max(normalMin,normalMax));
   String n=enchanted(ammo)&&m!=null?ammo.getItem().getName().toLowerCase():"";
   if(!n.isEmpty()&&!n.contains("ruby")){
    if(n.contains("opal")) dist=bonusDamage(dist,proc(.05,kandarinHard),(int)Math.floor(rangedLevel/10.0),false);

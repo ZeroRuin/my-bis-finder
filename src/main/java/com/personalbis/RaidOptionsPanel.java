@@ -8,10 +8,12 @@ import net.runelite.client.ui.FontManager;
 /** Conditional controls; only immutable snapshots leave Swing's event thread. */
 final class RaidOptionsPanel extends JPanel
 {
+    final JSpinner coxMining=spinner(99,1,99);
     final JSpinner coxHp=spinner(99,1,99), coxCombat=spinner(126,3,126), coxParty=spinner(1,1,100);
     final JSpinner raidLevel=spinner(0,0,700), pathLevel=spinner(0,0,6), toaParty=spinner(1,1,8);
     final JCheckBox challenge=new JCheckBox("Challenge mode"), excludeSalts=new JCheckBox("Exclude Smelling salts");
     final JPanel cox=new JPanel(), toa=new JPanel();
+    private boolean restoring;
     private volatile RaidSettings snapshot=RaidSettings.DEFAULT;
 
     private final Font normalFont,boldFont;
@@ -26,21 +28,32 @@ final class RaidOptionsPanel extends JPanel
         this.normalFont=normalFont;this.boldFont=boldFont;
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));setOpaque(false);setAlignmentX(LEFT_ALIGNMENT);
         card(cox,"Chambers of Xeric");card(toa,"Tombs of Amascut");
-        row(cox,"Party HP level",coxHp);row(cox,"Party combat level",coxCombat);row(cox,"Party size",coxParty);
+        row(cox,"Party HP level",coxHp);row(cox,"Party combat level",coxCombat);row(cox,"Party size",coxParty);row(cox,"Average party Mining",coxMining);
         row(toa,"Raid level",raidLevel);row(toa,"Path level",pathLevel);row(toa,"Party size",toaParty);
         check(cox,challenge);check(toa,excludeSalts);
+        coxMining.setToolTipText("Average party Mining level for Guardian HP; damage uses your own Mining level.");
         coxHp.setToolTipText("Highest party Hitpoints level (maximum 99).");
         coxCombat.setToolTipText("Highest party combat level (maximum 126).");
         pathLevel.setToolTipText("Applies to path bosses and supported adds; Wardens ignore path level.");
         excludeSalts.setToolTipText("Assume Smelling salts unless excluded. Excluding uses supported owned potion boosts, or base levels.");
         add(cox);add(toa);setVisible(false);
-        for(JSpinner s:new JSpinner[]{coxHp,coxCombat,coxParty,raidLevel,pathLevel,toaParty}) s.addChangeListener(e->changed(onChange));
+        for(JSpinner s:new JSpinner[]{coxHp,coxCombat,coxParty,coxMining,raidLevel,pathLevel,toaParty}) s.addChangeListener(e->changed(onChange));
         challenge.addActionListener(e->changed(onChange));excludeSalts.addActionListener(e->changed(onChange));
     }
     RaidSettings settings(){return snapshot;}
+    void restore(RaidSettings saved)
+    {
+        restoring=true;
+        try {
+            coxHp.setValue(saved.coxHp);coxCombat.setValue(saved.coxCombat);coxParty.setValue(saved.coxParty);
+            coxMining.setValue(saved.coxMining);challenge.setSelected(saved.challenge);
+            raidLevel.setValue(saved.raidLevel);pathLevel.setValue(saved.pathLevel);toaParty.setValue(saved.toaParty);
+            excludeSalts.setSelected(saved.excludeSalts);snapshot=saved;updateColors();
+        } finally { restoring=false; }
+    }
     void commitEditors() throws java.text.ParseException
     {
-        if(cox.isVisible())for(JSpinner s:new JSpinner[]{coxHp,coxCombat,coxParty})s.commitEdit();
+        if(cox.isVisible())for(JSpinner s:new JSpinner[]{coxHp,coxCombat,coxParty,coxMining})s.commitEdit();
         if(toa.isVisible())for(JSpinner s:new JSpinner[]{raidLevel,pathLevel,toaParty})s.commitEdit();
     }
     void showFor(MonsterDefinition m)
@@ -51,10 +64,15 @@ final class RaidOptionsPanel extends JPanel
     }
     private void changed(Runnable callback)
     {
+        if(restoring)return;
         snapshot=new RaidSettings(number(coxHp),number(coxCombat),number(coxParty),challenge.isSelected(),
-            number(raidLevel),number(pathLevel),number(toaParty),excludeSalts.isSelected());
+            number(raidLevel),number(pathLevel),number(toaParty),excludeSalts.isSelected(),number(coxMining));
+        updateColors();callback.run();
+    }
+    private void updateColors()
+    {
         challenge.setForeground(challenge.isSelected()?new Color(82,255,92):new Color(238,220,172));
-        excludeSalts.setForeground(excludeSalts.isSelected()?new Color(82,255,92):new Color(238,220,172));callback.run();
+        excludeSalts.setForeground(excludeSalts.isSelected()?new Color(82,255,92):new Color(238,220,172));
     }
     private static int number(JSpinner s){return ((Number)s.getValue()).intValue();}
     private static JSpinner spinner(int value,int min,int max)

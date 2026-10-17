@@ -40,6 +40,14 @@ final class TheatreOfBloodRules
         return Collections.singletonList(labelled);
     }
 
+    /** RuneLite gameval NpcID: each Vasilias mode has three consecutive combat forms. */
+    static int npcId(int id,String name,String version)
+    {
+        if(!"Nylocas Vasilias".equals(name)||(id!=8354&&id!=10786&&id!=10807))return id;
+        String v=version.toLowerCase(Locale.ROOT);
+        return id+(v.endsWith("melee form")?1:v.endsWith("magic form")?2:v.endsWith("ranged form")?3:0);
+    }
+
     /** Keep equal-stat difficulties and style-locked forms distinct in the picker. */
     static String catalogueKey(MonsterDefinition monster)
     {

@@ -156,3 +156,22 @@ tasks.register('targetStyleImmunitySelfTest', JavaExec) {
     systemProperty 'java.awt.headless', 'true'
     enableAssertions = true
 }
+
+// Local regression task; no additional CI workflow.
+tasks.register('combatSearchSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks item aliases, raid combat, equipment set rules and target search.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.CombatSearchSelfTest'
+    systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
+}
+
+tasks.register('specialAttackSelfTest', JavaExec) {
+    group = 'verification'
+    description = 'Checks direct special damage, owned-weapon recommendations and sidebar row proportions.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.SpecialAttackSelfTest'
+    systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
+}

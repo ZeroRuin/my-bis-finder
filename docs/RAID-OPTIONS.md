@@ -4,17 +4,20 @@
 
 The sidebar shows only the controls for the selected raid, directly below the
 picker. CoX defaults: highest party HP 99 (1–99), highest combat 126 (3–126),
-party size 1 (1–100), Challenge Mode off. Scaling internally applies the game's
+party size 1 (1–100), average party Mining 99 (1–99), Challenge Mode off. Scaling internally applies the game's
 minimum HP/combat scaling floors. ToA defaults: raid level 0 (0–700), path level
-0 (0–6), party size 1 (1–8), Exclude Smelling salts off. Settings are session-only,
-separate between raids, and captured immutably for each generation.
+0 (0–6), party size 1 (1–8), Exclude Smelling salts off. Settings are saved in the active RuneLite configuration profile and restored
+after logout, plugin restart and client restart. They remain separate between
+raids and are captured immutably for each generation. Switching configuration
+profiles reloads that profile's settings; missing or malformed values use defaults.
 
 Generated CoX profiles use the Wiki calculator's separate solo/group scaling,
 linked offensive/defensive stats, integer stage ordering, CM exceptions for
 Tekton/crystals and special Olm HP/mage-hand scaling. Only fields relevant to
 player-versus-NPC combat are scaled; incoming attack damage is not simulated.
-Guardian HP preserves the bundled base profile's 99-Mining assumption. Guardian
-Mining/pickaxe damage scaling remains outside this change.
+Guardian base HP is 151 plus average party Mining before ordinary CoX scaling.
+Guardian damage scales each rolled hit by (50 + your base Mining + pickaxe tier) / 150,
+with integer truncation before accurate-zero conversion.
 
 Generated ToA profiles scale HP for invocation, applicable path level and party
 size with the specified rounding stages. Core-ejected HP uses its separate
@@ -52,11 +55,16 @@ Akkha offers Magic-, Ranged- and Melee-vulnerable states and a melee-only final
 state. Vulnerability names describe the player's allowed attack style.
 Invulnerable Warden records are not offered as attackable targets.
 
-Remaining gaps include Warden phase-two guaranteed-accuracy/accuracy-based damage
-and exposed-core attacks, Guardian Mining damage, Keris sun's below-quarter-HP
-accuracy, raid special-attack rotations, encounter downtime, team DPS and complete
-raid simulations. Warden phase-two/core snapshots show explicit calculation
-notices. These controls do not imply those mechanics have been implemented.
+Warden phase two always hits. Its pre-proc damage bounds are 15–35% through
+40–60% of the ordinary maximum, based on attack roll less one third of scaled
+defence roll. The integer modifier interpolates over 0–42,000 remaining attack
+roll. Twisted bow accuracy scaling applies twice in P2. Melee against the exposed
+core always deals the attack's combined maximum damage.
+
+Remaining gaps include timed core exposure/body-damage transfer, Keris sun's
+below-quarter-HP accuracy, raid special-attack rotations, encounter downtime,
+team DPS and complete raid simulations. Core TTK assumes continuous exposure,
+not the elapsed time to finish the complete Warden fight.
 
 ## Reference and validation
 

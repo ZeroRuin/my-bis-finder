@@ -103,7 +103,7 @@ public class RangedLoadoutOptimizer {
   for(EquipmentSlot slot:EquipmentSlot.values()){
    if(slot==EquipmentSlot.WEAPON||slot==EquipmentSlot.AMMO)continue;
    if(SlayerTargetRequirements.requiredEquipmentSlot(m)==slot)continue;
-   List<EquipmentCandidate> choices=choicesFor(ranked,slot);
+   List<EquipmentCandidate> choices=EquipmentSetRules.strengthRanged(weapon)?strengthChoices(ranked.get(slot)):choicesFor(ranked,slot);
    List<Map<EquipmentSlot,EquipmentCandidate>> next=new ArrayList<>();
    for(Map<EquipmentSlot,EquipmentCandidate> g:beam){
     next.add(new EnumMap<>(g));
@@ -224,7 +224,9 @@ public class RangedLoadoutOptimizer {
   double d=fastDps(g,m,task); if(p!=null)p.scoreCache.put(k,d); return d;
  }
  private double fastDps(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
-  int atk=0,str=0,speed=4; boolean slayer=false; EquipmentCandidate weapon=gear.get(EquipmentSlot.WEAPON);
+  EquipmentCandidate scoredWeapon=gear.get(EquipmentSlot.WEAPON);
+  if(RaidCombatRules.wardenP2(m)||EquipmentSetRules.strengthRanged(scoredWeapon))return exactCached(gear,m,task).getDps();
+  int atk=0,str=0,speed=4; boolean slayer=false; EquipmentCandidate weapon=scoredWeapon;
   for(EquipmentCandidate c:gear.values()){if(c==null)continue;
    if(c.getSlot()==EquipmentSlot.AMMO&&!RangedAmmoRules.compatible(weapon,c))continue;
    atk+=c.getRangedAttack();str+=c.getRangedStrength();
@@ -292,6 +294,10 @@ public class RangedLoadoutOptimizer {
   int atk=0,str=0; StringBuilder flags=new StringBuilder();
   for(EquipmentCandidate c:g.values()){if(c==null)continue;atk+=c.getRangedAttack();str+=c.getRangedStrength();}
   flags.append(atk).append('/').append(str);
+  if(EquipmentSetRules.strengthRanged(g.get(EquipmentSlot.WEAPON)))for(EquipmentSlot slot:EquipmentSlot.values()){
+   EquipmentCandidate c=g.get(slot);flags.append('/').append(c==null?0:c.getStrengthBonus());}
+  EquipmentCandidate cape=g.get(EquipmentSlot.CAPE);
+  if(cape!=null&&cape.getItem().getName().toLowerCase().contains("dizana"))flags.append("|quiver:").append(WikiEquipmentEngine.canonicalId(cape.getItem().getItemId()));
   // Weapon/ammo identity can change speed, projectile class and special effects.
   appendIdentity(flags,g.get(EquipmentSlot.WEAPON)); appendIdentity(flags,g.get(EquipmentSlot.AMMO));
   // Preserve slot-specific identities only where current or future set/mechanic
@@ -301,7 +307,7 @@ public class RangedLoadoutOptimizer {
   appendMechanic(flags,g.get(EquipmentSlot.NECK));
   return flags.toString();
  }
- private void appendIdentity(StringBuilder s,EquipmentCandidate c){s.append('|').append(c==null?"-":c.getItem().getName().toLowerCase());}
+ private void appendIdentity(StringBuilder s,EquipmentCandidate c){s.append('|').append(c==null?"-":c.getItem().getItemId()+":"+c.getItem().getName().toLowerCase());}
  private void appendMechanic(StringBuilder s,EquipmentCandidate c){
   if(c==null){s.append("|-");return;} String n=c.getItem().getName().toLowerCase();
   if(n.contains("crystal helm")||n.contains("crystal body")||n.contains("crystal legs")||n.contains("void ranger helm")||
@@ -317,6 +323,20 @@ public class RangedLoadoutOptimizer {
  // never be pruned by ordinary raw-stat gear.  The optimiser currently ranks
  // Ranged DPS first and Prayer on exact DPS ties, making RA/RS/Prayer dominance
  // safe for ordinary supporting items.
+ private List<EquipmentCandidate> strengthChoices(List<EquipmentCandidate> all){
+  List<EquipmentCandidate> raw=allUsable(all),out=new ArrayList<>();
+  for(int i=0;i<raw.size();i++){
+   EquipmentCandidate c=raw.get(i);boolean dominated=false;
+   for(int j=0;j<raw.size();j++)if(i!=j){EquipmentCandidate d=raw.get(j);
+    if(!dominanceMechanicKey(c).equals(dominanceMechanicKey(d)))continue;
+    boolean noWorse=d.getRangedAttack()>=c.getRangedAttack()&&d.getStrengthBonus()>=c.getStrengthBonus()&&d.getPrayer()>=c.getPrayer();
+    boolean strict=d.getRangedAttack()>c.getRangedAttack()||d.getStrengthBonus()>c.getStrengthBonus()||d.getPrayer()>c.getPrayer();
+    if(noWorse&&(strict||j<i)){dominated=true;break;}
+   }
+   if(!dominated)out.add(c);
+  }
+  return out;
+ }
  private List<EquipmentCandidate> choicesFor(Map<EquipmentSlot,List<EquipmentCandidate>> ranked,EquipmentSlot slot){
   SearchContext p=activeSearch.get();
   if(p!=null){List<EquipmentCandidate> cached=p.choiceCache.get(slot);if(cached!=null)return cached;}

@@ -14,6 +14,7 @@ import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.events.ProfileChanged;
 import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.input.MouseListener;
 import net.runelite.client.input.MouseManager;
@@ -149,11 +150,19 @@ public class PersonalBisPlugin extends Plugin
     }
 
     @Subscribe
+    public void onProfileChanged(ProfileChanged event)
+    {
+        if(panel!=null)panel.reloadRaidSettings();
+    }
+
+    @Subscribe
     public void onConfigChanged(ConfigChanged event)
     {
         if ("personalbis".equals(event.getGroup()))
         {
-            if (ItemExclusions.KEY.equals(event.getKey())) panel.exclusionsChanged();
+            if(panel==null)return;
+            if(RaidSettings.CONFIG_KEY.equals(event.getKey()))panel.reloadRaidSettings();
+            else if (ItemExclusions.KEY.equals(event.getKey())) panel.exclusionsChanged();
             else clientThread.invokeLater(panel::updatePlayerStats);
         }
     }

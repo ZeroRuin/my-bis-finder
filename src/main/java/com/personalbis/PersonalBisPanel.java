@@ -119,6 +119,7 @@ public class PersonalBisPanel extends PluginPanel
     private JPanel stylesPanel;
     private JLabel attackStyleHeading;
     private JPanel gearSection;
+    private final LoadoutActionRow actionRow = new LoadoutActionRow();
     private JPanel loggedOutPanel;
     private JPanel noTargetPanel;
     private JPanel chooseStylePanel;
@@ -188,7 +189,7 @@ public class PersonalBisPanel extends PluginPanel
             .append('|').append(monster == null ? "" : monster.getVersion())
             .append('|').append(slayer).append('|').append(includeRubyBoltsEnabled);
         k.append('|').append(MonsterDatabase.combatKey(monster));
-        Skill[] combatSkills = {Skill.ATTACK, Skill.STRENGTH, Skill.DEFENCE, Skill.RANGED, Skill.MAGIC, Skill.PRAYER, Skill.HITPOINTS};
+        Skill[] combatSkills = {Skill.ATTACK, Skill.STRENGTH, Skill.DEFENCE, Skill.RANGED, Skill.MAGIC, Skill.PRAYER, Skill.HITPOINTS, Skill.MINING};
         for (Skill skill : combatSkills)
             k.append('|').append(account.real(skill)).append('/').append(account.boosted(skill));
         k.append('|').append(account.isPietyUnlocked()).append(account.isChivalryUnlocked())
@@ -240,6 +241,7 @@ public class PersonalBisPanel extends PluginPanel
 
         content.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH, Integer.MAX_VALUE));
         buildUi();
+        raidOptions.restore(RaidSettings.decode(preferenceConfig.getConfiguration("personalbis",RaidSettings.CONFIG_KEY)));
         // BoxLayout uses each child's alignment to calculate the shared horizontal axis.
         // Mixing centred test buttons with left-aligned controls shifts the entire column.
         for (Component child : content.getComponents())
@@ -327,7 +329,7 @@ public class PersonalBisPanel extends PluginPanel
         {
             JTextField editor = (JTextField) editorComponent;
             styleTextField(editor);
-            editor.setToolTipText("Type to filter NPCs, or enable Slayer task targeting.");
+            editor.setToolTipText("Search names or shortcuts (KBD, Cerb). Use ToA, CoX or ToB to filter a raid.");
             editor.addKeyListener(new KeyAdapter()
             {
                 @Override public void keyReleased(KeyEvent e)
@@ -591,7 +593,7 @@ content.add(Box.createVerticalStrut(5));
         gearSection.setLayout(new BoxLayout(gearSection, BoxLayout.Y_AXIS));
         gearSection.setOpaque(false);
         gearSection.setAlignmentX(Component.LEFT_ALIGNMENT);
-        gearSection.setMaximumSize(new Dimension(Integer.MAX_VALUE, 190));
+        gearSection.setMaximumSize(new Dimension(Integer.MAX_VALUE, 248));
         gearSection.add(sep);
         gearSection.add(Box.createVerticalStrut(4));
 
@@ -635,6 +637,18 @@ content.add(Box.createVerticalStrut(5));
                 @Override public void mouseReleased(java.awt.event.MouseEvent e) { showMenu(e); }
             });
         }
+        actionRow.spec.addMouseListener(new java.awt.event.MouseAdapter(){
+            private void menu(java.awt.event.MouseEvent e){
+                Object id=actionRow.spec.getClientProperty("personalbis.itemId");
+                if(!e.isPopupTrigger()||!loadoutsGenerated||!(id instanceof Integer))return;
+                javax.swing.JPopupMenu popup=new javax.swing.JPopupMenu();
+                javax.swing.JMenuItem exclude=new javax.swing.JMenuItem(ItemExclusions.MENU_OPTION);
+                exclude.addActionListener(event -> clientThread.invokeLater(() -> exclusions.exclude((Integer)id)));
+                popup.add(exclude);popup.show(actionRow.spec,e.getX(),e.getY());
+            }
+            @Override public void mousePressed(java.awt.event.MouseEvent e){menu(e);}
+            @Override public void mouseReleased(java.awt.event.MouseEvent e){menu(e);}
+        });
         prayerIcon.setOpaque(true);
         prayerIcon.setBackground(new Color(38, 38, 38));
         prayerIcon.setPreferredSize(new Dimension(48, 50));
@@ -659,7 +673,11 @@ content.add(Box.createVerticalStrut(5));
         gearGrid.add(gear[EquipmentSlot.RING.ordinal()]);
 
         gearSection.add(gearGrid);
+        gearSection.add(Box.createVerticalStrut(4));
+        gearSection.add(actionRow);
         gearSection.add(Box.createVerticalStrut(5));
+        spriteManager.getSpriteAsync(SpriteID.COMBAT_STYLE_BUTTON_SELECTED,0,image ->
+            SwingUtilities.invokeLater(() -> actionRow.setButton(image)));
 
         content.add(gearSection);
 
@@ -1090,6 +1108,22 @@ content.add(Box.createVerticalStrut(5));
     }
 
     private void raidOptionsChanged()
+    {
+        preferenceConfig.setConfiguration("personalbis",RaidSettings.CONFIG_KEY,raidOptions.settings().encode());
+        invalidateRaidOptions();
+    }
+
+    void reloadRaidSettings()
+    {
+        SwingUtilities.invokeLater(()->{
+            RaidSettings saved=RaidSettings.decode(preferenceConfig.getConfiguration("personalbis",RaidSettings.CONFIG_KEY));
+            if(saved.encode().equals(raidOptions.settings().encode()))return;
+            raidOptions.restore(saved);
+            invalidateRaidOptions();
+        });
+    }
+
+    private void invalidateRaidOptions()
     {
         invalidateOptimizerCache();
         styleExplicitlySelected=false;
@@ -1586,13 +1620,7 @@ content.add(Box.createVerticalStrut(5));
         for(Integer id:selectedIds)if(bankOwnedIds.contains(id))selectedRecommendedIds.add(id);
         final List<RecommendedSupply> resultSupplies=TargetStyleImmunity.immune(monster,requestedStyle)?Collections.emptyList():SimpleSupplyRecommender.recommend(
             requestedStyle, magicLoads.get(requestedStyle), rangedLoads.get(requestedStyle), bankSnapshot, monster, account.real(Skill.PRAYER));
-        clientThread.invokeLater(() -> {
-            if(generation!=calculationGeneration.get())return;
-            bankFilter.setTarget(monster);
-            bankFilter.setBestStyle(resultBestStyle);
-            bankFilter.setRecommendations(selectedBankRecommendations,bankStyles,selectedRecommendedIds);
-            bankFilter.setSupplies(resultSupplies);
-        });
+
 
         final Map<EquipmentSlot, EquipmentCandidate> selectedGear = new EnumMap<>(EquipmentSlot.class);
         final CombatResult selectedCombat;
@@ -1613,9 +1641,25 @@ content.add(Box.createVerticalStrut(5));
         final OptimizedMagicLoadout selectedMagicLoad = magicLoads.get(requestedStyle);
         final MagicCombatResult uiMagic = selectedMagicLoad == null ? null : selectedMagicLoad.getResult();
 
+        final SpecWeaponRecommendation spec = new SpecWeaponRecommender(account).best(selectedGear,rankedSnapshot,requestedStyle,monster,requestedSlayerMode);
+        if(spec!=null){
+            int id=spec.weapon.getItem().getItemId();
+            selectedBankRecommendations.get(requestedStyle).add(id);
+            if(bankOwnedIds.contains(id))selectedRecommendedIds.add(id);
+            if(spec.ammo!=null){id=spec.ammo.getItem().getItemId();selectedBankRecommendations.get(requestedStyle).add(id);if(bankOwnedIds.contains(id))selectedRecommendedIds.add(id);}
+        }
+        clientThread.invokeLater(() -> {
+            if(generation!=calculationGeneration.get())return;
+            bankFilter.setTarget(monster);
+            bankFilter.setBestStyle(resultBestStyle);
+            bankFilter.setRecommendations(selectedBankRecommendations,bankStyles,selectedRecommendedIds);
+            bankFilter.setSupplies(resultSupplies);
+        });
+
         final AttackStyle uiBestStyle=resultBestStyle;
         SwingUtilities.invokeLater(()->{
             if(generation!=calculationGeneration.get())return;
+            updateActionRow(spec,requestedStyle,selectedCombat,uiRanged,uiMagic,selectedGear,generation);
             calculatedBestStyle=uiBestStyle;
             updateStyleHighlight();
             String calculatedPrayer = selectedCombat != null && selectedCombat.getPrayer() != null
@@ -1715,6 +1759,10 @@ content.add(Box.createVerticalStrut(5));
                     : "No calculated loadout is available for this style.");
             }
             if(RaidScaling.isCox(monster)||RaidScaling.isToa(monster)) summary.append("\nTarget HP: ").append(monster.getHitpoints());
+            if(EquipmentSetRules.dharok(selectedGear))summary.append("\nDharok: uses your Hitpoints snapshot at generation; regenerate after HP changes.");
+            if(EquipmentSetRules.strengthRanged(selectedGear.get(EquipmentSlot.WEAPON)))
+                summary.append("\nDamage uses Strength level and melee Strength bonus.");
+            if(WikiTargetEligibility.isGuardian(monster))summary.append("\nGuardian damage uses your Mining level and pickaxe tier.");
             String raidNote=RaidTargetVariants.note(monster);
             if(!raidNote.isEmpty())summary.append("\n").append(raidNote);
             meleeValidation.setText(summary.toString());
@@ -1735,6 +1783,35 @@ content.add(Box.createVerticalStrut(5));
         if(!calculateAllStyles && resultBestStyle==null)
             optimizerExecutor.execute(() -> calculateMissingBestStyles(generation,cacheKey,ownedGearSnapshot,
                 rankedSnapshot,monster,requestedSlayerMode));
+    }
+
+    private void updateActionRow(SpecWeaponRecommendation spec,AttackStyle style,CombatResult melee,
+        RangedCombatResult ranged,MagicCombatResult magic,Map<EquipmentSlot,EquipmentCandidate> items,long generation)
+    {
+        actionRow.clear();
+        actionRow.spec.putClientProperty("personalbis.itemId",spec==null?null:spec.weapon.getItem().getItemId());
+        actionRow.spec.setToolTipText("No supported, usable direct-damage special weapon owned for this combat style.");
+        if(spec!=null){
+            actionRow.spec.setText("");itemManager.getImage(spec.weapon.getItem().getItemId(),1,false).addTo(actionRow.spec);
+            actionRow.spec.setToolTipText(String.format("<html>Spec: %s<br>Best supported direct special: %.2f DPS | %.1f damage | %d%% energy<br>%s<br>Uses displayed armour and best legal special stance.<br>Single-special burst; no energy regeneration, rotations, utility or DoT.<br>Some weapon specials are not modelled.</html>",spec.weapon.getItem().getName(),spec.dps,spec.damage,spec.energy,spec.note));
+        }
+        actionRow.spell.setToolTipText("Spell recommendation appears for magic gear.");
+        if(magic!=null){
+            String spell=magic.getSpell();actionRow.spell.setToolTipText("Recommended spell: "+spell);
+            try{
+                int sprite=SpriteID.class.getField("SPELL_"+spell.toUpperCase(java.util.Locale.ROOT).replace(' ','_')).getInt(null);
+                actionRow.spell.setText("");spriteManager.getSpriteAsync(sprite,0,image -> SwingUtilities.invokeLater(() -> {
+                    if(generation==calculationGeneration.get())actionRow.spell.setIcon(image==null?null:new ImageIcon(image));
+                }));
+            }catch(ReflectiveOperationException ex){
+                EquipmentCandidate weapon=items.get(EquipmentSlot.WEAPON);
+                if(weapon!=null){actionRow.spell.setText("");itemManager.getImage(weapon.getItem().getItemId(),1,false).addTo(actionRow.spell);}
+            }
+        }
+        String type=style==AttackStyle.MELEE_STAB?"Stab":style==AttackStyle.MELEE_SLASH?"Slash":style==AttackStyle.MELEE_CRUSH?"Crush":style==AttackStyle.RANGED?"Ranged":"Magic";
+        String stance=melee!=null?melee.getStance().toString():ranged!=null?ranged.getStance().toString():magic!=null?"Cast":"—";
+        actionRow.style.setText("<html><center>"+type+"<br>"+stance+"</center></html>");
+        actionRow.style.setToolTipText("Recommended normal attack: "+type+" / "+stance);
     }
 
     private AttackStyle cachedBestStyleIfComplete()

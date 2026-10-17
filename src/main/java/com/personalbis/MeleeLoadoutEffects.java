@@ -119,7 +119,7 @@ public final class MeleeLoadoutEffects
     {
         if(c==null)return false;
         String n=name(c);
-        return n.contains("salve amulet")
+        return n.startsWith("blood moon ") || n.startsWith("dharok's ") || n.contains("salve amulet")
             || n.contains("slayer helmet") || n.contains("slayer helm") || n.contains("black mask")
             || n.contains("void melee helm") || n.contains("void knight top") || n.contains("elite void top")
             || n.contains("void knight robe") || n.contains("elite void robe") || n.contains("void knight gloves")

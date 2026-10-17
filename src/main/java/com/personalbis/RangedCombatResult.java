@@ -1,11 +1,15 @@
 package com.personalbis;
 public final class RangedCombatResult {
  private final double dps,expectedTtkSeconds,accuracy; private final int maxHit,attackRoll,defenceRoll,rangedAttack,rangedStrength,speed,effectiveRanged,effectiveDamage;
+ private final int preTransformMax;
  private final RangedStance stance; private final RangedPrayer prayer;
  public RangedCombatResult(double d,double a,int m,int ar,int dr,int ra,int rs,int sp,int er,int ed,RangedStance st,RangedPrayer p)
  {this(d,Double.POSITIVE_INFINITY,a,m,ar,dr,ra,rs,sp,er,ed,st,p);}
  public RangedCombatResult(double d,double ttk,double a,int m,int ar,int dr,int ra,int rs,int sp,int er,int ed,RangedStance st,RangedPrayer p)
- {dps=d;expectedTtkSeconds=ttk;accuracy=a;maxHit=m;attackRoll=ar;defenceRoll=dr;rangedAttack=ra;rangedStrength=rs;speed=sp;effectiveRanged=er;effectiveDamage=ed;stance=st;prayer=p;}
+ {this(d,ttk,a,m,ar,dr,ra,rs,sp,er,ed,st,p,m);}
+ public RangedCombatResult(double d,double ttk,double a,int m,int ar,int dr,int ra,int rs,int sp,int er,int ed,RangedStance st,RangedPrayer p,int preMax)
+ {preTransformMax=preMax;dps=d;expectedTtkSeconds=ttk;accuracy=a;maxHit=m;attackRoll=ar;defenceRoll=dr;rangedAttack=ra;rangedStrength=rs;speed=sp;effectiveRanged=er;effectiveDamage=ed;stance=st;prayer=p;}
+ public int getPreTransformMax(){return preTransformMax;}
  public double getDps(){return dps;} public double getAccuracy(){return accuracy;} public int getMaxHit(){return maxHit;}
  public double getExpectedTtkSeconds(){return expectedTtkSeconds;}
  public int getAttackRoll(){return attackRoll;} public int getDefenceRoll(){return defenceRoll;} public int getRangedAttack(){return rangedAttack;}

@@ -117,6 +117,7 @@ final class RaidScaling
         }
         else
         {
+            if(WikiTargetEligibility.isGuardian(m))hp=151+s.coxMining;
             boolean magicDef=id(m,7559,7540,7543,7544,7545,7533,7530,7531,7532,7538,7539,7552,7555,7550,7553);
             boolean single=id(m,7548,7549,7538,7539);
             int baseDef=Math.max(def,magicDef?magic:1);

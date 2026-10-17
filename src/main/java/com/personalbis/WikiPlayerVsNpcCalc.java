@@ -244,8 +244,15 @@ public final class WikiPlayerVsNpcCalc {
         EquipmentCandidate weapon, EquipmentCandidate ammo, MonsterDefinition monster, int rangedLevel,
         int normalMax, double accuracy, boolean kandarinHard,
         java.util.Collection<EquipmentCandidate> gear) {
+        return rangedAttacker(weapon,ammo,monster,rangedLevel,0,normalMax,accuracy,kandarinHard,gear);
+    }
+
+    public static HitDistribution.AttackDistribution rangedAttacker(
+        EquipmentCandidate weapon, EquipmentCandidate ammo, MonsterDefinition monster, int rangedLevel,
+        int normalMin, int normalMax, double accuracy, boolean kandarinHard,
+        java.util.Collection<EquipmentCandidate> gear) {
         HitDistribution d = EnchantedBoltEffects.preAccurateZeroDistribution(
-            ammo, monster, rangedLevel, normalMax, accuracy, kandarinHard);
+            ammo, monster, rangedLevel, normalMin, normalMax, accuracy, kandarinHard);
 
         String weaponName=weapon==null||weapon.getItem()==null?"":weapon.getItem().getName();
         boolean twoIndependent=equalsAny(weaponName,"Dark bow") || isChargedTonalztics(weapon);
@@ -299,8 +306,12 @@ public final class WikiPlayerVsNpcCalc {
     /** Static ordinary-hit portion reused by every remaining-HP Ruby-bolt state. */
     public static HitDistribution rangedRubyBaseDistribution(MonsterDefinition monster,int rangedLevel,
         int normalMax,double accuracy,boolean kandarinHard) {
+        return rangedRubyBaseDistribution(monster,rangedLevel,0,normalMax,accuracy,kandarinHard);
+    }
+    public static HitDistribution rangedRubyBaseDistribution(MonsterDefinition monster,int rangedLevel,
+        int normalMin,int normalMax,double accuracy,boolean kandarinHard) {
         HitDistribution base=EnchantedBoltEffects.preAccurateZeroDistribution(
-            null,monster,rangedLevel,normalMax,accuracy,kandarinHard).accurateZeroToOne();
+            null,monster,rangedLevel,normalMin,normalMax,accuracy,kandarinHard).accurateZeroToOne();
         return CorporealBeastRules.isCorp(monster)?base.transform(HitDistribution.divide(2,0)).flatten():base;
     }
 

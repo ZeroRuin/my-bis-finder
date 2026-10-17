@@ -21,6 +21,8 @@ hueycoatlSelfTest
 theatreOfBloodSelfTest
 raidOptionsSelfTest
 targetStyleImmunitySelfTest
+combatSearchSelfTest
+specialAttackSelfTest
 ```
 
 Run the data-tool checks with:
@@ -140,8 +142,11 @@ whole-raid timing, room downtime, damage from teammates or Dawnbringer.
    Zebak Normal/Enraged, and CoX part/variant labels. Confirm wrong styles cannot win.
 8. Check input bounds and invalid typed values; an invalid edit must block generation.
    Resize the sidebar and confirm all fields, checkbox labels and stats remain visible.
-9. Check phase-two Warden and core-ejected notices. These snapshots still lack
-   phase-two accuracy-based damage and actual exposed-core attack mechanics.
+9. Check P2 Magic/Ranged show 100% accuracy and damage changes with accuracy gear.
+   Core melee damage must always equal its displayed maximum per attack. Core TTK
+   assumes continuous exposure; it does not simulate ejection windows.
+10. Change average party Mining on a Guardian; regenerate and check target HP.
+    Your own Mining and pickaxe tier determine per-hit damage.
 
 ## Style immunity and raid input styling
 
@@ -156,3 +161,47 @@ whole-raid timing, room downtime, damage from teammates or Dawnbringer.
    show the existing no-usable-loadout state rather than an immunity message.
 5. Check CoX and ToA number fields: outer borders should be gold with dark input
    backgrounds and subdued arrow borders, matching the sidebar rather than white.
+
+## Combat and search test build
+
+- Search `KBD`, `Cerb`, `Huey`, `Vorktha`, `ToA`, `CoX`, `ToB`, `ToA Zebak`
+  and `ToB Verzik`. Raid prefixes must never return another raid or an ordinary
+  non-raid target. Suggestions still require an explicit target/phase selection.
+- Check charged and uncharged locked quivers retain their different Sunfire
+  bonuses with eligible ammunition. Ordinary ancient capes retain their stats
+  without receiving a different god cape's Charge effect; Deadman is excluded.
+- Check all nine Vasilias forms preserve difficulty/style and use the actual NPC
+  form identity. The source JSON and reviewed Slayer mappings remain unchanged.
+- With Moons pieces, confirm ordinary stats apply without full-set speed or burn bonuses.
+- Test complete Dharok at full and low HP. Generate again after HP changes; the
+  result uses captured HP and does not assume deliberate damage during combat.
+- Atlatl/Hunter's spear damage uses Strength, melee Strength gear and the matching
+  Salve/task damage modifiers; accuracy remains Ranged. Eclipse burn is excluded
+  from ranking. Special rotations and damage over time remain future work;
+  thralls and defence-drain value are out of scope.
+
+## Combat/search test 2 follow-up
+
+- `tombs`, `amascut` and `tombs of amascut` show the same complete filter as `toa`.
+  `chambers`, `xeric` and `chambers of xeric` match `cox`; `theatre`, `blood` and
+  `theatre of blood` match `tob`. Check terms with a following boss name too.
+- Change every raid number and both checkboxes. Log out/in, restart the plugin
+  and restart RuneLite: values should remain. CoX and ToA values stay independent.
+- Switch RuneLite configuration profiles: each profile should load its own saved
+  settings, or defaults on first use. Changes still require loadout regeneration.
+
+## Spec and attack row test 1
+
+- Generate melee, Ranged and Magic gear. The fourth row shows Spec | Spell | a
+  double-width attack-style/stance button. Spell is populated for Magic only.
+- Hover Spec: check weapon, burst DPS, energy, special stance and required ammo.
+  Only owned usable supported weapons are eligible; unmodelled owned specials
+  are listed. Normal loadout DPS must remain unchanged.
+- Check DDS/claws, Voidwaker, a two-handed switch and ranged ammo switches.
+  Zaryte ruby assumes starting target HP; no full-fight ruby rotation is claimed.
+- Confirm the special weapon/ammo are included in the selected bank setup.
+- Exclude the best special, regenerate, and check that it is no longer selected.
+- Change target/style and regenerate quickly: no spell sprite from an older
+  generation should replace the current spell. Immune targets clear the row.
+- `SpecialAttackSelfTest` covers distribution boundaries, Zaryte bolt effects,
+  owned-weapon selection, score units and row proportions.

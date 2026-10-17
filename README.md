@@ -25,7 +25,8 @@ You do not need to enter your bank into a separate calculator.
   still apply. This is a preference within the search, rather than a guarantee
   of the highest possible Prayer bonus in every slot.
 - **Target-specific combat calculations:** accounts for supported defence stats,
-  elemental weaknesses, immunities, weapon passives and multi-hit mechanics.
+  elemental weaknesses, immunities, weapon passives and multi-hit mechanics;
+  also recommends the best supported special-attack weapon from your owned gear.
 - **Enchanted bolts and ammunition:** models supported Ruby, Diamond, Onyx and
   Dragonstone bolt effects, including supported diary bonuses and target
   restrictions. Ruby bolt damage changes as enemy HP falls during TTK calculations;

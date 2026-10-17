@@ -134,6 +134,24 @@ public class MeleeLoadoutOptimizer
                    && prayerBonus(g)>prayerBonus(best.getItems())))
                 best=new OptimizedLoadout(style,g,r);
         }
+        // Complete sets must be evaluated together even when their individual pieces lose beam pruning.
+        for(String[] set:new String[][]{
+            {"Dharok's greataxe","Dharok's helm","Dharok's platebody","Dharok's platelegs"}})
+        {
+            if(best==null||!EquipmentSetRules.named(weapon,set[0]))continue;
+            Map<EquipmentSlot,EquipmentCandidate> trial=new EnumMap<>(best.getItems());
+            boolean complete=true;
+            EquipmentSlot[] slots={EquipmentSlot.HEAD,EquipmentSlot.BODY,EquipmentSlot.LEGS};
+            for(int i=0;i<slots.length;i++){
+                EquipmentCandidate piece=findNamed(ranked.get(slots[i]),set[i+1]);
+                if(piece==null||(requiredEquipment!=null&&requiredEquipment.getSlot()==slots[i]
+                    &&requiredEquipment.getItem().getItemId()!=piece.getItem().getItemId())){complete=false;break;}
+                trial.put(slots[i],piece);
+            }
+            if(complete){CombatResult r=calculateCached(trial,style,monster,onSlayerTask,context);
+                if(FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps()))
+                    best=new OptimizedLoadout(style,trial,r);}
+        }
         return completeNeutralSlots(best,ranked,style,monster,onSlayerTask,weapon,context);
     }
 
@@ -260,7 +278,7 @@ public class MeleeLoadoutOptimizer
     private EquipmentCandidate findNamed(List<EquipmentCandidate> items,String name)
     {
         if(items!=null)for(EquipmentCandidate c:items)if(c!=null&&!c.getRequirementResult().isBlocked()
-            &&c.getItem()!=null&&c.getItem().getName().equalsIgnoreCase(name))return c;
+            &&c.getItem()!=null&&EquipmentSetRules.named(c,name))return c;
         return null;
     }
 

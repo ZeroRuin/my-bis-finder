@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased — Combat, Search and Special Attacks
+
+- Add a fourth equipment row with a separate owned special-weapon recommendation, the selected magic spell and a double-width game-style attack button.
+- Rank supported direct-damage specials using expected damage per attack interval in the displayed armour; show energy cost and required ammo in the tooltip. This is burst DPS, not an energy-regeneration or rotation simulation.
+- Add supported melee specials, common ranged specials including Zaryte enchanted bolts, and Eye of Ayak / Nightmare staff specials. Unmodelled specials are explicitly excluded from the recommendation.
+- Include the recommended special weapon and ammo in the selected bank setup.
+- Remove Blood Moon full-set speed calculations and complete-set search candidates. Keep individual Moons equipment stats and ordinary weapon attacks; full-set effects remain out of scope.
+- Keep thralls, defence-drain value and special rotations out of scope.
+
+- Expand raid filters with tombs/amascut, chambers/xeric and theatre/blood, including full raid names and a following boss query.
+- Persist all raid numbers and checkboxes in the active RuneLite configuration profile across logout and restarts; reload them when switching profiles.
+
+- Add locked-quiver charge-state aliases and ordinary ancient cape aliases.
+- Give generated Vasilias forms their real combat NPC IDs without changing the bundled monster snapshot.
+- Add Warden P2 guaranteed hits and accuracy-based damage bounds, including its Twisted bow accuracy rule.
+- Add guaranteed melee maximum damage against the exposed Warden core; timed exposure remains out of scope.
+- Add Guardian Mining/pickaxe damage and average-party-Mining HP controls.
+- Add Dharok's HP-snapshot damage and complete-set optimizer candidates.
+- Correct Atlatl/Hunter's spear Strength-based damage and preserve melee-Strength supporting gear during search. Eclipse burns remain excluded.
+- Add typo-tolerant target suggestions, common shorthand and ToA/CoX/ToB raid-prefix filtering.
+- Keep special rotations and damage over time as separate future work; thralls and defence drains are out of scope.
+
 ## 0.9.6.2 — Raid Targets and Options
 
 - Rerolls only Seren hits above 24 to 22–24; preserves hits at or below the cap.

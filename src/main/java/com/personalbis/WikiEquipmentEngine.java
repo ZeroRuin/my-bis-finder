@@ -62,6 +62,11 @@ public final class WikiEquipmentEngine {
    Type et=new TypeToken<List<WikiEquipment>>(){}.getType();
    List<WikiEquipment> eq=g.fromJson(new InputStreamReader(WikiEquipmentEngine.class.getResourceAsStream("/wiki-data/equipment.json"),StandardCharsets.UTF_8),et);
    for(WikiEquipment w:eq) if(!EQUIPMENT.containsKey(w.id)||empty(EQUIPMENT.get(w.id).version)) EQUIPMENT.put(w.id,w);
+   // RuneLite gameval ItemID: preserve the charge state of locked quivers.
+   CANONICAL.put(28949,28947); CANONICAL.put(28953,28951);
+   // Ordinary ancient MA2/max capes have the same equipment stats as other MA2 capes.
+   // Keep original BankItem names for god-spell Charge eligibility; exclude Deadman 34607.
+   CANONICAL.put(34633,21793); CANONICAL.put(34637,21793); CANONICAL.put(34625,21793);
    initialized=true;
   } catch(Exception ex){ throw new ExceptionInInitializerError(ex); }
  }

@@ -133,7 +133,7 @@ public class MonsterDatabase
     private static MonsterDefinition fromWiki(WikiMonster wiki, String version)
     {
         return new MonsterDefinition(
-            wiki.id, wiki.name.trim(), version, wiki.level, wiki.skills.def,
+            TheatreOfBloodRules.npcId(wiki.id,wiki.name,version), wiki.name.trim(), version, wiki.level, wiki.skills.def,
             wiki.skills.magic, wiki.skills.ranged, RaidTargetVariants.hp(wiki, version),
             wiki.defensive == null ? 0 : wiki.defensive.stab,
             wiki.defensive == null ? 0 : wiki.defensive.slash,
@@ -186,21 +186,7 @@ public class MonsterDatabase
 
     public List<MonsterDefinition> search(String query, int limit)
     {
-        String q = query == null ? "" : query.trim().toLowerCase(Locale.ROOT);
-        int safeLimit = limit <= 0 ? Integer.MAX_VALUE : limit;
-        List<MonsterDefinition> out = new ArrayList<>();
-        for (MonsterDefinition monster : monsters)
-        {
-            if (q.isEmpty() || monster.getName().toLowerCase(Locale.ROOT).contains(q))
-            {
-                out.add(monster);
-                if (out.size() >= safeLimit)
-                {
-                    break;
-                }
-            }
-        }
-        return out;
+        return TargetSearch.search(monsters, query, limit);
     }
 
 

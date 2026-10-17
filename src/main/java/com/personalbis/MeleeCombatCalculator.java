@@ -106,6 +106,8 @@ public class MeleeCombatCalculator
                 ? 1.0-Math.pow(1.0-WikiAccuracyRoll.normal(attackRoll,defenceRoll),2)
                 : WikiAccuracyRoll.fang(attackRoll,defenceRoll);
 
+        if(RaidCombatRules.core(monster))accuracy=1.0;
+
         int maxHit=WikiIntegerStages.maxHitFromEffective(effStr,strBonus+64);
         maxHit=WikiMeleeEffects.maxAfterCrystalBlessing(maxHit,gear.values());
         if (avariceRevenant)
@@ -216,17 +218,30 @@ public class MeleeCombatCalculator
         else
             attackDist=WikiPlayerVsNpcCalc.standardAttacker(displayedMaxHit,accuracy);
 
+        // Dharok and Guardian multipliers act on rolled damage before accurate-zero conversion.
+        if(EquipmentSetRules.dharok(gear))attackDist=new HitDistribution.AttackDistribution(
+            java.util.Collections.singletonList(HitDistribution.linear(accuracy,0,displayedMaxHit)))
+            .scaleDamage(EquipmentSetRules.dharokFactor(account.real(Skill.HITPOINTS),account.boosted(Skill.HITPOINTS)),10000);
+        if(WikiTargetEligibility.isGuardian(monster))attackDist=new HitDistribution.AttackDistribution(
+            java.util.Collections.singletonList(HitDistribution.linear(accuracy,0,displayedMaxHit)));
+        attackDist=RaidCombatRules.guardian(attackDist,monster,weapon,account.real(Skill.MINING));
+        if(EquipmentSetRules.dharok(gear)||WikiTargetEligibility.isGuardian(monster))
+            attackDist=attackDist.transform(h->HitDistribution.single(h.damage==0?1:h.damage,h.accurate),false);
+        if(RaidCombatRules.core(monster))attackDist=new HitDistribution.AttackDistribution(
+            java.util.Collections.singletonList(HitDistribution.single(attackDist.max(),true)));
         attackDist=WikiPlayerVsNpcCalc.applyCorp(attackDist,monster,weapon,style);
         attackDist=WikiPlayerVsNpcCalc.finalDistribution(attackDist,monster,style,weapon,null,false,gear.values());
+        double expectedTicks=speed;
+        seconds=expectedTicks*0.6;
         double dps=WikiPlayerVsNpcCalc.expectedDamage(attackDist)/seconds;
         int targetHp=monster==null?1:Math.max(1,monster.getHitpoints());
-        double ttk=ExpectedKillTime.seconds(attackDist,targetHp,speed);
+        double ttk=ExpectedKillTime.seconds(attackDist,targetHp,speed)*expectedTicks/speed;
         displayedMaxHit=attackDist.max();
 
         // Soulreaper is stateful: production ranking starts at zero stacks, then
         // scores the actual 0/1/2/3/4 -> 5-stack ramp over this target's HP.
         // Accuracy does not change with stacks; only Strength/max hit does.
-        if(SoulreaperAxeEffects.isSoulreaper(weapon))
+        if(SoulreaperAxeEffects.isSoulreaper(weapon)&&!RaidCombatRules.core(monster))
         {
             double[] stackEv=new double[6];
             int potentialMax=displayedMaxHit;

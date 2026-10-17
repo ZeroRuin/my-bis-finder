@@ -24,8 +24,10 @@ public class MagicCombatCalculator {
   int max=magicDamage.maxHit;
   int ticks=MagicSpellCompatibility.attackTicks(weaponName,spell);
   int preTransformMax=max;
+  int min=magicDamage.minHit;
+  if(RaidCombatRules.wardenP2(m)){int[] bounds=RaidCombatRules.wardenBounds(max,roll,dr);min=bounds[0];max=bounds[1];acc=1.0;}
   Double brimstoneAccuracy=hasItem(gear,"Brimstone ring")?WikiAccuracyRoll.normal(roll,WikiIntegerStages.factor(dr,9,10)):null;
-  HitDistribution.AttackDistribution magicAttack=WikiPlayerVsNpcCalc.magicFinalDistribution(magicDamage.minHit,max,acc,brimstoneAccuracy,m,gear.values(),spell);
+  HitDistribution.AttackDistribution magicAttack=WikiPlayerVsNpcCalc.magicFinalDistribution(min,max,acc,RaidCombatRules.wardenP2(m)?null:brimstoneAccuracy,m,gear.values(),spell);
   double expectedHit=WikiPlayerVsNpcCalc.expectedDamage(magicAttack);
   double dps=expectedHit/(ticks*.6);
   double ttk=ExpectedKillTime.seconds(magicAttack,m==null?1:Math.max(1,m.getHitpoints()),ticks);
@@ -56,8 +58,10 @@ public class MagicCombatCalculator {
   WikiMagicDamage.Result magicDamage=WikiMagicDamage.powered(base,md,mp.damage,gear.values(),m,task);
   int max=magicDamage.maxHit;
   int preTransformMax=max;
+  int min=magicDamage.minHit;
+  if(RaidCombatRules.wardenP2(m)){int[] bounds=RaidCombatRules.wardenBounds(max,roll,dr);min=bounds[0];max=bounds[1];acc=1.0;}
   Double brimstoneAccuracy=hasItem(gear,"Brimstone ring")?WikiAccuracyRoll.normal(roll,WikiIntegerStages.factor(dr,9,10)):null;
-  HitDistribution.AttackDistribution poweredAttack=WikiPlayerVsNpcCalc.magicFinalDistribution(magicDamage.minHit,max,acc,brimstoneAccuracy,m,gear.values(),null);
+  HitDistribution.AttackDistribution poweredAttack=WikiPlayerVsNpcCalc.magicFinalDistribution(min,max,acc,RaidCombatRules.wardenP2(m)?null:brimstoneAccuracy,m,gear.values(),null);
   int poweredTicks=WikiAttackSpeedRules.attackTicks(staff.speed,staff.label,m);
   double dps=WikiPlayerVsNpcCalc.dps(poweredAttack,poweredTicks); max=poweredAttack.max();
   double ttk=ExpectedKillTime.seconds(poweredAttack,m==null?1:Math.max(1,m.getHitpoints()),poweredTicks);

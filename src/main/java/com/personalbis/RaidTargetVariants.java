@@ -66,9 +66,9 @@ final class RaidTargetVariants
     static String note(MonsterDefinition m)
     {
         if(m!=null&&m.getName().endsWith("' Warden")&&m.getVersion().contains("Core-ejected"))
-            return "Core-ejected snapshot: exposed-core damage mechanics are not modelled.";
+            return "Exposed core: melee attacks always deal their maximum damage. TTK assumes continuous exposure; ejection windows and body damage are not simulated.";
         if(m!=null&&m.getName().endsWith("' Warden")&&m.getVersion().contains("vulnerable"))
-            return "Phase 2 accuracy-based damage rules are not yet modelled.";
+            return "Phase 2: attacks always hit; damage bounds depend on attack roll and scaled target defence.";
         return "";
     }
 }
