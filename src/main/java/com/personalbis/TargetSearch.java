@@ -21,9 +21,9 @@ final class TargetSearch
     }
     static List<MonsterDefinition> search(List<MonsterDefinition> source,String query,int limit) {
         String q=normalize(query),raid="";
-        for(String prefix:new String[]{"tombs of amascut","chambers of xeric","theatre of blood","toa","cox","tob","tombs","amascut","chambers","xeric","theatre","blood"}) {
+        for(String prefix:new String[]{"the fractured archive","fractured archive","tfa","archive","tombs of amascut","chambers of xeric","theatre of blood","toa","cox","tob","tombs","amascut","chambers","xeric","theatre","blood"}) {
             if(q.equals(prefix)||q.startsWith(prefix+" ")) {
-                raid=prefix.equals("toa")||prefix.startsWith("tombs")||prefix.equals("amascut")?"toa":prefix.equals("cox")||prefix.startsWith("chambers")||prefix.equals("xeric")?"cox":"tob";
+                raid=prefix.equals("tfa")||prefix.contains("archive")?"tfa":prefix.equals("toa")||prefix.startsWith("tombs")||prefix.equals("amascut")?"toa":prefix.equals("cox")||prefix.startsWith("chambers")||prefix.equals("xeric")?"cox":"tob";
                 q=q.substring(prefix.length()).trim(); break;
             }
         }
@@ -43,6 +43,7 @@ final class TargetSearch
         return new ArrayList<>(out.subList(0,Math.min(out.size(),limit<=0?out.size():limit)));
     }
     static boolean inRaid(MonsterDefinition m,String raid) {
+        if(raid.equals("tfa"))return FracturedArchiveRules.isTfa(m);
         if(raid.equals("cox"))return RaidScaling.isCox(m);
         if(raid.equals("toa"))return RaidScaling.isToa(m)||m.getId()>=11709&&m.getId()<=11718
             ||m.getId()==11781||m.getId()==11727||m.getId()==11697||m.getId()==11723;

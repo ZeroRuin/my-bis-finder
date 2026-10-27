@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -126,12 +127,24 @@ public class PersonalBisPanel extends PluginPanel
     private JLabel monsterCountLabel;
     private JPanel validationSection;
     private final JButton generateLoadoutButton = osrsButton("Generate Loadout");
+    private final JButton cancelCalculationButton = osrsButton("Cancel calculation");
     private final JLabel generateMessage = new JLabel(" ", SwingConstants.CENTER);
     private final JButton advancedToggle = osrsButton("Advanced ▸");
     private final JPanel advancedOptions = new JPanel();
+    private final JPanel advancedHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    private final JLabel advancedAlert = new JLabel(" !");
+    private final JLabel activeReductions = new JLabel();
     private final JPanel groupStorageOptions = new JPanel();
     private final RaidOptionsPanel raidOptions = new RaidOptionsPanel(this::raidOptionsChanged);
+    private final VardorvisHpOptions vardorvisHpOptions=new VardorvisHpOptions(this::vardorvisHpChanged);
     private boolean advancedExpanded;
+    private final JComboBox<FillPreference> fillPreferenceBox=new JComboBox<>(FillPreference.values());
+    private volatile FillPreference fillPreference=FillPreference.PRAYER;
+    private final BlowpipeAmmoOptions blowpipeAmmoOptions;
+    private volatile boolean blowpipeBankSnapshotValid;
+    private final DefenceReductionOptions defenceReductionOptions;
+    private volatile DefenceReductionPlan manualDefenceReduction=DefenceReductionPlan.OFF;
+    private volatile Map<BlowpipeAmmoPlan.Pipe,BlowpipeAmmoPlan.Dart> blowpipeAmmoSelections=Collections.emptyMap();
     private volatile boolean groupStorageAvailable = false;
     private final net.runelite.client.config.ConfigManager preferenceConfig;
     private final JCheckBox includeGroupStorage = new JCheckBox("Include group storage", false);
@@ -188,10 +201,13 @@ public class PersonalBisPanel extends PluginPanel
             .append('|').append(monster == null ? 1 : monster.getSize())
             .append('|').append(monster == null ? "" : monster.getVersion())
             .append('|').append(slayer).append('|').append(includeRubyBoltsEnabled);
+        k.append('|').append(fillPreference.name()).append('|').append(manualDefenceReduction.encode());
+        k.append('|').append(BlowpipeAmmoPlan.encode(blowpipeAmmoSelections));
         k.append('|').append(MonsterDatabase.combatKey(monster));
         Skill[] combatSkills = {Skill.ATTACK, Skill.STRENGTH, Skill.DEFENCE, Skill.RANGED, Skill.MAGIC, Skill.PRAYER, Skill.HITPOINTS, Skill.MINING};
         for (Skill skill : combatSkills)
             k.append('|').append(account.real(skill)).append('/').append(account.boosted(skill));
+        k.append('|').append(account.isZealUnlocked()).append(account.fragmentKey());
         k.append('|').append(account.isPietyUnlocked()).append(account.isChivalryUnlocked())
             .append(account.isRigourUnlocked()).append(account.isAuguryUnlocked())
             .append(account.isDeadeyeUnlocked()).append(account.isMysticVigourUnlocked())
@@ -212,6 +228,14 @@ public class PersonalBisPanel extends PluginPanel
         super(false);
         this.preferenceConfig = preferenceConfig;
         this.exclusions = exclusions;
+        fillPreference=FillPreference.decode(preferenceConfig.getConfiguration("personalbis",FillPreference.CONFIG_KEY));
+        fillPreferenceBox.setSelectedItem(fillPreference);
+        this.defenceReductionOptions=new DefenceReductionOptions(preferenceConfig,this::defenceReductionChanged);
+        this.manualDefenceReduction=defenceReductionOptions.selected();
+        this.blowpipeAmmoOptions=new BlowpipeAmmoOptions(preferenceConfig,()->{
+            blowpipeAmmoChanged();
+        });
+        blowpipeAmmoSelections=blowpipeAmmoOptions.snapshot();
         String savedGroup = preferenceConfig.getConfiguration("personalbis", "includeGroupStorage");
         String savedRuby = preferenceConfig.getConfiguration("personalbis", "includeRubyBolts");
         includeGroupStorageEnabled = savedGroup != null && Boolean.parseBoolean(savedGroup);
@@ -241,6 +265,7 @@ public class PersonalBisPanel extends PluginPanel
 
         content.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH, Integer.MAX_VALUE));
         buildUi();
+        vardorvisHpOptions.restore(VardorvisHpSettings.decode(preferenceConfig.getConfiguration("personalbis",VardorvisHpSettings.CONFIG_KEY)));
         raidOptions.restore(RaidSettings.decode(preferenceConfig.getConfiguration("personalbis",RaidSettings.CONFIG_KEY)));
         // BoxLayout uses each child's alignment to calculate the shared horizontal axis.
         // Mixing centred test buttons with left-aligned controls shifts the entire column.
@@ -415,6 +440,7 @@ public class PersonalBisPanel extends PluginPanel
             });
         });
         content.add(targetCard);
+        content.add(vardorvisHpOptions);
         content.add(raidOptions);
         content.add(Box.createVerticalStrut(4));
         targetCard.setVisible(false);
@@ -450,17 +476,42 @@ content.add(Box.createVerticalStrut(5));
             advancedExpanded = !advancedExpanded;
             advancedToggle.setText(advancedExpanded ? "Advanced ▾" : "Advanced ▸");
             advancedOptions.setVisible(advancedExpanded);
+            refreshAdvancedStatus();
             content.revalidate(); content.repaint();
         });
-        JTextArea advancedNote = new JTextArea("Options may increase calculation time.");
+        JTextArea advancedNote = new JTextArea("Options will increase calculation time.");
         advancedNote.setEditable(false); advancedNote.setFocusable(false);
         advancedNote.setOpaque(false); advancedNote.setLineWrap(true); advancedNote.setWrapStyleWord(true);
         advancedNote.setFont(FontManager.getRunescapeFont()); advancedNote.setForeground(OSRS_CREAM);
         advancedNote.setAlignmentX(Component.LEFT_ALIGNMENT); advancedNote.setRows(1);
         advancedNote.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
         advancedOptions.add(advancedNote);
+        JLabel fillLabel=new JLabel("Tied-result gear preference");fillLabel.setForeground(OSRS_GOLD);
+        fillLabel.setAlignmentX(Component.LEFT_ALIGNMENT);advancedOptions.add(fillLabel);
+        styleCombo(fillPreferenceBox);
+        fillPreferenceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        fillPreferenceBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,28));
+        fillPreferenceBox.setToolTipText("Defence fill preserves accuracy, max hit, speed, DPS and TTK. Compares defensive bonuses; no survival guarantee.");
+        fillPreferenceBox.addActionListener(e->{
+            FillPreference selected=(FillPreference)fillPreferenceBox.getSelectedItem();
+            if(selected==null||selected==fillPreference)return;
+            fillPreference=selected;
+            preferenceConfig.setConfiguration("personalbis",FillPreference.CONFIG_KEY,selected.name());
+            invalidateOptimizerCache();
+            markLoadoutStale("Gear fill preference changed — regenerate.");
+        });
+        advancedOptions.add(fillPreferenceBox);
         advancedOptions.add(Box.createVerticalStrut(5));
-        content.add(advancedToggle); content.add(advancedOptions);
+        advancedHeader.setOpaque(false);
+        advancedHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
+        advancedHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+        advancedAlert.setForeground(new Color(220, 60, 60));
+        advancedAlert.setFont(headerFont()); advancedAlert.setVisible(false);
+        advancedHeader.add(advancedToggle); advancedHeader.add(advancedAlert);
+        activeReductions.setForeground(OSRS_CREAM);
+        activeReductions.setFont(FontManager.getRunescapeFont());
+        activeReductions.setAlignmentX(Component.LEFT_ALIGNMENT); activeReductions.setVisible(false);
+        content.add(advancedHeader); content.add(activeReductions); content.add(advancedOptions);
         content.add(Box.createVerticalStrut(8));
 
         groupStorageOptions.setLayout(new BoxLayout(groupStorageOptions, BoxLayout.Y_AXIS));
@@ -528,11 +579,21 @@ content.add(Box.createVerticalStrut(5));
         rubyBoltNote.setBorder(BorderFactory.createEmptyBorder(0,0,2,0));
         rubyBoltNote.setMaximumSize(new Dimension(Integer.MAX_VALUE,rubyBoltNote.getPreferredSize().height));
         advancedOptions.add(includeRubyBolts); advancedOptions.add(Box.createVerticalStrut(5));
+        advancedOptions.add(blowpipeAmmoOptions);
+        advancedOptions.add(defenceReductionOptions);
 
         generateLoadoutButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         generateLoadoutButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
         generateLoadoutButton.addActionListener(e -> generateLoadouts());
         content.add(generateLoadoutButton);
+        cancelCalculationButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        cancelCalculationButton.setMaximumSize(new Dimension(Integer.MAX_VALUE,28));
+        cancelCalculationButton.setVisible(false);
+        cancelCalculationButton.addActionListener(e->{
+            invalidateOptimizerCache();
+            markLoadoutStale("Calculation cancelled.");
+        });
+        content.add(cancelCalculationButton);
         generateMessage.setFont(FontManager.getRunescapeFont());
         generateMessage.setForeground(OSRS_CREAM);
         generateMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -740,34 +801,12 @@ content.add(Box.createVerticalStrut(5));
 
     private void styleTextField(JTextField field)
     {
-        field.setFont(FontManager.getRunescapeFont());
-        field.setForeground(Color.WHITE);
-        field.setCaretColor(OSRS_GOLD);
-        field.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        field.setBorder(new CompoundBorder(new LineBorder(OSRS_BORDER), new EmptyBorder(3, 4, 3, 4)));
+        SidebarInputStyle.text(field);
     }
 
     private void styleCombo(JComboBox<?> combo)
     {
-        combo.setFont(FontManager.getRunescapeFont());
-        combo.setForeground(Color.WHITE);
-        combo.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        combo.setBorder(new LineBorder(OSRS_BORDER));
-        combo.setFocusable(true);
-        combo.setUI(new BasicComboBoxUI()
-        {
-            @Override
-            protected JButton createArrowButton()
-            {
-                JButton b = new JButton("▼");
-                b.setFont(FontManager.getRunescapeFont());
-                b.setForeground(OSRS_GOLD);
-                b.setBackground(ColorScheme.DARK_GRAY_COLOR);
-                b.setBorder(new EmptyBorder(0, 4, 0, 4));
-                b.setFocusable(false);
-                return b;
-            }
-        });
+        SidebarInputStyle.combo(combo);
     }
 
     private void styleCheck(JCheckBox check)
@@ -869,6 +908,7 @@ content.add(Box.createVerticalStrut(5));
     {
         if (prayer == null) return -1;
         String p = prayer.toLowerCase();
+        if (p.contains("zeal")) return net.runelite.api.gameval.SpriteID.Prayeron.ZEAL;
         if (p.contains("piety")) return SpriteID.PRAYER_PIETY;
         if (p.contains("chivalry")) return SpriteID.PRAYER_CHIVALRY;
         if (p.contains("rigour")) return SpriteID.PRAYER_RIGOUR;
@@ -977,6 +1017,7 @@ content.add(Box.createVerticalStrut(5));
         ensureStatePanels();
         boolean loggedIn=client.getGameState()==GameState.LOGGED_IN;
         boolean targetReady=loggedIn && targetExplicitlySelected && monsterBox.getSelectedItem() instanceof MonsterDefinition;
+        vardorvisHpOptions.showFor(targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null);
         raidOptions.showFor(targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null);
         boolean stylesReady=RecommendationReadiness.stylesVisible(targetReady);
         MonsterDefinition currentTarget=targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null;
@@ -996,9 +1037,10 @@ content.add(Box.createVerticalStrut(5));
         if(chooseStylePanel!=null)chooseStylePanel.setVisible(stylesReady&&loadoutsGenerated&&!styleExplicitlySelected);
         if (attackStyleHeading != null) attackStyleHeading.setVisible(stylesReady);
         if (stylesPanel != null) stylesPanel.setVisible(stylesReady);
-        boolean advancedAvailable = targetReady && (groupStorageAvailable || ownedHasRubyBolts);
-        advancedToggle.setVisible(advancedAvailable);
+        boolean advancedAvailable = targetReady;
+        advancedHeader.setVisible(advancedAvailable);
         advancedOptions.setVisible(advancedAvailable && advancedExpanded);
+        refreshAdvancedStatus();
         groupStorageOptions.setVisible(targetReady && groupStorageAvailable);
         includeGroupStorage.setVisible(targetReady && groupStorageAvailable);
         groupStorageNote.setVisible(targetReady && groupStorageAvailable);
@@ -1006,6 +1048,7 @@ content.add(Box.createVerticalStrut(5));
         includeRubyBolts.setVisible(showRuby); rubyBoltNote.setVisible(false);
         generateLoadoutButton.setText(loadoutsGenerated ? "Regenerate Loadout" : "Generate Loadout");
         generateLoadoutButton.setVisible(targetReady);
+        cancelCalculationButton.setVisible(targetReady&&!generateLoadoutButton.isEnabled());
         generateMessage.setVisible(targetReady);
         if (gearSection != null) gearSection.setVisible(resultsReady);
         if (validationSection != null) validationSection.setVisible(resultsReady);
@@ -1018,7 +1061,7 @@ content.add(Box.createVerticalStrut(5));
         if (m == null || m.getId() <= 0 || m.getName() == null || m.getName().trim().isEmpty()) return false;
         // Avoid presenting the transient/incomplete NPC definition observed during startup.
         // Real level-1 Defence monsters remain valid if their bundled record contains combat data.
-        return m.getCombatLevel() > 0 && (m.getDefenceLevel() > 1 || m.getHitpoints() > 1
+        return (m.getCombatLevel() > 0 || FracturedArchiveRules.blade(m)) && (m.getDefenceLevel() > 1 || m.getHitpoints() > 1
             || m.getMagicLevel() > 1 || m.getRangedLevel() > 1
             || m.getStabDefence()!=0 || m.getSlashDefence()!=0 || m.getCrushDefence()!=0
             || m.getMagicDefence()!=0 || m.getLightDefence()!=0 || m.getStandardDefence()!=0 || m.getHeavyDefence()!=0);
@@ -1043,6 +1086,7 @@ content.add(Box.createVerticalStrut(5));
                 if(generation!=calculationGeneration.get())return;
                 bankFilter.setRecommendations(Collections.emptyMap(),Collections.emptyList(),Collections.emptySet());
                 bankFilter.setSupplies(Collections.emptyList());
+                bankFilter.setDefenceReductionItems(Collections.emptyList());
             });
             return;
         }
@@ -1055,10 +1099,10 @@ content.add(Box.createVerticalStrut(5));
 
     private void generateLoadouts()
     {
-        try { raidOptions.commitEditors(); }
+        try { raidOptions.commitEditors();vardorvisHpOptions.commitEditor();defenceReductionOptions.commitEditors(); }
         catch (java.text.ParseException ex)
         {
-            generateMessage.setText("Enter valid raid options, then try again.");
+            generateMessage.setText("Enter valid target options, then try again.");
             generateMessage.setForeground(Color.RED);
             return;
         }
@@ -1107,10 +1151,124 @@ content.add(Box.createVerticalStrut(5));
         content.repaint();
     }
 
+    private void vardorvisHpChanged()
+    {
+        preferenceConfig.setConfiguration("personalbis",VardorvisHpSettings.CONFIG_KEY,vardorvisHpOptions.settings().encode());
+        invalidateOptimizerCache();
+        markLoadoutStale("Vardorvis starting HP changed — regenerate.");
+    }
+
+    void reloadVardorvisHp()
+    {
+        SwingUtilities.invokeLater(()->{
+            VardorvisHpSettings saved=VardorvisHpSettings.decode(preferenceConfig.getConfiguration("personalbis",VardorvisHpSettings.CONFIG_KEY));
+            if(saved.encode().equals(vardorvisHpOptions.settings().encode()))return;
+            vardorvisHpOptions.restore(saved);
+            invalidateOptimizerCache();
+            markLoadoutStale("Vardorvis starting HP changed — regenerate.");
+        });
+    }
+
     private void raidOptionsChanged()
     {
         preferenceConfig.setConfiguration("personalbis",RaidSettings.CONFIG_KEY,raidOptions.settings().encode());
         invalidateRaidOptions();
+    }
+
+    void cancelPendingCalculations()
+    {
+        calculationGeneration.incrementAndGet();
+        SwingUtilities.invokeLater(()->{
+            invalidateOptimizerCache();
+            markLoadoutStale("Calculation stopped.");
+        });
+    }
+
+    private void blowpipeAmmoChanged()
+    {
+        blowpipeAmmoSelections=blowpipeAmmoOptions.snapshot();
+        refreshAdvancedStatus();
+        invalidateOptimizerCache();
+        markLoadoutStale("Blowpipe ammo changed — regenerate.");
+    }
+
+    void clearBlowpipeBankSnapshot()
+    {
+        blowpipeBankSnapshotValid=false;
+        calculationGeneration.incrementAndGet();
+        SwingUtilities.invokeLater(()->{
+            blowpipeAmmoOptions.refresh(Collections.emptyList());
+            blowpipeAmmoSelections=blowpipeAmmoOptions.snapshot();
+            defenceReductionOptions.refresh(Collections.emptySet(),false);
+            manualDefenceReduction=defenceReductionOptions.selected();
+            refreshAdvancedStatus();
+            invalidateOptimizerCache();
+        });
+    }
+
+    private void refreshAdvancedStatus()
+    {
+        boolean pipes=blowpipeAmmoOptions.isVisible();
+        boolean reductions=defenceReductionOptions.hasOptions();
+        String available=pipes&&reductions?"Blowpipe ammo and defence reduction options available."
+            :pipes?"Blowpipe ammo options available.":"Defence reduction options available.";
+        advancedAlert.setVisible(pipes||reductions);
+        advancedAlert.setToolTipText(available);
+        advancedToggle.setToolTipText(pipes||reductions?available:null);
+        int count=defenceReductionOptions.activeCount();
+        activeReductions.setText("Defence reductions: "+count+" selected");
+        activeReductions.setToolTipText(defenceReductionOptions.selectionTooltip());
+        activeReductions.setVisible(advancedHeader.isVisible()&&!advancedExpanded&&count>0);
+        advancedHeader.revalidate();
+    }
+
+    private void defenceReductionChanged()
+    {
+        manualDefenceReduction=defenceReductionOptions.selected();
+        invalidateOptimizerCache();
+        refreshAdvancedStatus();
+        markLoadoutStale("Defence reductions changed — regenerate.");
+    }
+
+    // Only a current personal bank scan supplies bank ownership.
+    private List<BankItem> planningBank()
+    {
+        return blowpipeBankSnapshotValid?cachedBank:Collections.emptyList();
+    }
+
+    private List<BankItem> planningOwned()
+    {
+        return bankScanner.scanOwnedGear(planningBank());
+    }
+
+    void reloadDefenceReduction()
+    {
+        SwingUtilities.invokeLater(()->{
+            String previous=manualDefenceReduction.encode();
+            defenceReductionOptions.reload();
+            if(!previous.equals(defenceReductionOptions.selected().encode()))defenceReductionChanged();
+            refreshAdvancedStatus();
+        });
+    }
+
+    void reloadFillPreference()
+    {
+        SwingUtilities.invokeLater(()->{
+            FillPreference saved=FillPreference.decode(preferenceConfig.getConfiguration("personalbis",FillPreference.CONFIG_KEY));
+            if(saved==fillPreference)return;
+            fillPreference=saved;fillPreferenceBox.setSelectedItem(saved);
+            invalidateOptimizerCache();
+            markLoadoutStale("Gear fill preference changed — regenerate.");
+        });
+    }
+
+    void reloadBlowpipeAmmo()
+    {
+        SwingUtilities.invokeLater(()->{
+            String previous=BlowpipeAmmoPlan.encode(blowpipeAmmoSelections);
+            blowpipeAmmoOptions.reload();
+            if(!previous.equals(BlowpipeAmmoPlan.encode(blowpipeAmmoOptions.snapshot())))blowpipeAmmoChanged();
+        });
     }
 
     void reloadRaidSettings()
@@ -1135,6 +1293,7 @@ content.add(Box.createVerticalStrut(5));
     private void markLoadoutStale(String message)
     {
         calculationGeneration.incrementAndGet();
+        clientThread.invokeLater(()->bankFilter.setDefenceReductionItems(Collections.emptyList()));
         loadoutsGenerated = false;
         loadoutReady = false;
         generateLoadoutButton.setEnabled(true);
@@ -1254,6 +1413,7 @@ content.add(Box.createVerticalStrut(5));
             return;
         }
         account.refresh();
+        refreshDefenceReductionOwnership();
         if (monsterDatabase.getAll().isEmpty())
         {
             monsterDatabase.rebuild();
@@ -1307,17 +1467,41 @@ content.add(Box.createVerticalStrut(5));
         // a lightweight immutable ownership snapshot. Existing generated loadouts
         // remain available until the player deliberately regenerates them.
         cachedBank = bankScanner.scan();
+        blowpipeBankSnapshotValid=true;
         bankFilter.setPersonalItems(cachedBank);
-        ownedHasRubyBolts = hasRubyBolts(bankScanner.scanOwnedGear(cachedBank));
+        refreshDefenceReductionOwnership();
+        ownedHasRubyBolts = hasRubyBolts(planningOwned());
         bankChecked = true;
 
         SwingUtilities.invokeLater(() ->
         {
+            // Ownership changes only affect which controls are shown. Moving a
+            // pipe from bank to inventory is not an edit to its saved dart choice
+            // and must not discard the generated results while withdrawing gear.
+            blowpipeAmmoOptions.refresh(planningBank());
+            blowpipeAmmoSelections=blowpipeAmmoOptions.snapshot();
             updateProgressiveVisibility();
             if (bankFilter.isActive())
             {
                 bankFilter.refreshLayout();
             }
+        });
+    }
+
+    private void refreshDefenceReductionOwnership()
+    {
+        List<BankItem> owned=planningOwned();
+        Set<DefenceReductionPlan.Type> available=DefenceReductionPlan.available(owned,account.real(Skill.MAGIC));
+        boolean ownershipComplete=blowpipeBankSnapshotValid;
+        SwingUtilities.invokeLater(()->{
+            // Ownership changes only affect which controls are shown. Moving a
+            // pipe from bank to inventory is not an edit to its saved dart choice
+            // and must not discard the generated results while withdrawing gear.
+            blowpipeAmmoOptions.refresh(planningBank());
+            blowpipeAmmoSelections=blowpipeAmmoOptions.snapshot();
+            defenceReductionOptions.refresh(available,ownershipComplete);
+            manualDefenceReduction=defenceReductionOptions.selected();
+            refreshAdvancedStatus();
         });
     }
 
@@ -1334,7 +1518,8 @@ content.add(Box.createVerticalStrut(5));
     /** Refresh carried/worn ownership on the client thread, without rescanning the bank. */
     public void refreshRubyBoltOwnership()
     {
-        boolean updated = hasRubyBolts(bankScanner.scanOwnedGear(cachedBank));
+        refreshDefenceReductionOwnership();
+        boolean updated = hasRubyBolts(planningOwned());
         if (updated == ownedHasRubyBolts) return;
         ownedHasRubyBolts = updated;
         SwingUtilities.invokeLater(this::updateProgressiveVisibility);
@@ -1474,13 +1659,14 @@ content.add(Box.createVerticalStrut(5));
     {
         final long generation=calculationGeneration.incrementAndGet();
         final RaidSettings requestedRaid=raidOptions.settings();
-        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid));
+        final VardorvisHpSettings requestedVardHp=vardorvisHpOptions.settings();
+        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid,requestedVardHp));
     }
 
-    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid)
+    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid,VardorvisHpSettings requestedVardHp)
     {
         if (client.getGameState() != GameState.LOGGED_IN) return;
-        if (!targetExplicitlySelected || !bankChecked || (!calculateAllStyles && !styleExplicitlySelected))
+        if (!targetExplicitlySelected || (!bankChecked) || (!calculateAllStyles && !styleExplicitlySelected))
         {
             SwingUtilities.invokeLater(this::updateProgressiveVisibility);
             return;
@@ -1503,7 +1689,7 @@ content.add(Box.createVerticalStrut(5));
         if (calculateAllStyles)
         {
             generationExclusions = exclusions.snapshot();
-            List<BankItem> stores = new ArrayList<>(cachedBank);
+            List<BankItem> stores = new ArrayList<>(planningBank());
             if (groupStorageAvailable && includeGroupStorageEnabled) stores.addAll(groupSnapshot.getItems());
             generationBank = exclusions.filter(stores, generationExclusions);
             generationOwned = exclusions.filter(bankScanner.scanOwnedGear(stores), generationExclusions);
@@ -1512,21 +1698,90 @@ content.add(Box.createVerticalStrut(5));
         // generation, even while the user batches changes in the settings list.
         final List<BankItem> bankSnapshot = new ArrayList<>(generationBank);
         final List<BankItem> ownedGearSnapshot = new ArrayList<>(generationOwned);
-        final MonsterDefinition monster=RaidScaling.withOwnedBoosts(RaidScaling.apply(unscaledMonster,requestedRaid),account,ownedGearSnapshot);
+        final MonsterDefinition scaledMonster=RaidScaling.withOwnedBoosts(RaidScaling.apply(requestedVardHp.apply(unscaledMonster),requestedRaid),account,ownedGearSnapshot);
+        final DefenceReductionPlan selectedReduction=manualDefenceReduction.revalidate(
+            DefenceReductionPlan.available(ownedGearSnapshot,account.real(Skill.MAGIC)));
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
-        final Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot=new EnumMap<>(AttackStyle.class);
-        for(AttackStyle style:AttackStyle.values()){
-            List<BankItem> styleBank=ownedGearSnapshot;
-            if(style==AttackStyle.RANGED&&!includeRuby){styleBank=new ArrayList<>(ownedGearSnapshot);styleBank.removeIf(this::rubyBoltItem);}
-            rankedSnapshot.put(style,TargetStyleImmunity.immune(monster,style)?Collections.emptyMap():intelligence.rank(styleBank,style,slayerMode));
-        }
         final AttackStyle requestedStyle=selectedStyle;
         final boolean requestedSlayerMode=slayerMode;
+        final Map<BlowpipeAmmoPlan.Pipe,BlowpipeAmmoPlan.Dart> assumptions=new EnumMap<>(BlowpipeAmmoPlan.Pipe.class);
+        assumptions.putAll(blowpipeAmmoSelections);
+        assumptions.entrySet().removeIf(entry->generationExclusions.excludes(entry.getValue().label,entry.getValue().label));
+        final Set<BlowpipeAmmoPlan.Pipe> pipes=BlowpipeAmmoPlan.scannedPipes(planningBank());
+        rankPlanningSnapshot(generation,ownedGearSnapshot,scaledMonster,requestedSlayerMode,includeRuby,rankedSnapshot->{
+            final MonsterDefinition monster=applyPlanningReduction(scaledMonster,selectedReduction,
+                rankedSnapshot);
+            final String cacheKey=calculateAllStyles
+                ? optimizerCacheKey(monster,ownedGearSnapshot,requestedSlayerMode):optimizerCacheKey;
+            Map<EquipmentSlot,List<EquipmentCandidate>> ranged=rankedSnapshot.get(AttackStyle.RANGED);
+            if(ranged!=null&&!ranged.isEmpty())rankedSnapshot.put(AttackStyle.RANGED,
+                BlowpipeAmmoCandidates.withAssumptions(ranged,assumptions,pipes));
+            optimizerExecutor.execute(() -> CalculationCancellation.runWhile(()->generation==calculationGeneration.get(),
+                ()->calculateRecommendations(generation,ownedGearSnapshot,bankSnapshot,rankedSnapshot,monster,requestedStyle,requestedSlayerMode,calculateAllStyles,cacheKey)));
+        });
+    }
 
-        final String cacheKey=calculateAllStyles
-            ? optimizerCacheKey(monster,ownedGearSnapshot,requestedSlayerMode)
-            : optimizerCacheKey;
-        optimizerExecutor.execute(() -> calculateRecommendations(generation,ownedGearSnapshot,bankSnapshot,rankedSnapshot,monster,requestedStyle,requestedSlayerMode,calculateAllStyles,cacheKey));
+    private MonsterDefinition applyPlanningReduction(MonsterDefinition target,
+        DefenceReductionPlan selectedReduction,Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> ranked)
+    {
+        Set<DefenceReductionPlan.Type> eligible=EnumSet.noneOf(DefenceReductionPlan.Type.class);
+        for(DefenceReductionPlan.Type type:DefenceReductionPlan.Type.values()){
+            if(selectedReduction.amount(type)==0)continue;
+            if(type==DefenceReductionPlan.Type.VULNERABILITY){eligible.add(type);continue;}
+            AttackStyle style=type==DefenceReductionPlan.Type.ACCURSED||type==DefenceReductionPlan.Type.AYAK?AttackStyle.MAGIC
+                :type==DefenceReductionPlan.Type.SEERCULL||type==DefenceReductionPlan.Type.TONALZTICS?AttackStyle.RANGED
+                :type==DefenceReductionPlan.Type.MAUL||type==DefenceReductionPlan.Type.DWH?AttackStyle.MELEE_CRUSH:AttackStyle.MELEE_SLASH;
+            Map<EquipmentSlot,List<EquipmentCandidate>> gear=ranked.getOrDefault(style,Collections.emptyMap());
+            for(EquipmentCandidate weapon:gear.getOrDefault(EquipmentSlot.WEAPON,Collections.emptyList())){
+                if(!type.matches(weapon.getItem().getItemId())||weapon.getRequirementResult().isBlocked())continue;
+                boolean shieldRequired=SlayerTargetRequirements.requiredEquipmentSlot(target)==EquipmentSlot.SHIELD;
+                if(shieldRequired&&(RangedAmmoRules.occupiesBothHands(weapon)||SlayerTargetRequirements.firstRequiredEquipment(target,gear.get(EquipmentSlot.SHIELD))==null))continue;
+                boolean canLand;
+                if(style==AttackStyle.MAGIC)canLand=WikiTargetEligibility.magicCanDamage(target)&&LeafyTargetRules.poweredMagicCanDamage(target);
+                else if(style==AttackStyle.RANGED)canLand=WikiTargetEligibility.rangedCanDamage(target)&&!LeafyTargetRules.restricted(target)&&!target.hasAttribute("vampyre3");
+                else {
+                    Map<EquipmentSlot,EquipmentCandidate> weaponOnly=new EnumMap<>(EquipmentSlot.class);weaponOnly.put(EquipmentSlot.WEAPON,weapon);
+                    canLand=WikiTargetEligibility.meleeCanDamage(target,weapon)&&LeafyTargetRules.meleeCanDamage(target,weapon)&&VampyreTargetRules.canDamageMelee(weaponOnly,weapon,target);
+                }
+                if(canLand&&!WikiTargetEligibility.styleImmune(target,style)){eligible.add(type);break;}
+            }
+        }
+        return selectedReduction.apply(target,eligible);
+    }
+
+    /** ItemManager/requirement reads stay on the client thread, with a small work
+     * budget per invocation rather than ranking an entire large bank at once.
+     */
+    private void rankPlanningSnapshot(long generation,List<BankItem> owned,MonsterDefinition monster,
+        boolean slayer,boolean includeRuby,
+        java.util.function.Consumer<Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>>> completed)
+    {
+        Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> result=new EnumMap<>(AttackStyle.class);
+        AttackStyle[] styles=AttackStyle.values();
+        int[] position={0,0};
+        clientThread.invokeLater(()->{
+            if(generation!=calculationGeneration.get())return true;
+            long started=System.nanoTime();
+            do {
+                AttackStyle style=styles[position[0]];
+                Map<EquipmentSlot,List<EquipmentCandidate>> merged=result.computeIfAbsent(style,key->new EnumMap<>(EquipmentSlot.class));
+                if(!TargetStyleImmunity.immune(monster,style)&&position[1]<owned.size()){
+                    int end=Math.min(owned.size(),position[1]+16);
+                    List<BankItem> part=new ArrayList<>(owned.subList(position[1],end));
+                    if(style==AttackStyle.RANGED&&!includeRuby)part.removeIf(this::rubyBoltItem);
+                    Map<EquipmentSlot,List<EquipmentCandidate>> chunk=intelligence.rank(part,style,slayer);
+                    for(Map.Entry<EquipmentSlot,List<EquipmentCandidate>> entry:chunk.entrySet())
+                        merged.computeIfAbsent(entry.getKey(),key->new ArrayList<>()).addAll(entry.getValue());
+                    position[1]=end;
+                } else position[1]=owned.size();
+                if(position[1]>=owned.size()){
+                    EquipmentIntelligence.sortRanked(merged);
+                    position[1]=0;
+                    if(++position[0]==styles.length){completed.accept(result);return true;}
+                }
+            } while(System.nanoTime()-started<3_000_000L);
+            return false; // RuneLite retries this BooleanSupplier on the next client cycle.
+        });
     }
 
     private void calculateRecommendations(long generation,List<BankItem> ownedGearSnapshot,List<BankItem> bankSnapshot,
@@ -1534,6 +1789,7 @@ content.add(Box.createVerticalStrut(5));
         MonsterDefinition monster,AttackStyle requestedStyle,boolean requestedSlayerMode,boolean calculateAllStyles,String cacheKey)
     {
         if(generation!=calculationGeneration.get())return;
+        final FillPreference requestedFill=fillPreference;
         Map<AttackStyle, List<Integer>> styleRecommendations = new EnumMap<>(AttackStyle.class);
         Map<AttackStyle, OptimizedLoadout> meleeLoads = new EnumMap<>(AttackStyle.class);
         Map<AttackStyle, OptimizedRangedLoadout> rangedLoads = new EnumMap<>(AttackStyle.class);
@@ -1554,6 +1810,7 @@ content.add(Box.createVerticalStrut(5));
         // Optimise every style here; cached reports still make subsequent switches cheap.
         for (AttackStyle style : AttackStyle.values())
         {
+            CalculationCancellation.check();
             if (!calculateAllStyles && style != requestedStyle) continue;
             final Map<EquipmentSlot,List<EquipmentCandidate>> ranked = rankedSnapshot.get(style);
             if (style == requestedStyle) selectedRanked = ranked;
@@ -1567,6 +1824,7 @@ content.add(Box.createVerticalStrut(5));
                     cachedMeleeReports.put(style, report);
                 }
                 OptimizedLoadout load = report == null ? null : report.getBest();
+                if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.melee(load,ranked,monster,requestedSlayerMode,account);
                 meleeLoads.put(style, load);
                 List<Integer> ids = load == null ? new ArrayList<>() : load.itemIds();
                 styleRecommendations.put(style, ids);
@@ -1580,6 +1838,7 @@ content.add(Box.createVerticalStrut(5));
                     cachedRangedReports.put(style, report);
                 }
                 OptimizedRangedLoadout load = report == null ? null : report.getBest();
+                if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.ranged(load,ranked,monster,requestedSlayerMode,account);
                 rangedLoads.put(style, load);
                 List<Integer> ids = load == null ? new ArrayList<>() : load.itemIds();
                 styleRecommendations.put(style, ids);
@@ -1593,6 +1852,7 @@ content.add(Box.createVerticalStrut(5));
                     cachedMagicReports.put(style, mr);
                 }
                 OptimizedMagicLoadout load = mr == null ? null : mr.getBest();
+                if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.magic(load,ranked,monster,requestedSlayerMode,account,ownedGearSnapshot);
                 magicLoads.put(style, load);
                 List<Integer> ids = load == null ? new ArrayList<>() : load.itemIds();
                 styleRecommendations.put(style, ids);
@@ -1641,7 +1901,13 @@ content.add(Box.createVerticalStrut(5));
         final OptimizedMagicLoadout selectedMagicLoad = magicLoads.get(requestedStyle);
         final MagicCombatResult uiMagic = selectedMagicLoad == null ? null : selectedMagicLoad.getResult();
 
-        final SpecWeaponRecommendation spec = new SpecWeaponRecommender(account).best(selectedGear,rankedSnapshot,requestedStyle,monster,requestedSlayerMode);
+        Set<Integer> usableReductionWeapons=new HashSet<>();
+        for(Map<EquipmentSlot,List<EquipmentCandidate>> bySlot:rankedSnapshot.values())
+            for(EquipmentCandidate candidate:bySlot.getOrDefault(EquipmentSlot.WEAPON,Collections.emptyList()))
+                if(!candidate.getRequirementResult().isBlocked())usableReductionWeapons.add(candidate.getItem().getItemId());
+        final List<RecommendedSupply> reductionItems=DefenceReductionBankItems.forPlan(
+            DefenceReductionPlan.appliedTo(monster),bankSnapshot,usableReductionWeapons);
+        final SpecWeaponRecommendation spec = new SpecWeaponRecommender(account).best(Collections.unmodifiableMap(selectedGear),rankedSnapshot,requestedStyle,monster,requestedSlayerMode);
         if(spec!=null){
             int id=spec.weapon.getItem().getItemId();
             selectedBankRecommendations.get(requestedStyle).add(id);
@@ -1654,6 +1920,7 @@ content.add(Box.createVerticalStrut(5));
             bankFilter.setBestStyle(resultBestStyle);
             bankFilter.setRecommendations(selectedBankRecommendations,bankStyles,selectedRecommendedIds);
             bankFilter.setSupplies(resultSupplies);
+            bankFilter.setDefenceReductionItems(reductionItems);
         });
 
         final AttackStyle uiBestStyle=resultBestStyle;
@@ -1682,7 +1949,7 @@ content.add(Box.createVerticalStrut(5));
                 String requirement = SlayerTargetRequirements.requiredItem(monster);
                 String warning = !SlayerTargetRequirements.allowed(monster, account.real(Skill.SLAYER))
                     ? "  •  Slayer level too low (requires " + SlayerTargetRequirements.requiredLevel(monster) + ")" : "";
-                monsterInfo.setText(monster.getName()+(monster.getVersion().isEmpty()?"":" ["+monster.getVersion()+"]")+"  •  lvl "+monster.getCombatLevel()+"  •  def "+monster.getDefenceLevel()+" / "+monster.defenceFor(requestedStyle)+(requirement.isEmpty()?"":"  •  Requires "+requirement)+warning);
+                monsterInfo.setText(monster.getName()+(monster.getVersion().isEmpty()?"":" ["+monster.getVersion()+"]")+"  •  lvl "+monster.getCombatLevel()+"  •  def "+VardorvisRules.startingDefence(monster)+" / "+monster.defenceFor(requestedStyle)+(requirement.isEmpty()?"":"  •  Requires "+requirement)+warning);
                 monsterInfo.setForeground(warning.isEmpty() ? OSRS_CREAM : Color.RED);
             }
             for (int i=0; i<EquipmentSlot.values().length; i++)
@@ -1703,7 +1970,10 @@ content.add(Box.createVerticalStrut(5));
                     label.setIcon(null);
                     final int requestedItemId = best.getItem().getItemId();
                     itemManager.getImage(requestedItemId, 1, false).addTo(label);
-                    String tip=slot.getDisplayName()+": "+best.getItem().getName()+" — "+best.getRequirementResult().getMessage();
+                    com.personalbis.wiki.WikiEquipment definition=WikiEquipmentEngine.canonicalItem(best.getItem().getItemId());
+                    String chargeState=definition!=null&&("Charged".equalsIgnoreCase(definition.version)||"Uncharged".equalsIgnoreCase(definition.version))
+                        ?" ["+definition.version+"]":"";
+                    String tip=slot.getDisplayName()+": "+best.getItem().getName()+chargeState+" — "+best.getRequirementResult().getMessage();
                     if(selectedCombat!=null) tip+=String.format(" | setup DPS %.3f | accuracy %.1f%% | max hit %d",selectedCombat.getDps(),selectedCombat.getAccuracy()*100,selectedCombat.getMaxHit());
                     else if(uiRanged!=null) tip+=String.format(" | setup DPS %.3f | accuracy %.1f%% | max hit %d",uiRanged.getDps(),uiRanged.getAccuracy()*100,uiRanged.getMaxHit());
                     label.setToolTipText(tip);
@@ -1731,7 +2001,7 @@ content.add(Box.createVerticalStrut(5));
                 summary.append("Estimated TTK: ").append(displayTtk(selectedCombat.getExpectedTtkSeconds())).append(System.lineSeparator());
                 summary.append(String.format("Max Hit: %d%n", selectedCombat.getMaxHit()));
                 summary.append(String.format("Accuracy: %.2f%%%n", selectedCombat.getAccuracy() * 100.0));
-                summary.append(String.format("Style: %s%n", selectedCombat.getStance()));
+                summary.append(String.format("Style: %s%n", CombatStyleLabels.description(selectedGear.get(EquipmentSlot.WEAPON),requestedStyle,selectedCombat.getStance())));
                 summary.append(String.format("Prayer Bonus: %+d", prayerBonus));
             }
             else if (uiRanged != null)
@@ -1740,7 +2010,7 @@ content.add(Box.createVerticalStrut(5));
                 summary.append("Estimated TTK: ").append(displayTtk(uiRanged.getExpectedTtkSeconds())).append(System.lineSeparator());
                 summary.append(String.format("Max Hit: %d%n", uiRanged.getMaxHit()));
                 summary.append(String.format("Accuracy: %.2f%%%n", uiRanged.getAccuracy() * 100.0));
-                summary.append(String.format("Style: %s%n", uiRanged.getStance()));
+                summary.append(String.format("Style: %s%n", CombatStyleLabels.ranged(selectedGear.get(EquipmentSlot.WEAPON)==null?"":selectedGear.get(EquipmentSlot.WEAPON).getWeaponCategory(),uiRanged.getStance())));
                 summary.append(String.format("Prayer Bonus: %+d", prayerBonus));
             }
             else if (uiMagic != null)
@@ -1758,13 +2028,17 @@ content.add(Box.createVerticalStrut(5));
                     ? "No castable combat spell found with your current Magic level and bank runes."
                     : "No calculated loadout is available for this style.");
             }
-            if(RaidScaling.isCox(monster)||RaidScaling.isToa(monster)) summary.append("\nTarget HP: ").append(monster.getHitpoints());
-            if(EquipmentSetRules.dharok(selectedGear))summary.append("\nDharok: uses your Hitpoints snapshot at generation; regenerate after HP changes.");
-            if(EquipmentSetRules.strengthRanged(selectedGear.get(EquipmentSlot.WEAPON)))
-                summary.append("\nDamage uses Strength level and melee Strength bonus.");
-            if(WikiTargetEligibility.isGuardian(monster))summary.append("\nGuardian damage uses your Mining level and pickaxe tier.");
-            String raidNote=RaidTargetVariants.note(monster);
-            if(!raidNote.isEmpty())summary.append("\n").append(raidNote);
+            StringBuilder context=new StringBuilder("Normal attacks only; specials excluded.");
+            if(VardorvisRules.supported(monster))context.append(" Accuracy/DPS use selected target HP; TTK scales Defence as HP falls.");
+            if(SoulreaperAxeEffects.isSoulreaper(selectedGear.get(EquipmentSlot.WEAPON)))context.append(" Soulreaper starts at zero stacks.");
+            if(selectedRangedLoad!=null&&selectedRangedLoad.getLoadedAmmo()!=null)context.append(" Assumed internal ammo: ").append(selectedRangedLoad.getLoadedAmmo().getItem().getName()).append("; quantity unknown.");
+            String drainContext=ManualDefenceReduction.note(monster);if(!drainContext.isEmpty())context.append(" ").append(drainContext);
+            if(requestedFill==FillPreference.DEFENCE)context.append(" Defence fill: ").append(DefenceFillPolicy.profile(monster).description).append("; equipment bonuses only.");
+            if(EquipmentSetRules.dharok(selectedGear))context.append(" Dharok uses your Hitpoints snapshot at generation; regenerate after HP changes.");
+            if(EquipmentSetRules.strengthRanged(selectedGear.get(EquipmentSlot.WEAPON)))context.append(" Damage uses Strength level and melee Strength bonus.");
+            if(WikiTargetEligibility.isGuardian(monster))context.append(" Guardian damage uses Mining level and pickaxe tier.");
+            String raidContext=RaidTargetVariants.note(monster);if(!raidContext.isEmpty())context.append(" ").append(raidContext);
+            meleeValidation.setToolTipText("<html><body style='width:240px'>"+context.toString().replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")+"</body></html>");
             meleeValidation.setText(summary.toString());
             meleeValidation.setCaretPosition(0);
 
@@ -1778,11 +2052,11 @@ content.add(Box.createVerticalStrut(5));
                 : (calculateAllStyles ? "Loadouts ready." : " "));
             updateExclusionWarning();
             updateProgressiveVisibility();
-            status.setText(monsterDatabase.getAll().size()+" unique monster variants  •  "+bankSnapshot.size()+" bank items"+(selectedCombat==null?"":"  •  melee validation alpha7"));
+            status.setText(monsterDatabase.getAll().size()+" unique monster variants  •  "+bankSnapshot.size()+" bank items");
         });
         if(!calculateAllStyles && resultBestStyle==null)
-            optimizerExecutor.execute(() -> calculateMissingBestStyles(generation,cacheKey,ownedGearSnapshot,
-                rankedSnapshot,monster,requestedSlayerMode));
+            optimizerExecutor.execute(() -> CalculationCancellation.runWhile(()->generation==calculationGeneration.get(),()->calculateMissingBestStyles(generation,cacheKey,ownedGearSnapshot,
+                rankedSnapshot,monster,requestedSlayerMode)));
     }
 
     private void updateActionRow(SpecWeaponRecommendation spec,AttackStyle style,CombatResult melee,
@@ -1793,7 +2067,7 @@ content.add(Box.createVerticalStrut(5));
         actionRow.spec.setToolTipText("No supported, usable direct-damage special weapon owned for this combat style.");
         if(spec!=null){
             actionRow.spec.setText("");itemManager.getImage(spec.weapon.getItem().getItemId(),1,false).addTo(actionRow.spec);
-            actionRow.spec.setToolTipText(String.format("<html>Spec: %s<br>Best supported direct special: %.2f DPS | %.1f damage | %d%% energy<br>%s<br>Uses displayed armour and best legal special stance.<br>Single-special burst; no energy regeneration, rotations, utility or DoT.<br>Some weapon specials are not modelled.</html>",spec.weapon.getItem().getName(),spec.dps,spec.damage,spec.energy,spec.note));
+            actionRow.spec.setToolTipText(String.format("<html>Spec: %s<br>Best supported direct special: %.2f DPS | %.1f damage | %d%% energy<br>%s<br>Uses displayed armour and best legal special stance.<br>Excluded from loadout DPS and TTK.<br>Single-special burst; no energy regeneration, rotations, utility or DoT.<br>Some weapon specials are not modelled.</html>",spec.weapon.getItem().getName(),spec.dps,spec.damage,spec.energy,spec.note));
         }
         actionRow.spell.setToolTipText("Spell recommendation appears for magic gear.");
         if(magic!=null){
@@ -1808,10 +2082,13 @@ content.add(Box.createVerticalStrut(5));
                 if(weapon!=null){actionRow.spell.setText("");itemManager.getImage(weapon.getItem().getItemId(),1,false).addTo(actionRow.spell);}
             }
         }
-        String type=style==AttackStyle.MELEE_STAB?"Stab":style==AttackStyle.MELEE_SLASH?"Slash":style==AttackStyle.MELEE_CRUSH?"Crush":style==AttackStyle.RANGED?"Ranged":"Magic";
-        String stance=melee!=null?melee.getStance().toString():ranged!=null?ranged.getStance().toString():magic!=null?"Cast":"—";
-        actionRow.style.setText("<html><center>"+type+"<br>"+stance+"</center></html>");
-        actionRow.style.setToolTipText("Recommended normal attack: "+type+" / "+stance);
+        String type=CombatStyleLabels.type(style);
+        String stance=melee!=null?(melee.getStance()==MeleeStance.SMASH?"Aggressive":melee.getStance().toString()):ranged!=null?ranged.getStance().toString():magic!=null?CombatStyleLabels.magicStance(magic.getSpell()):"—";
+        EquipmentCandidate weapon=items.get(EquipmentSlot.WEAPON);
+        String label=melee!=null?CombatStyleLabels.melee(weapon,style,melee.getStance())
+            :ranged!=null?CombatStyleLabels.ranged(weapon==null?"":weapon.getWeaponCategory(),ranged.getStance()):magic!=null?CombatStyleLabels.magic(magic.getSpell()):"—";
+        actionRow.style.setText("<html><center>"+label+"</center></html>");
+        actionRow.style.setToolTipText("<html>Recommended normal attack: "+label+"<br>"+type+", "+stance+"</html>");
     }
 
     private AttackStyle cachedBestStyleIfComplete()
@@ -1819,26 +2096,26 @@ content.add(Box.createVerticalStrut(5));
         Map<AttackStyle,Double> scores=new EnumMap<>(AttackStyle.class);
         for(AttackStyle style:AttackStyle.values())
         {
-            double ttk=Double.POSITIVE_INFINITY;
+            double ttk=Double.POSITIVE_INFINITY,dps=0;
             if(style==AttackStyle.MELEE_STAB||style==AttackStyle.MELEE_SLASH||style==AttackStyle.MELEE_CRUSH)
             {
                 MeleeOptimizationReport report=cachedMeleeReports.get(style);
                 if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null)ttk=report.getBest().getResult().getExpectedTtkSeconds();
+                if(report.getBest()!=null&&report.getBest().getResult()!=null){ttk=report.getBest().getResult().getExpectedTtkSeconds();dps=report.getBest().getResult().getDps();}
             }
             else if(style==AttackStyle.RANGED)
             {
                 RangedOptimizationReport report=cachedRangedReports.get(style);
                 if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null)ttk=report.getBest().getResult().getExpectedTtkSeconds();
+                if(report.getBest()!=null&&report.getBest().getResult()!=null){ttk=report.getBest().getResult().getExpectedTtkSeconds();dps=report.getBest().getResult().getDps();}
             }
             else
             {
                 MagicOptimizationReport report=cachedMagicReports.get(style);
                 if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null)ttk=report.getBest().getResult().getExpectedTtkSeconds();
+                if(report.getBest()!=null&&report.getBest().getResult()!=null){ttk=report.getBest().getResult().getExpectedTtkSeconds();dps=report.getBest().getResult().getDps();}
             }
-            scores.put(style,Double.isFinite(ttk)?-ttk:Double.NEGATIVE_INFINITY);
+            scores.put(style,FracturedArchiveRules.blade(monsterBox.getSelectedItem() instanceof MonsterDefinition?(MonsterDefinition)monsterBox.getSelectedItem():null)?dps:Double.isFinite(ttk)?-ttk:Double.NEGATIVE_INFINITY);
         }
         return BestStyleSelection.best(scores);
     }

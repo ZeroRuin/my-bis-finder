@@ -18,6 +18,8 @@ final class TargetStyleImmunity
     static String message(MonsterDefinition m,AttackStyle style)
     {
         if(m==null)return "";
+        if(FracturedArchiveRules.blade(m)&&style!=null&&style!=AttackStyle.MAGIC&&style!=AttackStyle.RANGED)
+            return "Melee recommendations are excluded for Ocellus Phase 2 / The Blade because of the phase mechanics. Use Ranged or Magic.";
         String target=m.getName()+(m.getVersion().isEmpty()?"":" ("+m.getVersion()+")");
         return target+" is immune to this combat style.";
     }

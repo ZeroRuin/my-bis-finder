@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class ExpectedKillTime
 {
     private static final Map<String,Double> STATIC_CACHE=new ConcurrentHashMap<>();
-    private static final int CACHE_LIMIT=32768;
+    private static final int CACHE_LIMIT=1024;
 
     private ExpectedKillTime(){}
 
@@ -17,17 +17,14 @@ public final class ExpectedKillTime
     {
         if (hitpoints <= 0) return 0.0;
         if (attackTicks <= 0 || distribution == null) return Double.POSITIVE_INFINITY;
-        return seconds(distribution.zipped().cumulative(),hitpoints,attackTicks);
+        return seconds(distribution.damageProbabilities(),hitpoints,attackTicks);
     }
 
-    private static double seconds(HitDistribution total, int hitpoints, int attackTicks)
+    private static double seconds(double[] total, int hitpoints, int attackTicks)
     {
         Map<Integer,Double> probabilities=new TreeMap<>();
-        for(HitDistribution.WeightedHit hit:total.hits())
-        {
-            int damage=Math.max(0,hit.sum());
-            probabilities.put(damage,probabilities.getOrDefault(damage,0.0)+hit.probability);
-        }
+        for(int damage=0;damage<total.length;damage++)
+            if(total[damage]!=0.0)probabilities.put(damage,total[damage]);
         double zero=probabilities.getOrDefault(0,0.0),progress=1.0-zero;
         if(progress<=1e-12)return Double.POSITIVE_INFINITY;
         String key=cacheKey(probabilities,hitpoints,attackTicks);
@@ -48,6 +45,7 @@ public final class ExpectedKillTime
             double window=0.0;
             for(int hp=1;hp<=hitpoints;hp++)
             {
+                CalculationCancellation.check();
                 window+=attacks[hp-1];
                 int expired=hp-maximum-1;
                 if(expired>=0)window-=attacks[expired];
@@ -57,6 +55,7 @@ public final class ExpectedKillTime
         }
         else for(int hp=1;hp<=hitpoints;hp++)
         {
+            CalculationCancellation.check();
             double continuation=0.0;
             for(Map.Entry<Integer,Double> outcome:probabilities.entrySet())
             {
@@ -90,23 +89,56 @@ public final class ExpectedKillTime
         if (hitpoints <= 0) return 0.0;
         if (attackTicks <= 0 || distributionAtHp == null) return Double.POSITIVE_INFINITY;
         double[] attacks = new double[hitpoints + 1];
+        Map<HitDistribution.AttackDistribution,double[]> totals=new java.util.IdentityHashMap<>();
         for (int hp = 1; hp <= hitpoints; hp++)
         {
+            CalculationCancellation.check();
             HitDistribution.AttackDistribution attack = distributionAtHp.apply(hp);
             if (attack == null) return Double.POSITIVE_INFINITY;
-            HitDistribution total = attack.zipped().cumulative();
+            double[] total = totals.computeIfAbsent(attack,key->key.damageProbabilities());
             double zero = 0.0, continuation = 0.0;
-            for (HitDistribution.WeightedHit hit : total.hits())
+            for (int damage=0;damage<total.length;damage++)
             {
-                int damage = Math.max(0, hit.sum());
-                if (damage == 0) zero += hit.probability;
-                else if (damage < hp) continuation += hit.probability * attacks[hp - damage];
+                if (damage == 0) zero += total[damage];
+                else if (damage < hp) continuation += total[damage] * attacks[hp - damage];
             }
             double progress = 1.0 - zero;
             if (progress <= 1e-12) return Double.POSITIVE_INFINITY;
             attacks[hp] = (1.0 + continuation) / progress;
         }
         return attacks[hitpoints] * attackTicks * 0.6;
+    }
+
+    /** Finite HP plus an attack-count state, advancing once per attempted attack.
+     * The final state persists. Zero-damage attacks at earlier states still advance.
+     */
+    public static double secondsWithStates(int hitpoints, int attackTicks, int states,
+        java.util.function.BiFunction<Integer,Integer,HitDistribution.AttackDistribution> distribution)
+    {
+        if(hitpoints<=0)return 0.0;
+        if(attackTicks<=0||states<=0||distribution==null)return Double.POSITIVE_INFINITY;
+        double[][] attacks=new double[states][hitpoints+1];
+        Map<HitDistribution.AttackDistribution,double[]> totals=new java.util.IdentityHashMap<>();
+        for(int state=states-1;state>=0;state--)
+        {
+            int next=Math.min(states-1,state+1);
+            for(int hp=1;hp<=hitpoints;hp++)
+            {
+                CalculationCancellation.check();
+                HitDistribution.AttackDistribution d=distribution.apply(state,hp);
+                if(d==null)return Double.POSITIVE_INFINITY;
+                double continuation=0.0,zero=0.0;
+                double[] total=totals.computeIfAbsent(d,key->key.damageProbabilities());
+                for(int damage=0;damage<total.length;damage++)
+                {
+                    if(total[damage]<=0.0)continue;
+                    if(damage==0&&next==state)zero+=total[damage];
+                    else if(damage<hp)continuation+=total[damage]*attacks[next][hp-damage];
+                }
+                attacks[state][hp]=(1.0+continuation)/(1.0-zero);
+            }
+        }
+        return attacks[0][hitpoints]*attackTicks*0.6;
     }
 
     public static double approximateSeconds(int hitpoints, double dps)

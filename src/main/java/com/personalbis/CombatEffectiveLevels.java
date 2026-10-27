@@ -15,8 +15,8 @@ public final class CombatEffectiveLevels {
   return voidRanged?(int)Math.floor(e*11.0/10.0):e;
  }
  public static int magic(int boosted,double prayer,boolean voidMagic,int poweredStyleBonus){
-  int e=(int)Math.floor(Math.max(1,boosted)*prayer);
-  if(voidMagic)e=(int)Math.floor(e*1.45);
-  return e+poweredStyleBonus+9;
+  int e=(int)Math.floor(Math.max(1,boosted)*prayer)+poweredStyleBonus+9;
+  if(voidMagic)e=e*29/20;
+  return e;
  }
 }

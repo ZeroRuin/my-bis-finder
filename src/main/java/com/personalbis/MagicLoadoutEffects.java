@@ -37,5 +37,5 @@ public final class MagicLoadoutEffects {
    n.contains("elite void top")||n.contains("void knight robe")||n.contains("elite void robe")||
    n.startsWith("virtus ")||n.contains("tome of fire")||n.contains("tome of water")||n.contains("tome of earth");
  }
- private static boolean has(Collection<String> g,String x){if(g==null)return false;for(String n:g)if(n!=null&&n.equalsIgnoreCase(x))return true;return false;}
+ private static boolean has(Collection<String> g,String x){if(g==null)return false;for(String n:g)if(n!=null&&(n.equalsIgnoreCase(x)||((x.startsWith("void ")||x.startsWith("elite void "))&&VoidEquipment.matches(n,x))))return true;return false;}
 }

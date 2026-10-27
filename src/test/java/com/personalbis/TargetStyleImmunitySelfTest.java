@@ -71,8 +71,8 @@ public final class TargetStyleImmunitySelfTest
             check(clickedSearches.get()==0,"Clicking immune style does not calculate");
             TargetStyleImmunity.icon(button,false);check(button.getIcon()==normal,"Normal icon restored on allowed target");
             RaidOptionsPanel panel=new RaidOptionsPanel(()->{},new Font(Font.DIALOG,Font.PLAIN,14),new Font(Font.DIALOG,Font.BOLD,14));
-            for(JSpinner spinner:new JSpinner[]{panel.coxHp,panel.coxCombat,panel.coxParty,panel.raidLevel,panel.pathLevel,panel.toaParty})
-                check(spinner.getBorder() instanceof LineBorder&&((LineBorder)spinner.getBorder()).getLineColor().equals(new Color(255,184,38)),"Gold raid input border");
+            for(JSpinner spinner:new JSpinner[]{panel.coxHp,panel.coxCombat,panel.coxParty,panel.raidLevel,panel.pathLevel,panel.toaParty,panel.tfaParty})
+                check(spinner.getBorder() instanceof LineBorder&&((LineBorder)spinner.getBorder()).getLineColor().equals(new Color(103,90,67)),"Shared raid input border");
         });
         System.out.println("PASS "+checks+" target immunity, search skipping and input styling checks");
     }

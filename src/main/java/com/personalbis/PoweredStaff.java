@@ -4,6 +4,7 @@ public final class PoweredStaff {
  private final int offset,minHit;
  private PoweredStaff(String l,int ml,int s,int o,int mh){label=l;minLevel=ml;speed=s;offset=o;minHit=mh;}
  public int baseMaxHit(int visibleMagic){
+  if("Zorya's tome".equals(label))return Math.max(1,visibleMagic/3-10);
   if("Tumeken's shadow".equals(label)) return Math.max(1,(visibleMagic/3)+1);
   if("Eye of ayak".equals(label)) return Math.max(1,(visibleMagic/3)-6);
   if("Sanguinesti staff".equals(label)) return Math.max(1,visibleMagic/3);
@@ -19,6 +20,7 @@ public final class PoweredStaff {
   if(n.contains("warped sceptre"))return new PoweredStaff("Warped sceptre",62,4,-8,1);
   if(n.equals("bone staff"))return new PoweredStaff("Bone staff",50,4,5,21);
   if(n.equals("tumeken's shadow"))return new PoweredStaff("Tumeken's shadow",85,5,-20,1);
+  if(n.equals("zorya's tome"))return new PoweredStaff("Zorya's tome",85,3,-10,1);
   if(n.equals("eye of ayak"))return new PoweredStaff("Eye of ayak",83,3,-6,21);
   return null;
  }

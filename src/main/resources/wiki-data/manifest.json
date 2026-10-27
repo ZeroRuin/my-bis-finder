@@ -4,13 +4,21 @@
   "dataSnapshotDate": "2026-09-13",
   "source": "user-supplied OSRS Wiki DPS Calculator generated JSON datasets",
   "counts": {
-    "equipment": 5436,
-    "monsters": 2860,
+    "equipment": 5452,
+    "monsters": 2883,
     "spells": 61
   },
   "sha256": {
-    "equipment.json": "a9aa4d7be4002bfa897a7eae2ba26ad83d1a92ce31258fdd147e478e56ce5756",
-    "monsters.json": "5419520721e4f1f6b4ee78f857f295de9203f42b10f3c9a1aabaa82f8be3a8a6",
+    "equipment.json": "c0b9af28a0775a89cf72f1e681e9dc17843bcf30fe181bd29f43f59a845a9c6b",
+    "monsters.json": "e809b35e25f862e332c926270e9bbf6d3bed7ed1c7f92622035d1d662f4c924c",
     "spells.json": "40f6920c4cf0493e57c7b6c819c3215c550adc353ed88676297f6bf794c99083"
+  },
+  "supplements": {
+    "fracturedArchive": {
+      "upstream": "weirdgloop/osrs-dps-calc",
+      "commit": "def70220a9a886195213640254b2c00b66879d70",
+      "importedAt": "2026-10-27",
+      "scope": "TFA NPCs and equipment only; existing non-TFA records retained unchanged"
+    }
   }
 }

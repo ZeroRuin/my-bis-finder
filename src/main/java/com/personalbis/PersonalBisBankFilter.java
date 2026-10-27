@@ -14,7 +14,6 @@ import javax.inject.Singleton;
 import net.runelite.api.Client;
 import net.runelite.api.FontID;
 import net.runelite.api.ItemComposition;
-import net.runelite.api.Item;
 import net.runelite.api.ItemContainer;
 import net.runelite.api.MenuEntry;
 import net.runelite.api.MenuAction;
@@ -63,6 +62,7 @@ public class PersonalBisBankFilter
     private final BankSearch bankSearch;
     private final ItemManager itemManager;
     private final ItemExclusions exclusions;
+    private final PersonalBisConfig config;
     private final Set<Widget> generatedWidgets = Collections.newSetFromMap(new java.util.IdentityHashMap<>());
     private final Set<Integer> recommendedItemIds = new HashSet<>();
     private final Map<AttackStyle, List<Integer>> recommendations = new EnumMap<>(AttackStyle.class);
@@ -70,6 +70,7 @@ public class PersonalBisBankFilter
     private final List<Widget> addedWidgets = new ArrayList<>();
     private final List<Widget> hiddenNativeDecorations = new ArrayList<>();
     private final List<RecommendedSupply> supplies = new ArrayList<>();
+    private final List<RecommendedSupply> defenceReductionItems = new ArrayList<>();
 
     private final List<BankItem> groupItems = new ArrayList<>();
     private final Set<Widget> referenceWidgets = new HashSet<>();
@@ -102,13 +103,14 @@ public class PersonalBisBankFilter
     private int originalContainerChildren = -1;
 
     @Inject
-    public PersonalBisBankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager, ItemExclusions exclusions)
+    public PersonalBisBankFilter(Client client, ClientThread clientThread, BankSearch bankSearch, ItemManager itemManager, ItemExclusions exclusions, PersonalBisConfig config)
     {
         this.client = client;
         this.clientThread = clientThread;
         this.bankSearch = bankSearch;
         this.itemManager = itemManager;
         this.exclusions = exclusions;
+        this.config = config;
     }
 
     public void setRecommendedItemIds(Set<Integer> ids)
@@ -152,6 +154,13 @@ public class PersonalBisBankFilter
         if (items != null) supplies.addAll(items);
         for (RecommendedSupply item : supplies) recommendedItemIds.add(itemManager.canonicalize(item.itemId));
         if (active) clientThread.invokeLater(this::requestLayout);
+    }
+
+    public void setDefenceReductionItems(List<RecommendedSupply> items)
+    {
+        defenceReductionItems.clear();
+        if(items!=null)defenceReductionItems.addAll(items);
+        if(active)clientThread.invokeLater(this::requestLayout);
     }
 
     public boolean isActive()
@@ -225,7 +234,7 @@ public class PersonalBisBankFilter
         intStack[size - 2] = 1;
     }
 
-    @Subscribe
+    @Subscribe(priority = -1)
     public void onScriptPostFired(ScriptPostFired event)
     {
         if (!active || event.getScriptId() != ScriptID.BANKMAIN_FINISHBUILDING)
@@ -239,7 +248,10 @@ public class PersonalBisBankFilter
             return;
         }
 
-        clientThread.invokeAtTickEnd(() -> layoutSections(itemContainer));
+        // Finish the layout before another client cycle can build a menu from
+        // the ordinary bank positions. A tick-end callback leaves a click window
+        // and can also run after the planner has been deactivated.
+        layoutSections(itemContainer);
     }
 
     @Subscribe
@@ -289,27 +301,27 @@ public class PersonalBisBankFilter
             return;
         }
 
-        if (widget == null || widget.getItemId() < 0)
+        // Examine and plugin-local actions do not withdraw or move bank items.
+        if (event.getMenuAction() != MenuAction.CC_OP
+            && event.getMenuAction() != MenuAction.CC_OP_LOW_PRIORITY)
         {
             return;
         }
 
         ItemContainer bank = client.getItemContainer(group ? net.runelite.api.InventoryID.GROUP_STORAGE.getId() : InventoryID.BANK);
-        if (bank == null)
+        int slot = event.getParam0();
+        int clickedItemId = event.getItemId();
+        // Native widgets retain their real bank slot when moved. Never redirect a
+        // stale click using the widget's current item (or a canonical alias).
+        // A rebuild may have reused that widget for a different bank item.
+        if (widget == null || widget.isHidden() || referenceWidgets.contains(widget)
+            || bank == null || clickedItemId < 0
+            || widget.getItemId() != clickedItemId
+            || slot < 0 || slot >= bank.getItems().length
+            || bank.getItems()[slot] == null
+            || bank.getItems()[slot].getId() != clickedItemId)
         {
-            return;
-        }
-
-        int realIndex = findRealIndex(bank, widget.getItemId());
-        if (realIndex < 0)
-        {
-            return;
-        }
-
-        MenuEntry menu = event.getMenuEntry();
-        if (menu != null && menu.getParam0() != realIndex)
-        {
-            menu.setParam0(realIndex);
+            event.consume();
         }
     }
 
@@ -398,6 +410,13 @@ public class PersonalBisBankFilter
         int y = 0;
         y = addHeader(itemContainer, targetHeader, y, true);
 
+        // Reserve selected reduction stacks so they appear once below equipment.
+        List<Widget> reductionWidgets=new ArrayList<>();
+        for(RecommendedSupply item:defenceReductionItems){
+            Widget widget=exactOwnedWidgets.get(item.itemId);
+            if(widget!=null&&widget.getItemQuantity()>0&&!reductionWidgets.contains(widget))reductionWidgets.add(widget);
+        }
+
         List<AttackStyle> order = styleOrder.isEmpty() ? Arrays.asList(AttackStyle.values()) : styleOrder;
         for (AttackStyle style : order)
         {
@@ -414,7 +433,14 @@ public class PersonalBisBankFilter
             {
                 if (itemId == null) continue;
                 Widget widget = ownedWidgets.get(itemManager.canonicalize(itemId));
-                if (widget == null || used.contains(widget)) continue;
+                if(widget==null)
+                {
+                    // Some native placeholders have a different cache item ID
+                    // that canonicalization does not map back to this equipment.
+                    int placeholderId=client.getItemDefinition(itemId).getPlaceholderId();
+                    if(placeholderId>0)widget=exactOwnedWidgets.get(placeholderId);
+                }
+                if (widget == null || used.contains(widget) || reductionWidgets.contains(widget)) continue;
                 used.add(widget);
                 generatedWidgets.add(widget);
                 widget.setHidden(false);
@@ -424,25 +450,39 @@ public class PersonalBisBankFilter
             y += rows * ITEM_Y_SPACING + SECTION_GAP;
         }
 
-        if (!supplies.isEmpty())
-        {
-            y = addDivider(itemContainer, y);
-            y = addHeader(itemContainer, "Recommended", y, false);
-            int itemInSection = 0;
-            for (RecommendedSupply supply : supplies)
-            {
-                // Potion doses canonicalise to the 4-dose ID. Supplies must use
-                // their exact owned ID or a stale 4-dose placeholder is shown.
-                Widget widget = exactOwnedWidgets.get(supply.itemId);
-                if (widget == null || used.contains(widget)) continue;
-                if (widget.getItemQuantity() <= 0) continue;
-                used.add(widget);
-                generatedWidgets.add(widget);
-                widget.setHidden(false);
-                placeItem(widget, itemInSection++, y);
+        if(!reductionWidgets.isEmpty()){
+            y=addDivider(itemContainer,y);
+            y=addHeader(itemContainer,"Defence reducing items",y,false);
+            int index=0;
+            for(Widget widget:reductionWidgets){
+                used.add(widget);generatedWidgets.add(widget);widget.setHidden(false);
+                placeItem(widget,index++,y);
             }
-            int rows = Math.max(1, (itemInSection + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW);
-            y += rows * ITEM_Y_SPACING + SECTION_GAP;
+            y+=((index+ITEMS_PER_ROW-1)/ITEMS_PER_ROW)*ITEM_Y_SPACING+SECTION_GAP;
+        }
+
+
+        List<Widget> supplyWidgets=new ArrayList<>();
+        for(RecommendedSupply supply:supplies){
+            // Keep the exact supply/dose, including its genuine native placeholder
+            // after the last item is withdrawn. Never create a withdrawable copy.
+            Widget widget=exactOwnedWidgets.get(supply.itemId);
+            if(widget==null)
+            {
+                int placeholderId=client.getItemDefinition(supply.itemId).getPlaceholderId();
+                if(placeholderId>0)widget=exactOwnedWidgets.get(placeholderId);
+            }
+            if(widget!=null&&!used.contains(widget)&&!supplyWidgets.contains(widget))supplyWidgets.add(widget);
+        }
+        if(!supplyWidgets.isEmpty()){
+            y=addDivider(itemContainer,y);
+            y=addHeader(itemContainer,"Recommended",y,false);
+            int index=0;
+            for(Widget widget:supplyWidgets){
+                used.add(widget);generatedWidgets.add(widget);widget.setHidden(false);
+                placeItem(widget,index++,y);
+            }
+            y+=((index+ITEMS_PER_ROW-1)/ITEMS_PER_ROW)*ITEM_Y_SPACING+SECTION_GAP;
         }
 
         y = addDivider(itemContainer, y);
@@ -484,16 +524,19 @@ public class PersonalBisBankFilter
             y += ((index + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW) * ITEM_Y_SPACING + SECTION_GAP;
             y = addDivider(itemContainer, y);
         }
-        y = addHeader(itemContainer, "Other items", y, false);
-        int otherIndex = 0;
-        for (Widget widget : itemWidgets)
+        if (!config.hideOtherBankItems())
         {
-            if (used.contains(widget)) continue;
-            widget.setHidden(false);
-            placeItem(widget, otherIndex++, y);
+            y = addHeader(itemContainer, "Other items", y, false);
+            int otherIndex = 0;
+            for (Widget widget : itemWidgets)
+            {
+                if (used.contains(widget)) continue;
+                widget.setHidden(false);
+                placeItem(widget, otherIndex++, y);
+            }
+            int otherRows = (otherIndex + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW;
+            y += otherRows * ITEM_Y_SPACING + SECTION_GAP;
         }
-        int otherRows = (otherIndex + ITEMS_PER_ROW - 1) / ITEMS_PER_ROW;
-        y += otherRows * ITEM_Y_SPACING + SECTION_GAP;
 
         itemContainer.setScrollHeight(Math.max(itemContainer.getHeight(), y + 10));
         itemContainer.revalidate();
@@ -546,21 +589,6 @@ public class PersonalBisBankFilter
         }
         widget.setAction(10, "Examine");
         widget.revalidate();
-    }
-
-    private int findRealIndex(ItemContainer bank, int displayedItemId)
-    {
-        int canonicalId = itemManager.canonicalize(displayedItemId);
-        Item[] items = bank.getItems();
-        for (int i = 0; i < items.length; i++)
-        {
-            Item item = items[i];
-            if (item != null && item.getId() > 0 && itemManager.canonicalize(item.getId()) == canonicalId)
-            {
-                return i;
-            }
-        }
-        return -1;
     }
 
     private void placeItem(Widget widget, int itemIndex, int sectionY)

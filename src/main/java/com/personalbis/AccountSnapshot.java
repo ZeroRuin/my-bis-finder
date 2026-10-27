@@ -26,6 +26,8 @@ public class AccountSnapshot
     // RuneLite Varbits.DIARY_KANDARIN_HARD. Completion grants +10% enchanted-bolt proc chance.
     private static final int KANDARIN_HARD_DIARY_VARBIT = 4477;
     private boolean rigourUnlocked, auguryUnlocked, deadeyeUnlocked, mysticVigourUnlocked, chivalryUnlocked, pietyUnlocked;
+    private boolean zealUnlocked;
+    private boolean fragmentAir,fragmentEarth,fragmentFire,fragmentWater;
     private boolean ancientMagicksUnlocked, kingdomDividedUnlocked, kandarinHardCompleted;
 
     @Inject
@@ -42,6 +44,11 @@ public class AccountSnapshot
             real.put(skill, client.getRealSkillLevel(skill));
             boosted.put(skill, client.getBoostedSkillLevel(skill));
         }
+        zealUnlocked=client.getVarbitValue(net.runelite.api.gameval.VarbitID.PRAYER_ZEAL_UNLOCKED)>0;
+        fragmentAir=client.getVarbitValue(net.runelite.api.gameval.VarbitID.TFA_MOTE_AIR_UNLOCKED)>0;
+        fragmentEarth=client.getVarbitValue(net.runelite.api.gameval.VarbitID.TFA_MOTE_EARTH_UNLOCKED)>0;
+        fragmentFire=client.getVarbitValue(net.runelite.api.gameval.VarbitID.TFA_MOTE_FIRE_UNLOCKED)>0;
+        fragmentWater=client.getVarbitValue(net.runelite.api.gameval.VarbitID.TFA_MOTE_WATER_UNLOCKED)>0;
         rigourUnlocked = client.getVarbitValue(RIGOUR_UNLOCKED_VARBIT) > 0;
         auguryUnlocked = client.getVarbitValue(AUGURY_UNLOCKED_VARBIT) > 0;
         deadeyeUnlocked = client.getVarbitValue(DEADEYE_UNLOCKED_VARBIT) > 0;
@@ -61,6 +68,12 @@ public class AccountSnapshot
     public boolean isDeadeyeUnlocked() { return deadeyeUnlocked; }
     public boolean isMysticVigourUnlocked() { return mysticVigourUnlocked; }
     public boolean isChivalryUnlocked() { return chivalryUnlocked; }
+    public boolean isZealUnlocked(){return zealUnlocked&&real(Skill.PRAYER)>=84&&real(Skill.ATTACK)>=75&&real(Skill.STRENGTH)>=75;}
+    public String fragmentKey(){return ":"+fragmentAir+":"+fragmentEarth+":"+fragmentFire+":"+fragmentWater;}
+    public int elementalFragmentBonus(MagicSpell spell){
+        if(spell==null||!"standard".equals(spell.spellbook))return 0;
+        switch(spell.element()){case "air":return fragmentAir?2:0;case "earth":return fragmentEarth?2:0;case "fire":return fragmentFire?2:0;case "water":return fragmentWater?2:0;default:return 0;}
+    }
     public boolean isPietyUnlocked() { return pietyUnlocked; }
     public boolean isAncientMagicksUnlocked() { return ancientMagicksUnlocked; }
     public boolean isKingdomDividedUnlocked() { return kingdomDividedUnlocked; }
@@ -80,6 +93,7 @@ public class AccountSnapshot
             case MELEE_STAB:
             case MELEE_SLASH:
             case MELEE_CRUSH:
+                if(isZealUnlocked())return "Zeal";
                 if (p >= 70 && pietyUnlocked) return "Piety";
                 if (p >= 60 && chivalryUnlocked) return "Chivalry";
                 if (p >= 34) return "Incredible Reflexes + Ultimate Strength";

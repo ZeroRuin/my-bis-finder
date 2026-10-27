@@ -41,12 +41,13 @@ public final class EnchantedBoltEffects {
  public static HitDistribution preAccurateZeroDistribution(EquipmentCandidate ammo, MonsterDefinition m, int rangedLevel, int normalMin, int normalMax, double accuracy, boolean kandarinHard){
   HitDistribution dist=HitDistribution.linear(Math.max(0.0,Math.min(1.0,accuracy)),normalMin,Math.max(normalMin,normalMax));
   String n=enchanted(ammo)&&m!=null?ammo.getItem().getName().toLowerCase():"";
+  double ascension=n.contains("ascension")?.5:1.0;
   if(!n.isEmpty()&&!n.contains("ruby")){
    if(n.contains("opal")) dist=bonusDamage(dist,proc(.05,kandarinHard),(int)Math.floor(rangedLevel/10.0),false);
    else if(n.contains("pearl")) dist=bonusDamage(dist,proc(.06,kandarinHard),(int)Math.floor(rangedLevel/(m.hasAttribute("fiery")?15.0:20.0)),false);
-   else if(n.contains("diamond")) dist=independentReplacement(dist,proc(.10,kandarinHard),(int)Math.floor(normalMax*1.15));
+   else if(n.contains("diamond")) dist=independentReplacement(dist,proc(.10,kandarinHard)*ascension,(int)Math.floor(normalMax*1.15));
    else if(n.contains("dragonstone")&&!dragonstoneBlocked(m)) dist=bonusDamage(dist,proc(.06,kandarinHard),(int)Math.floor(rangedLevel*.20),true);
-   else if(n.contains("onyx")&&!m.hasAttribute("undead")) dist=accurateReplacement(dist,proc(.11,kandarinHard),(int)Math.floor(normalMax*1.20));
+   else if(n.contains("onyx")&&!m.hasAttribute("undead")) dist=accurateReplacement(dist,proc(.11,kandarinHard)*ascension,(int)Math.floor(normalMax*1.20));
   }
   return dist.flatten();
  }

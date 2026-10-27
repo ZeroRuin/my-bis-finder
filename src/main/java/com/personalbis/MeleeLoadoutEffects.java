@@ -24,17 +24,17 @@ public final class MeleeLoadoutEffects
 
     public static int salveAttackRoll(int baseAttackRoll, Map<EquipmentSlot,EquipmentCandidate> gear, MonsterDefinition monster)
     {
-        return (int)Math.floor(baseAttackRoll * salveMultiplier(gear,monster));
+        return salveMaxHit(baseAttackRoll,gear,monster);
     }
 
-    public static int salveMaxHitFromNumerator(int effectiveStrength, int strengthBonus,
-        Map<EquipmentSlot,EquipmentCandidate> gear, MonsterDefinition monster)
+    /** Salve acts on the already truncated base max hit (after Crystal blessing).
+     * Wiki PlayerVsNPCCalc.getMeleeMaxHit: base max -> Crystal -> Salve -> weapon.
+     */
+    public static int salveMaxHit(int baseMaxHit,Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition monster)
     {
-        // OSRS/Wiki keeps the max-hit numerator exact through multiplicative
-        // damage modifiers, then performs the /640 max-hit truncation.
-        // This avoids losing a max hit by truncating before Salve.
-        double salve = salveMultiplier(gear,monster);
-        return (int)Math.floor((effectiveStrength * (strengthBonus + 64) + 320.0) * salve / 640.0);
+        double salve=salveMultiplier(gear,monster);
+        if(salve<=1.0)return baseMaxHit;
+        return salve>1.19?WikiIntegerStages.factor(baseMaxHit,6,5):WikiIntegerStages.factor(baseMaxHit,7,6);
     }
 
     public static boolean hasVoidMelee(Map<EquipmentSlot,EquipmentCandidate> gear)

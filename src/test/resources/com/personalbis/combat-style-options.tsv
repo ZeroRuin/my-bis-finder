@@ -1,0 +1,72 @@
+# Wiki utils.ts 89c3e25b344aea90d0189746e4b5f73dde0f0383; ordinary modelled options
+2h Sword	slash	Accurate	Chop
+2h Sword	slash	Aggressive	Slash
+2h Sword	crush	Aggressive	Smash
+Banner	stab	Accurate	Lunge
+Banner	slash	Aggressive	Swipe
+Banner	crush	Controlled	Pound
+Bladed Staff	stab	Accurate	Jab
+Bladed Staff	slash	Aggressive	Swipe
+Bow	ranged	Accurate	Accurate
+Bow	ranged	Rapid	Rapid
+Bow	ranged	Longrange	Longrange
+Crossbow	ranged	Accurate	Accurate
+Crossbow	ranged	Rapid	Rapid
+Crossbow	ranged	Longrange	Longrange
+Thrown	ranged	Accurate	Accurate
+Thrown	ranged	Rapid	Rapid
+Thrown	ranged	Longrange	Longrange
+Gun	crush	Aggressive	Kick
+Bulwark	crush	Accurate	Pummel
+Multi-Melee	stab	Accurate	Poke
+Multi-Melee	slash	Aggressive	Slash
+Multi-Melee	crush	Aggressive	Pound
+Partisan	stab	Accurate	Stab
+Partisan	stab	Aggressive	Lunge
+Partisan	crush	Aggressive	Pound
+Pickaxe	stab	Accurate	Spike
+Pickaxe	stab	Aggressive	Impale
+Pickaxe	crush	Aggressive	Smash
+Polearm	stab	Controlled	Jab
+Polearm	slash	Aggressive	Swipe
+Salamander	slash	Aggressive	Scorch
+Salamander	ranged	Rapid	Flare
+Chinchompas	ranged	Accurate	Short fuse
+Chinchompas	ranged	Rapid	Medium fuse
+Chinchompas	ranged	Longrange	Long fuse
+Claw	slash	Accurate	Chop
+Claw	slash	Aggressive	Slash
+Claw	stab	Controlled	Lunge
+Bludgeon	crush	Aggressive	Pound
+Bludgeon	crush	Aggressive	Pummel
+Bludgeon	crush	Aggressive	Smash
+Blunt	crush	Accurate	Pound
+Blunt	crush	Aggressive	Pummel
+Polestaff	crush	Accurate	Bash
+Polestaff	crush	Aggressive	Pound
+Spiked	crush	Accurate	Pound
+Spiked	crush	Aggressive	Pummel
+Spiked	stab	Controlled	Spike
+Staff	crush	Accurate	Bash
+Staff	crush	Aggressive	Pound
+Axe	slash	Accurate	Chop
+Axe	slash	Aggressive	Hack
+Axe	crush	Aggressive	Smash
+Unarmed	crush	Accurate	Punch
+Unarmed	crush	Aggressive	Kick
+Scythe	slash	Accurate	Reap
+Scythe	slash	Aggressive	Chop
+Scythe	crush	Aggressive	Jab
+Slash Sword	slash	Accurate	Chop
+Slash Sword	slash	Aggressive	Slash
+Slash Sword	stab	Controlled	Lunge
+Spear	stab	Controlled	Lunge
+Spear	slash	Controlled	Swipe
+Spear	crush	Controlled	Pound
+Stab Sword	stab	Accurate	Stab
+Stab Sword	stab	Aggressive	Lunge
+Stab Sword	slash	Aggressive	Slash
+Whip	slash	Accurate	Flick
+Whip	slash	Controlled	Lash
+Flail	slash	Accurate	Chop
+Flail	slash	Aggressive	Slash

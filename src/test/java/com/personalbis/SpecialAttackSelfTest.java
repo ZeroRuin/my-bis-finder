@@ -48,7 +48,14 @@ public final class SpecialAttackSelfTest
             slots.put(EquipmentSlot.WEAPON,Arrays.asList(item(1215,style),item(4151,style)));owned.put(style,slots);
         }
         Map<EquipmentSlot,EquipmentCandidate> worn=new EnumMap<>(EquipmentSlot.class);worn.put(EquipmentSlot.WEAPON,item(4151,AttackStyle.MELEE_SLASH));
-        SpecWeaponRecommendation r=new SpecWeaponRecommender(account).best(worn,owned,AttackStyle.MELEE_SLASH,target,false);
+        Map<EquipmentSlot,EquipmentCandidate> original=new EnumMap<>(worn);
+        CombatResult ordinaryBefore=new MeleeCombatCalculator(account).calculate(worn,AttackStyle.MELEE_SLASH,target,false);
+        SpecWeaponRecommendation r=new SpecWeaponRecommender(account).best(Collections.unmodifiableMap(worn),owned,AttackStyle.MELEE_SLASH,target,false);
+        check(worn.equals(original),"Special recommendation cannot replace ordinary equipment");
+        CombatResult ordinaryAfter=new MeleeCombatCalculator(account).calculate(worn,AttackStyle.MELEE_SLASH,target,false);
+        close(ordinaryAfter.getDps(),ordinaryBefore.getDps(),"Special recommendation leaves ordinary DPS unchanged");
+        close(ordinaryAfter.getExpectedTtkSeconds(),ordinaryBefore.getExpectedTtkSeconds(),"Special recommendation leaves ordinary TTK unchanged");
+        check(ordinaryAfter.getMaxHit()==ordinaryBefore.getMaxHit(),"Special recommendation leaves ordinary max hit unchanged");
         check(r!=null&&r.weapon.getItem().getItemId()==1215,"Owned dagger beats whip direct spec");
         check(new SpecWeaponRecommender(account).best(worn,owned,AttackStyle.MELEE_SLASH,null,false)!=null,"Generic target spec does not require monster fields");
         close(r.dps,r.damage/(r.ticks*.6),"Burst score uses special attack interval");

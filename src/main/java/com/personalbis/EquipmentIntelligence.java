@@ -79,6 +79,12 @@ public class EquipmentIntelligence
                 requirements));
         }
 
+        sortRanked(ranked);
+        return ranked;
+    }
+
+    static void sortRanked(Map<EquipmentSlot,List<EquipmentCandidate>> ranked)
+    {
         Comparator<EquipmentCandidate> comparator = new Comparator<EquipmentCandidate>()
         {
             @Override
@@ -102,7 +108,6 @@ public class EquipmentIntelligence
             Collections.sort(candidates, comparator);
         }
 
-        return ranked;
     }
 
     public List<EquipmentCandidate> allForSlot(List<BankItem> bank, AttackStyle style, EquipmentSlot slot)

@@ -1,7 +1,6 @@
 package com.personalbis;
 
 import java.util.*;
-import java.util.stream.IntStream;
 import javax.inject.Inject;
 
 public class MeleeLoadoutOptimizer
@@ -62,11 +61,12 @@ public class MeleeLoadoutOptimizer
             searchable.add(weapon);
         }
         final Map<EquipmentSlot,List<EquipmentCandidate>> searchRanked=ranked;
-        List<WeaponSearchResult> results=IntStream.range(0,searchable.size()).parallel().mapToObj(i->{
-            EquipmentCandidate weapon=searchable.get(i);
-            return new WeaponSearchResult(weapon,optimizeForWeapon(weapon,searchRanked,style,monster,
-                onSlayerTask,requiredEquipment,new SearchContext()));
-        }).collect(java.util.stream.Collectors.toList());
+        List<WeaponSearchResult> results=new ArrayList<>();
+        for(EquipmentCandidate weapon:searchable){
+            CalculationCancellation.check();
+            results.add(new WeaponSearchResult(weapon,optimizeForWeapon(weapon,searchRanked,style,monster,
+                onSlayerTask,requiredEquipment,new SearchContext())));
+        }
         for(WeaponSearchResult result:results)
         {
             OptimizedLoadout weaponBest=result.loadout;
@@ -83,19 +83,35 @@ public class MeleeLoadoutOptimizer
         Map<EquipmentSlot,List<EquipmentCandidate>> ranked,AttackStyle style,
         MonsterDefinition monster,boolean onSlayerTask,EquipmentCandidate requiredEquipment,SearchContext context)
     {
+        OptimizedLoadout best=optimizeForWeaponFamily(weapon,ranked,style,monster,onSlayerTask,requiredEquipment,context,Collections.emptyMap());
+        for(Map<EquipmentSlot,EquipmentCandidate> family:VoidLoadoutFamilies.families(ranked,requiredEquipment,"Void melee helm")) {
+            CalculationCancellation.check();
+            OptimizedLoadout candidate=optimizeForWeaponFamily(weapon,ranked,style,monster,onSlayerTask,requiredEquipment,context,family);
+            if(candidate!=null&&(best==null||FinalLoadoutSelection.betterTtk(candidate.getResult().getExpectedTtkSeconds(),candidate.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())
+                ||(Double.compare(candidate.getResult().getExpectedTtkSeconds(),best.getResult().getExpectedTtkSeconds())==0&&prayerBonus(candidate.getItems())>prayerBonus(best.getItems()))))best=candidate;
+        }
+        return best;
+    }
+
+    private OptimizedLoadout optimizeForWeaponFamily(EquipmentCandidate weapon,
+        Map<EquipmentSlot,List<EquipmentCandidate>> ranked,AttackStyle style,
+        MonsterDefinition monster,boolean onSlayerTask,EquipmentCandidate requiredEquipment,SearchContext context,
+        Map<EquipmentSlot,EquipmentCandidate> locked)
+    {
         Map<EquipmentSlot,EquipmentCandidate> seed=new EnumMap<>(EquipmentSlot.class);
         seed.put(EquipmentSlot.WEAPON,weapon);
         if(requiredEquipment!=null)seed.put(requiredEquipment.getSlot(),requiredEquipment);
         List<Map<EquipmentSlot,EquipmentCandidate>> beam=new ArrayList<>();
+        seed.putAll(locked);
         beam.add(seed);
         Map<EquipmentSlot,EquipmentCandidate> verac=veracsBundle(ranked,weapon);
-        if(verac!=null){if(requiredEquipment!=null)verac.put(requiredEquipment.getSlot(),requiredEquipment);beam.add(verac);}
+        if(locked.isEmpty()&&verac!=null){if(requiredEquipment!=null)verac.put(requiredEquipment.getSlot(),requiredEquipment);beam.add(verac);}
         Map<EquipmentSlot,EquipmentCandidate> crystal=crystalBlessingBundle(ranked,weapon);
-        if(crystal!=null){if(requiredEquipment!=null)crystal.put(requiredEquipment.getSlot(),requiredEquipment);beam.add(crystal);}
+        if(locked.isEmpty()&&crystal!=null){if(requiredEquipment!=null)crystal.put(requiredEquipment.getSlot(),requiredEquipment);beam.add(crystal);}
 
         for(EquipmentSlot slot:EquipmentSlot.values())
         {
-            if(slot==EquipmentSlot.WEAPON) continue;
+            if(slot==EquipmentSlot.WEAPON||locked.containsKey(slot)) continue;
             if(SlayerTargetRequirements.requiredEquipmentSlot(monster)==slot)continue;
             if(weapon.isTwoHanded()&&slot==EquipmentSlot.SHIELD) continue;
             List<EquipmentCandidate> choices=context.choices.computeIfAbsent(slot,
@@ -115,16 +131,24 @@ public class MeleeLoadoutOptimizer
                     next.add(n);
                 }
             }
-            final Map<Map<EquipmentSlot,EquipmentCandidate>,Double> dpsCache=new IdentityHashMap<>();
-            for(Map<EquipmentSlot,EquipmentCandidate> g:next)
-                dpsCache.put(g,calculateCached(g,style,monster,onSlayerTask,context).getDps());
-            next.sort((a,b)->{
-                int d=Double.compare(dpsCache.get(b),dpsCache.get(a));
-                return d!=0?d:Integer.compare(prayerBonus(b),prayerBonus(a));
-            });
-            beam=new ArrayList<>(next.subList(0,Math.min(BEAM_WIDTH,next.size())));
+            if(VardorvisRules.supported(monster)) {
+                beam=VardorvisShortlist.select(next,monster.getHitpoints(),BEAM_WIDTH/4,
+                    (g,hp)->calculator.calculateSnapshot(g,style,VardorvisHpSettings.atHp(monster,hp),onSlayerTask).getDps(),this::prayerBonus);
+            } else {
+                final Map<Map<EquipmentSlot,EquipmentCandidate>,Double> dpsCache=new IdentityHashMap<>();
+                for(Map<EquipmentSlot,EquipmentCandidate> g:next)
+                    dpsCache.put(g,calculateCached(g,style,monster,onSlayerTask,context).getDps());
+                next.sort((a,b)->{
+                    int d=Double.compare(dpsCache.get(b),dpsCache.get(a));
+                    return d!=0?d:Integer.compare(prayerBonus(b),prayerBonus(a));
+                });
+                beam=new ArrayList<>(next.subList(0,Math.min(BEAM_WIDTH,next.size())));
+            }
         }
 
+        if(VardorvisRules.supported(monster))
+            beam=VardorvisShortlist.select(beam,monster.getHitpoints(),2,
+                (g,hp)->calculator.calculateSnapshot(g,style,VardorvisHpSettings.atHp(monster,hp),onSlayerTask).getDps(),this::prayerBonus);
         OptimizedLoadout best=null;
         for(Map<EquipmentSlot,EquipmentCandidate> g:beam)
         {
@@ -212,6 +236,7 @@ public class MeleeLoadoutOptimizer
     private CombatResult calculateCached(Map<EquipmentSlot,EquipmentCandidate> gear,AttackStyle style,
         MonsterDefinition monster,boolean onSlayerTask,SearchContext context)
     {
+        CalculationCancellation.check();
         StringBuilder key=new StringBuilder();
         for(EquipmentSlot slot:EquipmentSlot.values())
         {
@@ -222,6 +247,7 @@ public class MeleeLoadoutOptimizer
         CombatResult hit=context.exact.get(k);
         if(hit!=null)return hit;
         CombatResult calculated=calculator.calculate(gear,style,monster,onSlayerTask);
+        if(context.exact.size()>=4096)context.exact.clear();
         context.exact.put(k,calculated);
         return calculated;
     }

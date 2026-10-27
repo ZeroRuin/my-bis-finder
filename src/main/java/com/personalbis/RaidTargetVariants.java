@@ -11,11 +11,12 @@ final class RaidTargetVariants
     private RaidTargetVariants() {}
     static boolean hidden(WikiMonster w)
     {
-        return (w.id==11763||w.id==11764) && "Invulnerable".equalsIgnoreCase(w.version);
+        return (w.id>=16678&&w.id<=16681) || w.id==16688 || (w.id==11763||w.id==11764) && "Invulnerable".equalsIgnoreCase(w.version);
     }
     static List<String> versions(WikiMonster w)
     {
         String v=w.version==null?"":w.version;
+        if(w.id==16640)return Arrays.asList("Armour stage 1","Armour stage 2","Armour stage 3","Armour stage 4","Stunned");
         if(w.attributes!=null&&w.attributes.contains("xerician"))
         {
             if(w.name.equals("Great Olm"))
@@ -44,7 +45,7 @@ final class RaidTargetVariants
     }
     static String key(MonsterDefinition m)
     {
-        return RaidScaling.isCox(m)||RaidScaling.isToa(m)?"|raid-state|"+m.getVersion().toLowerCase(Locale.ROOT):"";
+        return RaidScaling.isCox(m)||RaidScaling.isToa(m)||FracturedArchiveRules.isTfa(m)?"|raid-state|"+m.getVersion().toLowerCase(Locale.ROOT):"";
     }
     static boolean canDamage(MonsterDefinition m,AttackStyle style)
     {
@@ -65,6 +66,7 @@ final class RaidTargetVariants
     }
     static String note(MonsterDefinition m)
     {
+        if(FracturedArchiveRules.isTfa(m))return FracturedArchiveRules.note(m);
         if(m!=null&&m.getName().endsWith("' Warden")&&m.getVersion().contains("Core-ejected"))
             return "Exposed core: melee attacks always deal their maximum damage. TTK assumes continuous exposure; ejection windows and body damage are not simulated.";
         if(m!=null&&m.getName().endsWith("' Warden")&&m.getVersion().contains("vulnerable"))

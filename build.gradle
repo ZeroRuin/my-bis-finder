@@ -26,7 +26,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.6.3'
+version = '0.9.7'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -172,6 +172,102 @@ tasks.register('specialAttackSelfTest', JavaExec) {
     description = 'Checks direct special damage, owned-weapon recommendations and sidebar row proportions.'
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.personalbis.SpecialAttackSelfTest'
+    systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
+}
+
+
+// Local checks only; no CI automation.
+['vardorvisSelfTest': 'VardorvisSelfTest',
+ 'blowpipeAmmoPlanSelfTest': 'BlowpipeAmmoPlanSelfTest',
+ 'hpStateTtkSelfTest': 'HpStateTtkSelfTest',
+ 'defenceFillSelfTest': 'DefenceFillSelfTest',
+ 'manualDefenceReductionSelfTest': 'ManualDefenceReductionSelfTest'].each { taskName, testClass ->
+    tasks.register(taskName, JavaExec) {
+        group = 'verification'
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = 'com.personalbis.' + testClass
+        enableAssertions = true
+        systemProperty 'java.awt.headless', 'true'
+    }
+}
+
+// Local performance/parity check. Deliberately exercise a small heap.
+tasks.register('ttkPerformanceSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.TtkPerformanceSelfTest'
+    maxHeapSize = '64m'
+    enableAssertions = true
+}
+
+['salveRoundingSelfTest':'SalveRoundingSelfTest',
+ 'combatStyleLabelsSelfTest':'CombatStyleLabelsSelfTest',
+ 'poweredStanceSelfTest':'PoweredStanceSelfTest'].each { taskName,testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = 'com.personalbis.' + testClass
+        enableAssertions = true
+    }
+}
+
+['vardorvisHpSelfTest':'VardorvisHpSelfTest',
+ 'vardorvisShortlistSelfTest':'VardorvisShortlistSelfTest'].each { taskName,testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = 'com.personalbis.' + testClass
+        enableAssertions = true
+        systemProperty 'java.awt.headless', 'true'
+    }
+}
+
+['voidEquipmentSelfTest':'VoidEquipmentSelfTest',
+ 'defenceReductionPlanSelfTest':'DefenceReductionPlanSelfTest'].each { taskName,testClass ->
+    tasks.register(taskName, JavaExec) {
+        dependsOn testClasses
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = 'com.personalbis.' + testClass
+        enableAssertions = true
+        systemProperty 'java.awt.headless', 'true'
+    }
+}
+
+tasks.register('twistedBowRoundingSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.TwistedBowRoundingSelfTest'
+    enableAssertions = true
+}
+
+tasks.register('voidLoadoutFamiliesSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.VoidLoadoutFamiliesSelfTest'
+    enableAssertions = true
+}
+
+// Pure planning check; never launches or controls the game.
+tasks.register('defenceReductionBankItemsSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.DefenceReductionBankItemsSelfTest'
+    enableAssertions = true
+}
+
+// Native bank click consistency; no client launch or game actions.
+tasks.register('bankWithdrawalSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.BankWithdrawalSelfTest'
+    enableAssertions = true
+}
+
+tasks.register('fracturedArchiveSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.FracturedArchiveSelfTest'
     systemProperty 'java.awt.headless', 'true'
     enableAssertions = true
 }

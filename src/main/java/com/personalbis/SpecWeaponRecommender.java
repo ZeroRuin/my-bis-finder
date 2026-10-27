@@ -8,7 +8,7 @@ import com.personalbis.wiki.WikiEquipment;
 final class SpecWeaponRecommender
 {
     private static final List<String> RANGED=Arrays.asList("Magic shortbow","Magic shortbow (i)","Dark bow","Toxic blowpipe","Webweaver bow","Heavy ballista","Light ballista","Dragon knife","Zaryte crossbow");
-    private static final List<String> MAGIC=Arrays.asList("Eye of Ayak","Volatile Nightmare staff","Eldritch Nightmare staff");
+    private static final List<String> MAGIC=Arrays.asList("Eye of Ayak","Zorya's tome","Volatile Nightmare staff","Eldritch Nightmare staff");
     private final AccountSnapshot account;
     SpecWeaponRecommender(AccountSnapshot account){this.account=account;}
     static String name(EquipmentCandidate c){WikiEquipment w=WikiEquipmentEngine.canonicalItem(c.getItem().getItemId());return w==null?c.getItem().getName():w.name;}
@@ -39,7 +39,8 @@ final class SpecWeaponRecommender
                 if(style==AttackStyle.RANGED&&(RangedAmmoRules.requiresEquippedAmmo(weapon)||RangedAmmoRules.usesLoadedDarts(weapon))){
                     for(EquipmentSlot slot:new EquipmentSlot[]{EquipmentSlot.AMMO,EquipmentSlot.WEAPON})
                         for(EquipmentCandidate c:ranked.getOrDefault(slot,Collections.emptyList()))
-                            if(!c.getRequirementResult().isBlocked()&&c.getItem().getQuantity()>0&&RangedAmmoRules.compatible(weapon,c))ammo.add(c);
+                            if(!c.getRequirementResult().isBlocked()&&c.getItem().getQuantity()>0&&RangedAmmoRules.compatible(weapon,c)
+                                &&(!RangedAmmoRules.usesLoadedDarts(weapon)||BlowpipeAmmoCandidates.matches(weapon,c)))ammo.add(c);
                     if(ammo.isEmpty())continue;
                 }else ammo.add(null);
                 for(EquipmentCandidate a:ammo){
@@ -56,11 +57,12 @@ final class SpecWeaponRecommender
         Map<EquipmentSlot,EquipmentCandidate> gear,String note){
         String n=name(w);int cost=WikiEquipmentEngine.WEAPON_SPEC_COSTS.getOrDefault(n,50);
         EquipmentCandidate ammo=gear.get(EquipmentSlot.AMMO);
-        if(ammo!=null&&style==AttackStyle.RANGED)note+=" | Ammo: "+ammo.getItem().getName();
+        if(ammo!=null&&style==AttackStyle.RANGED)note+=" | Ammo: "+ammo.getItem().getName()+(RangedAmmoRules.usesLoadedDarts(w)?" (manual assumption)":"");
         return new SpecWeaponRecommendation(w,ammo,d.expectedDamage(),d.max(),cost,ticks,style.toString(),note);
     }
     private MeleePrayer meleePrayer(){
         int p=account.real(Skill.PRAYER);
+        if(account.isZealUnlocked())return MeleePrayer.ZEAL;
         if(p>=70&&account.isPietyUnlocked())return MeleePrayer.PIETY;
         if(p>=60&&account.isChivalryUnlocked())return MeleePrayer.CHIVALRY;
         return p>=44?MeleePrayer.HIGH:p>=31?MeleePrayer.MID:p>=13?MeleePrayer.LOW:MeleePrayer.NONE;
@@ -77,7 +79,7 @@ final class SpecWeaponRecommender
             ||!WikiTargetEligibility.meleeCanDamage(m,w)||!LeafyTargetRules.meleeCanDamage(m,w)||!VampyreTargetRules.canDamageMelee(gear,w,m))return null;
         SpecWeaponRecommendation best=null;
         for(MeleeStance stance:MeleeAttackStyleResolver.legalStances(w,style)){
-            CombatResult base=new MeleeCombatCalculator(account).calculateForStance(gear,style,m,task,stance,meleePrayer());
+            CombatResult base=new MeleeCombatCalculator(account).calculateSnapshotForStance(gear,style,m,task,stance,meleePrayer());
             int roll=base.getAttackRoll()*SpecialAttackRules.attackPercent(n)/100;
             double accuracy=WikiAccuracyRoll.normal(roll,base.getDefenceRoll());
             if(n.equals("Osmumten's fang")&&style==AttackStyle.MELEE_STAB)
@@ -92,38 +94,41 @@ final class SpecWeaponRecommender
             d=WikiPlayerVsNpcCalc.applyCorp(d,m,w,damageStyle);
             d=WikiPlayerVsNpcCalc.finalDistribution(d,m,damageStyle,w,null,false,gear.values());
             if(VampyreTargetRules.tier2HalfDamage(gear,w,m))d=d.transform(HitDistribution.divide(2,0),true);
-            SpecWeaponRecommendation r=result(w,d,base.getAttackSpeed(),style,gear,"Special stance: "+style+" / "+stance+"; no utility/drain value");
+            SpecWeaponRecommendation r=result(w,d,base.getAttackSpeed(),style,gear,"Special stance: "+CombatStyleLabels.description(w,style,stance)+"; no utility/drain value");
             if(best==null||r.dps>best.dps)best=r;
         }
         return best;
     }
     private SpecWeaponRecommendation magic(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
         EquipmentCandidate w=gear.get(EquipmentSlot.WEAPON);String n=name(w);
-        if(!MAGIC.contains(n)||!WikiTargetEligibility.magicCanDamage(m)||!LeafyTargetRules.poweredMagicCanDamage(m))return null;
+        if(w.getItem().getItemId()==34727||!MAGIC.contains(n)||!WikiTargetEligibility.magicCanDamage(m)||!LeafyTargetRules.poweredMagicCanDamage(m))return null;
         int level=Math.max(1,RaidScaling.boosted(account,Skill.MAGIC,m));
-        int base=n.equals("Eye of Ayak")?Math.max(1,level/3-6)*13/10
+        int base=n.equals("Zorya's tome")?Math.max(1,level/3-10):n.equals("Eye of Ayak")?Math.max(1,level/3-6)*13/10
             :n.startsWith("Volatile")?Math.max(1,Math.min(58,(99+58*level)/99)):Math.max(1,Math.min(44,(99+44*level)/99));
         int bonus=0;double damage=0;for(EquipmentCandidate c:gear.values()){bonus+=c.getMagicAttack();damage+=c.getMagicDamage();}
         WikiEquipmentEngine.Totals totals=WikiEquipmentEngine.transform(gear,m,null,0,0,bonus,damage,0);
         MagicPrayer prayer=MagicPrayer.best(account);
-        int roll=WikiMagicAccuracy.calculate(level,prayer.accuracy,totals.magicAttack,gear.values(),m,null,task).attackRoll;
-        roll=roll*(n.equals("Eye of Ayak")?200:n.startsWith("Volatile")?150:100)/100;
-        int defence=RaidScaling.defenceRoll(m,m==null?640:(Math.max(1,m.getMagicLevel())+9)*(m.getMagicDefence()+64));
+        int roll=(PoweredStaff.forWeapon(w.getItem().getName())!=null
+            ?WikiMagicAccuracy.calculatePoweredAccurate(level,prayer.accuracy,totals.magicAttack,gear.values(),m,task)
+            :WikiMagicAccuracy.calculate(level,prayer.accuracy,totals.magicAttack,gear.values(),m,null,task)).attackRoll;
+        roll=roll*(n.equals("Zorya's tome")?250:n.equals("Eye of Ayak")?200:n.startsWith("Volatile")?150:100)/100;
+        int defence=RaidScaling.defenceRoll(m,m==null?640:(Math.max(0,m.getMagicLevel())+9)*(m.getMagicDefence()+64));
         int max=WikiMagicDamage.powered(base,totals.magicDamage,prayer.damage,gear.values(),m,task).maxHit;
+        if(n.equals("Zorya's tome"))max=max*160/100;
         double accuracy=WikiAccuracyRoll.normal(roll,defence);int min=0;
         if(RaidCombatRules.wardenP2(m)){int[] bounds=RaidCombatRules.wardenBounds(max,roll,defence);min=bounds[0];max=bounds[1];accuracy=1;}
         Double brimstone=null;
         if(!RaidCombatRules.wardenP2(m))for(EquipmentCandidate c:gear.values())if(name(c).equals("Brimstone ring"))brimstone=WikiAccuracyRoll.normal(roll,defence*9/10);
         HitDistribution.AttackDistribution d=WikiPlayerVsNpcCalc.magicFinalDistribution(min,max,accuracy,brimstone,m,gear.values(),null);
-        return result(w,d,5,AttackStyle.MAGIC,gear,"Built-in special spell; direct damage only");
+        return result(w,d,n.equals("Zorya's tome")?3:5,AttackStyle.MAGIC,gear,n.equals("Zorya's tome")?"Zorya's flow: initial hit only; follow-up attacks, stored buffs and rotations excluded":"Built-in special spell; direct damage only");
     }
     private SpecWeaponRecommendation ranged(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
         EquipmentCandidate w=gear.get(EquipmentSlot.WEAPON),a=gear.get(EquipmentSlot.AMMO);String n=name(w);
         if(!RANGED.contains(n)
             ||!WikiTargetEligibility.rangedCanDamage(m)||!LeafyTargetRules.rangedCanDamage(m,a)||!VampyreTargetRules.canDamageRanged(gear,w,a,m))return null;
         SpecWeaponRecommendation best=null;
-        for(RangedStance stance:RangedStance.values()){
-            RangedCombatResult base=new RangedCombatCalculator(account).calculate(gear,m,task,stance,rangedPrayer());
+        for(RangedStance stance:CombatStyleLabels.rangedStances(w.getWeaponCategory())){
+            RangedCombatResult base=new RangedCombatCalculator(account).calculateSnapshot(gear,m,task,stance,rangedPrayer());
             int roll=base.getAttackRoll();
             if(n.startsWith("Magic shortbow"))roll=roll*10/7;
             else if(n.contains("ballista"))roll=roll*5/4;
@@ -145,7 +150,7 @@ final class SpecWeaponRecommender
             HitDistribution.AttackDistribution d=new HitDistribution.AttackDistribution(splats);
             if(!n.equals("Zaryte crossbow"))d=WikiPlayerVsNpcCalc.applyCorp(d,m,w,AttackStyle.RANGED);
             d=WikiPlayerVsNpcCalc.finalDistribution(d,m,AttackStyle.RANGED,w,null,false,gear.values());
-            SpecWeaponRecommendation r=result(w,d,base.getAttackSpeed(),AttackStyle.RANGED,gear,"Special stance: "+stance+"; no healing/burn value; ruby uses full target HP");
+            SpecWeaponRecommendation r=result(w,d,base.getAttackSpeed(),AttackStyle.RANGED,gear,"Special stance: "+stance+"; no healing/burn value; ruby uses the selected starting HP");
             if(best==null||r.dps>best.dps)best=r;
         }
         return best;

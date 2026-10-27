@@ -34,7 +34,7 @@ public final class WikiTargetEligibility {
   if(style==AttackStyle.MAGIC)return !magicCanDamage(m);
   if(style==AttackStyle.RANGED)return !rangedCanDamage(m);
   if(!TheatreOfBloodRules.canDamage(m,style)||!RaidTargetVariants.canDamage(m,style))return true;
-  return (MELEE_IMMUNE.contains(m.getId())&&!ZULRAH.contains(m.getId()))
+  return FracturedArchiveRules.blade(m) || m.getId()==16667 || (MELEE_IMMUNE.contains(m.getId())&&!ZULRAH.contains(m.getId()))
    ||(m.hasAttribute("flying")&&VESPULA.contains(m.getId()));
  }
 
@@ -42,6 +42,8 @@ public final class WikiTargetEligibility {
   if(!TheatreOfBloodRules.canDamage(m,AttackStyle.MELEE_SLASH))return false;
   if(!RaidTargetVariants.canDamage(m,AttackStyle.MELEE_SLASH))return false;
   if(m==null)return true; int id=m.getId();
+  if(id==16667||FracturedArchiveRules.blade(m))return false;
+  if((id==16659||id==16660)&&m.hasAttribute("flying")&&!polearm(w))return false;
   if(MELEE_IMMUNE.contains(id)){
    // Wiki exception: Zulrah may be hit by polearms.
    if(ZULRAH.contains(id)&&polearm(w))return true;

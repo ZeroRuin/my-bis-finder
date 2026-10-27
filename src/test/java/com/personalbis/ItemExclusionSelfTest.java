@@ -73,7 +73,7 @@ public final class ItemExclusionSelfTest
             if (m.getName().equals("getTarget")) return "Shark";
             throw new AssertionError(m.getName());
         });
-        PersonalBisBankFilter filter = new PersonalBisBankFilter(client, null, null, null, null);
+        PersonalBisBankFilter filter = new PersonalBisBankFilter(client, null, null, null, null, null);
         Field active = PersonalBisBankFilter.class.getDeclaredField("active"); active.setAccessible(true);
         Field generated = PersonalBisBankFilter.class.getDeclaredField("generatedWidgets"); generated.setAccessible(true);
         Set<Widget> widgets = (Set<Widget>) generated.get(filter);

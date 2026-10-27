@@ -12,7 +12,8 @@ final class RaidOptionsPanel extends JPanel
     final JSpinner coxHp=spinner(99,1,99), coxCombat=spinner(126,3,126), coxParty=spinner(1,1,100);
     final JSpinner raidLevel=spinner(0,0,700), pathLevel=spinner(0,0,6), toaParty=spinner(1,1,8);
     final JCheckBox challenge=new JCheckBox("Challenge mode"), excludeSalts=new JCheckBox("Exclude Smelling salts");
-    final JPanel cox=new JPanel(), toa=new JPanel();
+    final JSpinner tfaParty=spinner(2,2,8);
+    final JPanel cox=new JPanel(), toa=new JPanel(),tfa=new JPanel();
     private boolean restoring;
     private volatile RaidSettings snapshot=RaidSettings.DEFAULT;
 
@@ -27,7 +28,9 @@ final class RaidOptionsPanel extends JPanel
     {
         this.normalFont=normalFont;this.boldFont=boldFont;
         setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));setOpaque(false);setAlignmentX(LEFT_ALIGNMENT);
-        card(cox,"Chambers of Xeric");card(toa,"Tombs of Amascut");
+        card(cox,"Chambers of Xeric");card(toa,"Tombs of Amascut");card(tfa,"The Fractured Archive");
+        row(tfa,"Party size",tfaParty);
+        tfaParty.setToolTipText("Provisional HP scaling fitted to Wiki tables. Only documented boss pools scale; other stats stay unchanged.");
         row(cox,"Party HP level",coxHp);row(cox,"Party combat level",coxCombat);row(cox,"Party size",coxParty);row(cox,"Average party Mining",coxMining);
         row(toa,"Raid level",raidLevel);row(toa,"Path level",pathLevel);row(toa,"Party size",toaParty);
         check(cox,challenge);check(toa,excludeSalts);
@@ -36,8 +39,8 @@ final class RaidOptionsPanel extends JPanel
         coxCombat.setToolTipText("Highest party combat level (maximum 126).");
         pathLevel.setToolTipText("Applies to path bosses and supported adds; Wardens ignore path level.");
         excludeSalts.setToolTipText("Assume Smelling salts unless excluded. Excluding uses supported owned potion boosts, or base levels.");
-        add(cox);add(toa);setVisible(false);
-        for(JSpinner s:new JSpinner[]{coxHp,coxCombat,coxParty,coxMining,raidLevel,pathLevel,toaParty}) s.addChangeListener(e->changed(onChange));
+        add(cox);add(toa);add(tfa);setVisible(false);
+        for(JSpinner s:new JSpinner[]{coxHp,coxCombat,coxParty,coxMining,raidLevel,pathLevel,toaParty,tfaParty}) s.addChangeListener(e->changed(onChange));
         challenge.addActionListener(e->changed(onChange));excludeSalts.addActionListener(e->changed(onChange));
     }
     RaidSettings settings(){return snapshot;}
@@ -48,25 +51,27 @@ final class RaidOptionsPanel extends JPanel
             coxHp.setValue(saved.coxHp);coxCombat.setValue(saved.coxCombat);coxParty.setValue(saved.coxParty);
             coxMining.setValue(saved.coxMining);challenge.setSelected(saved.challenge);
             raidLevel.setValue(saved.raidLevel);pathLevel.setValue(saved.pathLevel);toaParty.setValue(saved.toaParty);
-            excludeSalts.setSelected(saved.excludeSalts);snapshot=saved;updateColors();
+            excludeSalts.setSelected(saved.excludeSalts);tfaParty.setValue(saved.tfaParty);snapshot=saved;updateColors();
         } finally { restoring=false; }
     }
     void commitEditors() throws java.text.ParseException
     {
+        if(tfa.isVisible())tfaParty.commitEdit();
         if(cox.isVisible())for(JSpinner s:new JSpinner[]{coxHp,coxCombat,coxParty,coxMining})s.commitEdit();
         if(toa.isVisible())for(JSpinner s:new JSpinner[]{raidLevel,pathLevel,toaParty})s.commitEdit();
     }
     void showFor(MonsterDefinition m)
     {
         boolean c=RaidScaling.isCox(m),t=RaidScaling.isToa(m);
-        cox.setVisible(c);toa.setVisible(t);setVisible(c||t);
+        boolean f=FracturedArchiveRules.isTfa(m);
+        cox.setVisible(c);toa.setVisible(t);tfa.setVisible(f);setVisible(c||t||f);
         setMaximumSize(new Dimension(Integer.MAX_VALUE,getPreferredSize().height));
     }
     private void changed(Runnable callback)
     {
         if(restoring)return;
         snapshot=new RaidSettings(number(coxHp),number(coxCombat),number(coxParty),challenge.isSelected(),
-            number(raidLevel),number(pathLevel),number(toaParty),excludeSalts.isSelected(),number(coxMining));
+            number(raidLevel),number(pathLevel),number(toaParty),excludeSalts.isSelected(),number(coxMining),number(tfaParty));
         updateColors();callback.run();
     }
     private void updateColors()
@@ -92,7 +97,7 @@ final class RaidOptionsPanel extends JPanel
             arrow.setBorderPainted(true);arrow.setOpaque(true);
         }
         ((javax.swing.text.DefaultFormatter)text.getFormatter()).setCommitsOnValidEdit(true);
-        s.setPreferredSize(new Dimension(62,26));return s;
+        SidebarInputStyle.spinner(s);s.setPreferredSize(new Dimension(62,26));return s;
     }
     private void card(JPanel p,String title)
     {

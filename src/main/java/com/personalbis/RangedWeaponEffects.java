@@ -20,18 +20,19 @@ public final class RangedWeaponEffects {
   if(isTwistedBow(w)&&m!=null)return twistedDamage(m);
   return 1.0;
  }
- // Outside-CoX Tbow model, target Magic level capped at 250. The bundled data does not yet expose NPC magic attack roll,
- // so Magic level is used; this is deliberately surfaced as a known limitation.
- public static double twistedAccuracy(MonsterDefinition m){
-  double magic=twistedTargetMagic(m);
-  double pct=140.0+((30.0*magic/10.0)-10.0)/100.0-Math.pow((3.0*magic/10.0)-100.0,2)/100.0;
-  return Math.max(0,Math.min(140,pct))/100.0;
+ // Wiki tbowScaling: truncate both terms independently, then scale with integers.
+ public static int twistedPercent(MonsterDefinition m,boolean accuracy){
+  int magic=(int)twistedTargetMagic(m),factor=accuracy?10:14,base=accuracy?140:250;
+  int term2=(3*magic-factor)/100;
+  int difference=3*magic/10-10*factor;
+  int term3=difference*difference/100;
+  return Math.max(0,Math.min(base,base+term2-term3));
  }
- public static double twistedDamage(MonsterDefinition m){
-  double magic=twistedTargetMagic(m);
-  double pct=250.0+((30.0*magic/10.0)-14.0)/100.0-Math.pow((3.0*magic/10.0)-140.0,2)/100.0;
-  return Math.max(0,Math.min(250,pct))/100.0;
+ public static int scaleTwisted(int value,MonsterDefinition m,boolean accuracy){
+  return (int)((long)value*twistedPercent(m,accuracy)/100);
  }
+ public static double twistedAccuracy(MonsterDefinition m){return twistedPercent(m,true)/100.0;}
+ public static double twistedDamage(MonsterDefinition m){return twistedPercent(m,false)/100.0;}
  public static double twistedTargetMagic(MonsterDefinition m){
   if(m==null)return 0;
   int cap=m.hasAttribute("xerician")?350:250;

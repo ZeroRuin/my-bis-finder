@@ -45,7 +45,7 @@ public final class WikiEquipmentEngine {
   11751,11750,11752,11753,11754,11756,11757,11755,11758,11761,11763,11762,11764));
  static {
   Map<String,Integer> specs=new LinkedHashMap<>();
-  String[] specData={"Abyssal dagger:25","Dragon dagger:25","Dragon longsword:25","Dragon mace:25","Osmumten's fang:25","Osmumten's fang (or):25","Dual macuahuitl:25","Scorching bow:25","Dragon knife:25","Purging staff:25","Rosewood blowpipe:25","Dawnbringer:30","Dragon halberd:30","Crystal halberd:30","Burning claws:35","Arkan blade:30","Magic longbow:35","Magic comp bow:35","Dragon sword:40","Elder maul:50","Dragon warhammer:50","Bandos godsword:50","Saradomin godsword:50","Accursed sceptre:50","Accursed sceptre (a):50","Arclight:50","Emberlight:50","Tonalztics of Ralos:50","Dragon claws:50","Voidwaker:50","Toxic blowpipe:50","Blazing blowpipe:50","Webweaver bow:50","Magic shortbow (i):50","Ancient godsword:50","Armadyl godsword:50","Zamorak godsword:50","Abyssal bludgeon:50","Abyssal whip:50","Barrelchest anchor:50","Eye of Ayak:50","Crimson kisten:50","Sunspear:50","Magic shortbow:55","Dark bow:55","Eldritch Nightmare staff:55","Volatile Nightmare staff:55","Dragon scimitar:55","Granite hammer:60","Heavy ballista:65","Light ballista:65","Saradomin's blessed sword:65","Brine sabre:75","Zaryte crossbow:75","Saradomin sword:100","Seercull:100"};
+  String[] specData={"Abyssal dagger:25","Dragon dagger:25","Dragon longsword:25","Dragon mace:25","Osmumten's fang:25","Osmumten's fang (or):25","Dual macuahuitl:25","Scorching bow:25","Dragon knife:25","Purging staff:25","Rosewood blowpipe:25","Dawnbringer:30","Dragon halberd:30","Crystal halberd:30","Burning claws:35","Arkan blade:30","Magic longbow:35","Magic comp bow:35","Dragon sword:40","Elder maul:50","Dragon warhammer:50","Bandos godsword:50","Saradomin godsword:50","Accursed sceptre:50","Accursed sceptre (a):50","Arclight:50","Emberlight:50","Tonalztics of Ralos:50","Dragon claws:50","Voidwaker:50","Toxic blowpipe:50","Blazing blowpipe:50","Webweaver bow:50","Magic shortbow (i):50","Ancient godsword:50","Armadyl godsword:50","Zamorak godsword:50","Abyssal bludgeon:50","Abyssal whip:50","Barrelchest anchor:50","Eye of Ayak:50","Zorya's tome:50","Crimson kisten:50","Sunspear:50","Magic shortbow:55","Dark bow:55","Eldritch Nightmare staff:55","Volatile Nightmare staff:55","Dragon scimitar:55","Granite hammer:60","Heavy ballista:65","Light ballista:65","Saradomin's blessed sword:65","Brine sabre:75","Zaryte crossbow:75","Saradomin sword:100","Seercull:100"};
   for(String x:specData){int k=x.lastIndexOf(':');specs.put(x.substring(0,k),Integer.parseInt(x.substring(k+1)));} WEAPON_SPEC_COSTS=Collections.unmodifiableMap(specs);
   GAUNTLET_EQUIPMENT_IDS=Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(23861,23862,23863,23864,23886,23887,23888,23889,23890,23891,23892,23893,23894,23895,23896,23897,23898,23899,23900,23901,23902,23903)));
   CORRUPTED_GAUNTLET_EQUIPMENT_IDS=Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(23820,23821,23822,23823,23840,23841,23842,23843,23844,23845,23846,23847,23848,23849,23850,23851,23852,23853,23854,23855,23856,23857)));
@@ -75,7 +75,10 @@ public final class WikiEquipmentEngine {
  public static int canonicalId(int id){return CANONICAL.getOrDefault(id,id);}
  public static WikiEquipment canonicalItem(int id){return EQUIPMENT.get(canonicalId(id));}
  public static AmmoApplicability ammoApplicability(int weaponId,Integer ammoId){
-  int w=canonicalId(weaponId); List<Integer> valid=AMMO.get(w);
+  int w=canonicalId(weaponId);
+  if(w==34681)return ammoId!=null&&(ammoId==34684||ammoId==34690||ammoId==34696||ammoId==34702||ammoId==34708)?AmmoApplicability.INCLUDED:AmmoApplicability.INVALID;
+  if(ammoId!=null&&(ammoId==34684||ammoId==34690||ammoId==34696||ammoId==34702||ammoId==34708))return AmmoApplicability.INVALID;
+  List<Integer> valid=AMMO.get(w);
   if(valid==null||valid.isEmpty()) return AmmoApplicability.ALLOWED;
   if(ammoId!=null && valid.contains(canonicalId(ammoId))) return AmmoApplicability.INCLUDED;
   // Upstream lists ammo IDs directly; aliases are accepted as their canonical equivalent too.
@@ -149,8 +152,8 @@ public final class WikiEquipmentEngine {
   if(dizana&&weaponId!=null&&ammoId!=null&&ammoApplicability(weaponId,ammoId)==AmmoApplicability.INCLUDED){t.rangedAttack+=10;t.rangedStr+=1;}
   t.attackSpeed=calculateAttackSpeed(weapon==null?4:weapon.speed,wn,monster,rangedRapid,castStance,"standard".equals(spellbook),manualCast);return t;
  }
- private static boolean named(Map<EquipmentSlot,Integer> ids,EquipmentSlot slot,String n){Integer id=ids.get(slot);WikiEquipment w=id==null?null:canonicalItem(id);return w!=null&&n.equals(w.name);}
- private static boolean isEliteVoidMage(Map<EquipmentSlot,EquipmentCandidate> g){return "void mage helm".equals(name(g.get(EquipmentSlot.HEAD)))&&"elite void top".equals(name(g.get(EquipmentSlot.BODY)))&&"elite void robe".equals(name(g.get(EquipmentSlot.LEGS)))&&"void knight gloves".equals(name(g.get(EquipmentSlot.HANDS)));}
+ private static boolean named(Map<EquipmentSlot,Integer> ids,EquipmentSlot slot,String n){Integer id=ids.get(slot);WikiEquipment w=id==null?null:canonicalItem(id);return w!=null&&(n.equals(w.name)||((n.startsWith("Void ")||n.startsWith("Elite void "))&&VoidEquipment.matches(w.name,n)));}
+ private static boolean isEliteVoidMage(Map<EquipmentSlot,EquipmentCandidate> g){return VoidEquipment.matches(name(g.get(EquipmentSlot.HEAD)),"Void mage helm")&&VoidEquipment.matches(name(g.get(EquipmentSlot.BODY)),"Elite void top")&&VoidEquipment.matches(name(g.get(EquipmentSlot.LEGS)),"Elite void robe")&&VoidEquipment.matches(name(g.get(EquipmentSlot.HANDS)),"Void knight gloves");}
  private static boolean isToa(MonsterDefinition m){return m!=null&&TOA.contains(m.getId());}
  private static WikiEquipment item(EquipmentCandidate c){return c==null?null:canonicalItem(c.getItem().getItemId());}
  private static String name(EquipmentCandidate c){return c==null||c.getItem()==null||c.getItem().getName()==null?"":c.getItem().getName().toLowerCase();}

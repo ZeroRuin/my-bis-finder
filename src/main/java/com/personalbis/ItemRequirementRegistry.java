@@ -70,6 +70,10 @@ public class ItemRequirementRegistry
     private Map<Skill, Integer> inferCommonLevelRequirements(String name, EquipmentSlot slot)
     {
         Map<Skill, Integer> req = new HashMap<>();
+        if(name.equals("obligator"))req.put(Skill.ATTACK,85);
+        if(name.equals("ascension crossbows"))req.put(Skill.RANGED,80);
+        if(name.equals("zorya's tome"))req.put(Skill.MAGIC,85);
+        if(name.equals("rondache"))req.put(Skill.DEFENCE,80);
 
         if (name.contains("rune "))
         {

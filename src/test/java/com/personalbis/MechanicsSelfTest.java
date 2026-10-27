@@ -489,8 +489,8 @@ public final class MechanicsSelfTest
         near("Salve (e) undead multiplier", MeleeLoadoutEffects.salveMultiplier(loadout,undead), 1.20);
         yes("alpha49.2.5 Salve attack-roll stage 24426 -> 29311",
             MeleeLoadoutEffects.salveAttackRoll(24426,loadout,undead) == 29311);
-        yes("alpha49.2.6 Salve max-hit preserves pre-truncation numerator",
-            MeleeLoadoutEffects.salveMaxHitFromNumerator(141,147,loadout,undead) == 56);
+        yes("Salve floors base max hit before applying enhanced bonus",
+            MeleeLoadoutEffects.salveMaxHit(WikiIntegerStages.maxHitFromEffective(141,147+64),loadout,undead) == 55);
         near("alpha49.2.5 Vorkath Fang reference accuracy",
             MeleeWeaponEffects.fangAccuracy(29311,20070), 0.8437002370446669);
         near("alpha49.3.3 Wiki magic_str 50 means five percent",
@@ -1428,7 +1428,7 @@ public final class MechanicsSelfTest
         if(CombatEffectiveLevels.melee(82,1.20,3,true)!=119)throw new AssertionError("alpha41 Void melee effective attack floor");
         if(CombatEffectiveLevels.melee(90,1.23,3,true)!=133)throw new AssertionError("alpha41 Void melee effective strength floor");
         if(CombatEffectiveLevels.ranged(66,1.15,3,false)!=86)throw new AssertionError("alpha41 ranged effective level");
-        if(CombatEffectiveLevels.magic(73,1.15,true,0)!=129)throw new AssertionError("alpha41 Void magic ordering");
+        if(CombatEffectiveLevels.magic(73,1.15,true,0)!=133)throw new AssertionError("alpha41 Void magic ordering");
         System.out.println("PASS  alpha41 effective-level ordering/floors");
         if(CombatEffectiveLevels.ranged(66,1.15,3,true)!=94)throw new AssertionError("alpha42 regular Void ranged accuracy effective level");
         if(CombatEffectiveLevels.rangedDamage(66,1.15,3,true,false)!=94)throw new AssertionError("alpha42 regular Void ranged damage effective level");

@@ -3662,6 +3662,7 @@
     }
   },
   "rulesSha256": "f38577c23fac51b74288e416b054a991737c91240370578194adca7bbf10723a",
-  "combatSourceSha256": "5419520721e4f1f6b4ee78f857f295de9203f42b10f3c9a1aabaa82f8be3a8a6",
-  "note": "Automatic IDs identify equivalent combat profiles for an explicitly listed species/area, not a spawn-location claim for each model ID. No propagation to Krystilia."
+  "combatSourceSha256": "e809b35e25f862e332c926270e9bbf6d3bed7ed1c7f92622035d1d662f4c924c",
+  "note": "Automatic IDs identify equivalent combat profiles for an explicitly listed species/area, not a spawn-location claim for each model ID. No propagation to Krystilia.",
+  "supplementValidation": "2026-10-27: all original combat profiles verified unchanged; TFA-only additions. Original task and location resolutions retained."
 }

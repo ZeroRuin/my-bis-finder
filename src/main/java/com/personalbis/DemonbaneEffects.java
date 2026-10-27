@@ -5,6 +5,8 @@ public final class DemonbaneEffects {
  private DemonbaneEffects(){}
  public static int vulnerability(MonsterDefinition m){
   if(m==null)return 100;
+  if(m.getId()==16665||m.getId()==16666)return 25;
+  if(m.getId()==16684||m.getId()==16673||m.getId()==16674||m.getId()==16677)return 80;
   if(m.getId()==14179)return 200; // Yama void flare
   if(m.getId()==14176)return 120; // Yama
   if(m.getId()==7584||m.getId()==7585)return 115; // Ice Demon

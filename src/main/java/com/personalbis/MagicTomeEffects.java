@@ -19,7 +19,7 @@ public final class MagicTomeEffects {
     "Tome of fire: unlimited fire runes"+("fire".equals(el)&&isStandardElemental(spell)?", +10% fire damage":""));
   if(t.equals("tome of water")) return new Effect("water".equals(el)&&isStandardElemental(spell)?1.20:1.0,
     "water".equals(el)&&isStandardElemental(spell)?1.10:1.0,"water rune",
-    "Tome of water: unlimited water runes"+("water".equals(el)&&isStandardElemental(spell)?", +10% water accuracy/damage":""));
+    "Tome of water: unlimited water runes"+("water".equals(el)&&isStandardElemental(spell)?", +20% water accuracy, +10% water damage":""));
   if(t.equals("tome of earth")) return new Effect(1.0, "earth".equals(el)&&isStandardElemental(spell)?1.10:1.0,"earth rune",
     "Tome of earth: unlimited earth runes"+("earth".equals(el)&&isStandardElemental(spell)?", +10% earth damage":""));
   return new Effect(1.0,1.0,"","");

@@ -25,7 +25,14 @@ public final class WikiMagicDamage
         Collection<EquipmentCandidate> gear, MonsterDefinition monster, MagicSpell spell,
         boolean onSlayerTask)
     {
+        return standard(magicLevel,equipmentDamage,prayerDamage,gear,monster,spell,onSlayerTask,0);
+    }
+
+    public static Result standard(int magicLevel,double equipmentDamage,double prayerDamage,
+        Collection<EquipmentCandidate> gear,MonsterDefinition monster,MagicSpell spell,boolean onSlayerTask,int fragmentBonus)
+    {
         int base = spell == null ? 0 : spell.scaledBaseMax(magicLevel);
+        if(spell!=null&&!spell.element().isEmpty()&&"standard".equals(spell.spellbook))base+=fragmentBonus;
         String weapon = weaponName(gear);
         if (spell != null && "Magic Dart".equals(spell.name))
         {

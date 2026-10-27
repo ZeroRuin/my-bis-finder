@@ -2,7 +2,7 @@
   "source": "User-completed Slayer-Target-Review(1).xlsx",
   "reviewedDate": "2026-10-11",
   "workbookSha256": "fdbeccb02c4358e7c4ccbf29718ee47dc999db631ac2fde635b3c82615cb3838",
-  "combatSourceSha256": "5419520721e4f1f6b4ee78f857f295de9203f42b10f3c9a1aabaa82f8be3a8a6",
+  "combatSourceSha256": "e809b35e25f862e332c926270e9bbf6d3bed7ed1c7f92622035d1d662f4c924c",
   "note": "Exact task/area/picker profiles; Krystilia No means no Wilderness spawn. Re-review after combat snapshot changes.",
   "rows": [
     {
@@ -5645,5 +5645,6 @@
       "evidence": "",
       "reason": "No Wilderness spawn"
     }
-  ]
+  ],
+  "supplementValidation": "2026-10-27: all baseline monster profiles verified unchanged against 0.9.7 bank-fix source; TFA-only additions. Original user review and all eligibility decisions retained."
 }

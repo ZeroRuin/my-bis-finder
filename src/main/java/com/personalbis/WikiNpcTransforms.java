@@ -35,7 +35,7 @@ public final class WikiNpcTransforms {
   if("Slagilith".equalsIgnoreCase(n) && !isPickaxe(weaponName,weaponCategory)) d=d.transform(HitDistribution.divide(3,0));
   if(NIGHTMARE_TOTEM.contains(id)&&style==AttackStyle.MAGIC) d=d.transform(HitDistribution.multiply(2,1,0));
   if(m.getFlatArmour()!=0 && style!=AttackStyle.MAGIC) d=d.transform(HitDistribution.flatAdd(-m.getFlatArmour(),0),false);
-  return d.flatten();
+  return FracturedArchiveRules.transform(d,m,style).flatten();
  }
  private static boolean isDemonbaneWeapon(String weaponName){
   if(weaponName==null)return false;

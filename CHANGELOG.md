@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.9.7 — Advanced Options, Bank Layout and The Fractured Archive
+
+- Add The Fractured Archive target filters, provisional party HP scaling, phase profiles and defence-reduction floors; add supported raid equipment, Zeal and elemental fragments.
+- Preserve rapid bank withdrawals without resetting generated loadouts or losing uncharged Ring of shadows entries.
+
+- Add Vardorvis HP-dependent Defence and saved Starting HP controls; account for falling Defence throughout estimated TTK.
+- Add Prayer or Defence fill under Advanced; Defence fill preserves accuracy, max hit, attack speed, DPS and TTK.
+- Add optional owned-item defence reductions, with saved amounts, individual hide settings and a reset button. Effects are manually pre-applied and held fixed for the estimate.
+- Add compatible ammo dropdowns for each bank-scanned blowpipe type; loaded contents and quantities remain unknown.
+- Improve complete normal, mixed and elite Void loadout searches and ornamented set recognition.
+- Match supported weapon attack labels to the game and correct powered-staff Accurate stance accuracy.
+- Correct melee Salve damage rounding, Twisted bow scaling and fallback Dragon hunter crossbow ammo recognition.
+- Keep special recommendations separate from ordinary loadout results and clarify charged item variants in tooltips.
+- Tidy sidebar inputs, move modelling notes into tooltips and highlight available Advanced options with a red exclamation mark.
+- Add a Defence reducing items bank section below equipment, including required Vulnerability runes; show each stack once.
+- Add Hide Other items for the planner bank view, enabled by default.
+- Reduce TTK calculation overhead and memory pressure, batch item ranking and add calculation cancellation.
+- Correct Tome of Water wording to +20% accuracy and +10% damage.
+- Remove temporary synthetic-bank testing controls; planning uses actual owned items.
+
 ## 0.9.6.3 — Combat, Search and Special Attacks
 
 - Replace reflective spell-icon lookup with explicit RuneLite sprite constants for Plugin Hub compatibility.

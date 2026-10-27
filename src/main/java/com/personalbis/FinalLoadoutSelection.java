@@ -14,7 +14,7 @@ public final class FinalLoadoutSelection
     public static boolean betterTtk(double candidateTtk, double candidateDps,
         double currentTtk, double currentDps)
     {
-        if (!Double.isFinite(candidateTtk)) return false;
+        if (!Double.isFinite(candidateTtk)) return !Double.isFinite(currentTtk) && candidateDps>0 && better(candidateDps,currentDps);
         if (!Double.isFinite(currentTtk)) return true;
         int ttk = Double.compare(candidateTtk,currentTtk);
         return ttk < 0 || (ttk == 0 && better(candidateDps,currentDps));

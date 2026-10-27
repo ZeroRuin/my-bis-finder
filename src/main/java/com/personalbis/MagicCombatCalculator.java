@@ -13,14 +13,14 @@ public class MagicCombatCalculator {
   WikiMagicAccuracy.Result magicAccuracy=WikiMagicAccuracy.calculate(lvl,mp.accuracy,bonus,gear.values(),m,spell,task);
   eff=magicAccuracy.effectiveLevel;
   int roll=magicAccuracy.attackRoll;
-  int ml=m==null?1:Math.max(1,m.getMagicLevel());
+  int ml=m==null?1:Math.max(0,m.getMagicLevel());
   int deff=ml+9, dr=RaidScaling.defenceRoll(m,deff*(m==null?64:m.getMagicDefence()+64));
   double weakness=ElementalWeaknessEffects.multiplier(m,spell);
   boolean demonbane=spell.isDemonbane()&&m!=null&&m.hasAttribute("demon");
   MagicTomeEffects.Effect tome=MagicTomeEffects.evaluate(gear.values(),spell);
-  double acc=WikiAccuracyRoll.normal(roll,dr);
+  double acc=FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,dr);
   ElementalAmuletEffects.Effect amulet=ElementalAmuletEffects.evaluate(gear.values(),spell);
-  WikiMagicDamage.Result magicDamage=WikiMagicDamage.standard(lvl,md,mp.damage,gear.values(),m,spell,task);
+  WikiMagicDamage.Result magicDamage=WikiMagicDamage.standard(lvl,md,mp.damage,gear.values(),m,spell,task,account.elementalFragmentBonus(spell));
   int max=magicDamage.maxHit;
   int ticks=MagicSpellCompatibility.attackTicks(weaponName,spell);
   int preTransformMax=max;
@@ -33,11 +33,12 @@ public class MagicCombatCalculator {
   double ttk=ExpectedKillTime.seconds(magicAttack,m==null?1:Math.max(1,m.getHitpoints()),ticks);
   max=magicAttack.max();
   // All Magic is corpbane in the Wiki calculator, so Corp applies no reduction here.
-  if(!WikiTargetEligibility.magicCanDamage(m) || !LeafyTargetRules.magicCanDamage(m,spell)){max=0;dps=0.0;ttk=Double.POSITIVE_INFINITY;}
+  if(!WikiTargetEligibility.magicCanDamage(m) || !LeafyTargetRules.magicCanDamage(m,spell) || (m!=null&&(m.getId()==16659||m.getId()==16660)&&"ancient".equals(spell.spellbook))){max=0;dps=0.0;ttk=Double.POSITIVE_INFINITY;}
   StringBuilder note=new StringBuilder();
   if(weakness>0)note.append("Weakness: ").append(spell.element()).append(" +").append(m.getWeaknessSeverity()).append("% accuracy/damage");
   String wn=MagicWeaponEffects.note(weaponName,spell,m);if(!wn.isEmpty()){if(note.length()>0)note.append(" | ");note.append(wn);}
   String cn=MagicSpellCompatibility.note(weaponName,spell);if(!cn.isEmpty()){if(note.length()>0)note.append(" | ");note.append(cn);} if(!tome.note.isEmpty()){if(note.length()>0)note.append(" | ");note.append(tome.note);} if(!amulet.note.isEmpty()){if(note.length()>0)note.append(" | ");note.append(amulet.note);} if(!loadout.note.isEmpty()){if(note.length()>0)note.append(" | ");note.append(loadout.note);}
+  if(FracturedArchiveRules.blade(m))ttk=Double.POSITIVE_INFINITY;
   return new MagicCombatResult(dps,ttk,acc,max,roll,dr,bonus,md,pn,spell.name,note.toString(),eff,ticks,preTransformMax);
  }
  public MagicCombatResult calculatePowered(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,PoweredStaff staff,boolean task){
@@ -48,12 +49,12 @@ public class MagicCombatCalculator {
   int lvl=Math.max(1,RaidScaling.boosted(account,Skill.MAGIC,m)); MagicPrayer mp=MagicPrayer.best(account); String pn=mp.name;
   int eff;
   MagicLoadoutEffects.Effect loadout=MagicLoadoutEffects.evaluate(gear.values(),m,task);
-  WikiMagicAccuracy.Result magicAccuracy=WikiMagicAccuracy.calculate(lvl,mp.accuracy,bonus,gear.values(),m,null,task);
+  WikiMagicAccuracy.Result magicAccuracy=WikiMagicAccuracy.calculatePoweredAccurate(lvl,mp.accuracy,bonus,gear.values(),m,task);
   eff=magicAccuracy.effectiveLevel;
   int roll=magicAccuracy.attackRoll;
-  int ml=m==null?1:Math.max(1,m.getMagicLevel());
+  int ml=m==null?1:Math.max(0,m.getMagicLevel());
   int deff=ml+9, dr=RaidScaling.defenceRoll(m,deff*(m==null?64:m.getMagicDefence()+64));
-  double acc=WikiAccuracyRoll.normal(roll,dr);
+  double acc=FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,dr);
   int base=staff.baseMaxHit(lvl);
   WikiMagicDamage.Result magicDamage=WikiMagicDamage.powered(base,md,mp.damage,gear.values(),m,task);
   int max=magicDamage.maxHit;
@@ -69,11 +70,13 @@ public class MagicCombatCalculator {
   if(!WikiTargetEligibility.magicCanDamage(m) || !LeafyTargetRules.poweredMagicCanDamage(m) || !ratBoneAllowed){max=0;dps=0.0;ttk=Double.POSITIVE_INFINITY;}
   String poweredNote;
   if(shadow)poweredNote="Shadow: 3x equipment Magic attack/damage (outside ToA), damage cap 100%, 5t";
+  else if("Zorya's tome".equals(staff.label))poweredNote="Zorya's tome: 3t normal attacks; enhanced 2t follow-ups excluded";
   else if("Eye of ayak".equals(staff.label))poweredNote="Eye of ayak: built-in spell, 3t; Soul Rend special not included in sustained DPS";
   else if("Bone staff".equals(staff.label)) poweredNote="Bone staff: powered ratbane spell, +10 max vs rats; "+poweredTicks+"t";
   else poweredNote="Powered staff: built-in spell, "+poweredTicks+"t";
   if(!loadout.note.isEmpty())poweredNote+=" | "+loadout.note;
- return new MagicCombatResult(dps,ttk,acc,max,roll,dr,bonus,md,pn,staff.label,poweredNote,eff,poweredTicks,preTransformMax);
+ if(FracturedArchiveRules.blade(m))ttk=Double.POSITIVE_INFINITY;
+  return new MagicCombatResult(dps,ttk,acc,max,roll,dr,bonus,md,pn,staff.label,poweredNote,eff,poweredTicks,preTransformMax);
  }
 
  private static boolean hasItem(Map<EquipmentSlot,EquipmentCandidate> gear,String name){

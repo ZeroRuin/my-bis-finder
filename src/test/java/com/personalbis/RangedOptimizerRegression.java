@@ -24,7 +24,7 @@ final class RangedOptimizerRegression {
   boolean anchoredExternalAmmo =
       s.contains("if(RangedAmmoRules.requiresEquippedAmmo(weapon)||RangedAmmoRules.usesLoadedDarts(weapon))")
       && s.contains("List<EquipmentCandidate> ammunition=allUsable(ranked.get(")
-      && s.contains("RangedAmmoRules.usesLoadedDarts(weapon)?EquipmentSlot.WEAPON:EquipmentSlot.AMMO")
+      && s.contains("EquipmentSlot.AMMO));")
       && s.contains("for(EquipmentCandidate rawAmmo:ammunition)")
       && s.contains("RangedAmmoRules.usesLoadedDarts(weapon)?asLoadedDart(rawAmmo):rawAmmo")
       && s.contains("if(!RangedAmmoRules.compatible(weapon,ammo))continue;");

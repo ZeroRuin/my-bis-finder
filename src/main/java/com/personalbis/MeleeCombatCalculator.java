@@ -34,9 +34,36 @@ public class MeleeCombatCalculator
         return best;
     }
 
+    /** Full-HP score for intermediate beam pruning; completed candidates use calculate(). */
+    CombatResult calculateSnapshot(Map<EquipmentSlot,EquipmentCandidate> gear,AttackStyle style,
+        MonsterDefinition monster,boolean onSlayerTask)
+    {
+        CombatResult best=null;
+        for(MeleeStance stance:MeleeAttackStyleResolver.legalStances(gear.get(EquipmentSlot.WEAPON),style))
+            for(MeleePrayer prayer:availablePrayers()){
+                CalculationCancellation.check();
+                CombatResult result=calculateSnapshotForStance(gear,style,monster,onSlayerTask,stance,prayer);
+                if(best==null||result.getDps()>best.getDps())best=result;
+            }
+        return best;
+    }
+
     public CombatResult calculateForStance(Map<EquipmentSlot,EquipmentCandidate> gear, AttackStyle style,
         MonsterDefinition monster, boolean onSlayerTask, MeleeStance stance, MeleePrayer prayer)
     {
+        return calculateForStanceInternal(gear,style,monster,onSlayerTask,stance,prayer,true);
+    }
+
+    CombatResult calculateSnapshotForStance(Map<EquipmentSlot,EquipmentCandidate> gear,AttackStyle style,
+        MonsterDefinition monster,boolean onSlayerTask,MeleeStance stance,MeleePrayer prayer)
+    {
+        return calculateForStanceInternal(gear,style,monster,onSlayerTask,stance,prayer,false);
+    }
+
+    private CombatResult calculateForStanceInternal(Map<EquipmentSlot,EquipmentCandidate> gear,AttackStyle style,
+        MonsterDefinition monster,boolean onSlayerTask,MeleeStance stance,MeleePrayer prayer,boolean finiteFight)
+    {
+        CalculationCancellation.check();
         int attackBonus=0, strBonus=0, speed=4;
         boolean slayer=false;
         EquipmentCandidate weapon = gear.get(EquipmentSlot.WEAPON);
@@ -58,6 +85,7 @@ public class MeleeCombatCalculator
         attackBonus=WikiEquipmentEngine.transformMeleeAttack(gear,monster,attackBonus);
         WikiEquipmentEngine.Totals wikiEq=WikiEquipmentEngine.transform(gear,monster,null,strBonus,0,0,0.0,0); strBonus=wikiEq.str;
 
+        if(ObligatorRules.weapon(weapon))speed=stance==MeleeStance.SMASH?3:5;
         int atk=Math.max(1,RaidScaling.boosted(account,Skill.ATTACK,monster));
         int str=Math.max(1,RaidScaling.boosted(account,Skill.STRENGTH,monster));
 
@@ -96,7 +124,7 @@ public class MeleeCombatCalculator
             *MeleeLoadoutEffects.inquisitorMultiplier(gear,style)
             *MeleeLoadoutEffects.obsidianAccuracyMultiplier(gear,weapon));
         attackRoll=WikiMeleeEffects.postAccuracy(attackRoll,weapon,monster);
-        int defLevel=monster==null ? 1 : Math.max(1,monster.getDefenceLevel());
+        int defLevel=monster==null ? 1 : Math.max(0,VardorvisRules.startingDefence(monster));
         int defBonus=monster==null ? 0 : monster.defenceFor(style);
         int defenceRoll=RaidScaling.defenceRoll(monster,(defLevel+9)*(defBonus+64));
 
@@ -106,7 +134,7 @@ public class MeleeCombatCalculator
                 ? 1.0-Math.pow(1.0-WikiAccuracyRoll.normal(attackRoll,defenceRoll),2)
                 : WikiAccuracyRoll.fang(attackRoll,defenceRoll);
 
-        if(RaidCombatRules.core(monster))accuracy=1.0;
+        if(RaidCombatRules.core(monster)||FracturedArchiveRules.stunnedBork(monster)||FracturedArchiveRules.imp(monster))accuracy=1.0;
 
         int maxHit=WikiIntegerStages.maxHitFromEffective(effStr,strBonus+64);
         maxHit=WikiMeleeEffects.maxAfterCrystalBlessing(maxHit,gear.values());
@@ -116,10 +144,9 @@ public class MeleeCombatCalculator
         }
         else if (salve > 1.0)
         {
-            // Damage modifiers are applied before the final /640 truncation.
-            // Keep the base max-hit numerator intact through Salve so fractional
-            // pre-Salve damage is not discarded too early.
-            maxHit=MeleeLoadoutEffects.salveMaxHitFromNumerator(effStr,strBonus,gear,monster);
+            // Salve multiplies the integer base max; it must not recover the
+            // fractional damage already discarded by the base-hit checkpoint.
+            maxHit=MeleeLoadoutEffects.salveMaxHit(maxHit,gear,monster);
         }
         if (slayerMeleeBonus)
         {
@@ -175,6 +202,7 @@ public class MeleeCombatCalculator
                 averageHit=MeleeWeaponEffects.kerisAverageHit(displayedMaxHit);
             }
         }
+        if(ObligatorRules.thrust(weapon,stance))displayedMaxHit=ObligatorRules.max(displayedMaxHit,monster);
         double inquisitor=MeleeLoadoutEffects.inquisitorMultiplier(gear,style);
         // Inquisitor's Crush damage bonus is applied to the integer ordinary/weapon
         // max hit, floored, and that modified max defines the successful-hit damage
@@ -197,33 +225,37 @@ public class MeleeCombatCalculator
         // alpha50.4.50.10: preserve the complete melee attacker distribution until
         // after Corp and NPC transforms. This is required for per-hitsplat armour,
         // caps and reductions on Scythe/Keris/Fang/two-hit weapons.
+        final int distributionMax=displayedMaxHit, distributionBaseMax=maxHit;
+        java.util.function.DoubleFunction<HitDistribution.AttackDistribution> distributionForAccuracy = hitAccuracy -> {
         HitDistribution.AttackDistribution attackDist;
-        if (MeleeWeaponEffects.isScythe(weapon))
-            attackDist=WikiPlayerVsNpcCalc.scytheAttacker(maxHit,scytheHits,accuracy);
+        if(ObligatorRules.thrust(weapon,stance))
+            attackDist=ObligatorRules.distribution(distributionMax,hitAccuracy,monster);
+        else if (MeleeWeaponEffects.isScythe(weapon))
+            attackDist=WikiPlayerVsNpcCalc.scytheAttacker(distributionBaseMax,scytheHits,hitAccuracy);
         else if (MeleeWeaponEffects.isDualMacuahuitl(weapon))
-            attackDist=WikiPlayerVsNpcCalc.dualMacuahuitlAttacker(displayedMaxHit,accuracy);
+            attackDist=WikiPlayerVsNpcCalc.dualMacuahuitlAttacker(distributionMax,hitAccuracy);
         else if (MeleeWeaponEffects.isIndependentTwoHit(weapon))
-            attackDist=WikiPlayerVsNpcCalc.independentTwoHitAttacker(displayedMaxHit,accuracy);
+            attackDist=WikiPlayerVsNpcCalc.independentTwoHitAttacker(distributionMax,hitAccuracy);
         else if (MeleeWeaponEffects.isFang(weapon))
-            attackDist=WikiPlayerVsNpcCalc.fangAttacker(preWeaponMaxHit,accuracy);
+            attackDist=WikiPlayerVsNpcCalc.fangAttacker(preWeaponMaxHit,hitAccuracy);
         else if (MeleeWeaponEffects.isKeris(weapon) && monster!=null &&
             (monster.hasAttribute("kalphite")||monster.hasAttribute("scabarite")))
-            attackDist=WikiPlayerVsNpcCalc.kerisAttacker(displayedMaxHit,accuracy);
+            attackDist=WikiPlayerVsNpcCalc.kerisAttacker(distributionMax,hitAccuracy);
         else if (MeleeLoadoutEffects.obsidianDamageMultiplier(gear,weapon)>1.0
             && MeleeWeaponEffects.damageMultiplier(weapon,monster,style)==1.0 && inquisitor==1.0)
-            attackDist=WikiPlayerVsNpcCalc.obsidianAttacker(preWeaponMaxHit,accuracy,MeleeLoadoutEffects.obsidianDamageMultiplier(gear,weapon));
+            attackDist=WikiPlayerVsNpcCalc.obsidianAttacker(preWeaponMaxHit,hitAccuracy,MeleeLoadoutEffects.obsidianDamageMultiplier(gear,weapon));
         else if ((weapon!=null&&weapon.getItem()!=null&&weapon.getItem().getName().equalsIgnoreCase("Gadderhammer")
             && monster!=null&&monster.hasAttribute("shade")) || fullVerac(gear))
-            attackDist=WikiPlayerVsNpcCalc.meleeSustainedAttacker(displayedMaxHit,accuracy,gear.values(),monster);
+            attackDist=WikiPlayerVsNpcCalc.meleeSustainedAttacker(distributionMax,hitAccuracy,gear.values(),monster);
         else
-            attackDist=WikiPlayerVsNpcCalc.standardAttacker(displayedMaxHit,accuracy);
+            attackDist=WikiPlayerVsNpcCalc.standardAttacker(distributionMax,hitAccuracy);
 
         // Dharok and Guardian multipliers act on rolled damage before accurate-zero conversion.
         if(EquipmentSetRules.dharok(gear))attackDist=new HitDistribution.AttackDistribution(
-            java.util.Collections.singletonList(HitDistribution.linear(accuracy,0,displayedMaxHit)))
+            java.util.Collections.singletonList(HitDistribution.linear(hitAccuracy,0,distributionMax)))
             .scaleDamage(EquipmentSetRules.dharokFactor(account.real(Skill.HITPOINTS),account.boosted(Skill.HITPOINTS)),10000);
         if(WikiTargetEligibility.isGuardian(monster))attackDist=new HitDistribution.AttackDistribution(
-            java.util.Collections.singletonList(HitDistribution.linear(accuracy,0,displayedMaxHit)));
+            java.util.Collections.singletonList(HitDistribution.linear(hitAccuracy,0,distributionMax)));
         attackDist=RaidCombatRules.guardian(attackDist,monster,weapon,account.real(Skill.MINING));
         if(EquipmentSetRules.dharok(gear)||WikiTargetEligibility.isGuardian(monster))
             attackDist=attackDist.transform(h->HitDistribution.single(h.damage==0?1:h.damage,h.accurate),false);
@@ -231,28 +263,47 @@ public class MeleeCombatCalculator
             java.util.Collections.singletonList(HitDistribution.single(attackDist.max(),true)));
         attackDist=WikiPlayerVsNpcCalc.applyCorp(attackDist,monster,weapon,style);
         attackDist=WikiPlayerVsNpcCalc.finalDistribution(attackDist,monster,style,weapon,null,false,gear.values());
+            return attackDist;
+        };
+        HitDistribution.AttackDistribution attackDist=distributionForAccuracy.apply(accuracy);
         double expectedTicks=speed;
         seconds=expectedTicks*0.6;
         double dps=WikiPlayerVsNpcCalc.expectedDamage(attackDist)/seconds;
         int targetHp=monster==null?1:Math.max(1,monster.getHitpoints());
-        double ttk=ExpectedKillTime.seconds(attackDist,targetHp,speed)*expectedTicks/speed;
+        double ttk=finiteFight&&!VardorvisRules.supported(monster)?ExpectedKillTime.seconds(attackDist,targetHp,speed)*expectedTicks/speed:Double.POSITIVE_INFINITY;
+        if(finiteFight&&VardorvisRules.supported(monster)&&!SoulreaperAxeEffects.isSoulreaper(weapon))
+        {
+            final int fixedAttackRoll=attackRoll;
+            final boolean fang=MeleeWeaponEffects.isFang(weapon)&&style==AttackStyle.MELEE_STAB;
+            java.util.Map<Integer,HitDistribution.AttackDistribution> hpDistributions=new java.util.HashMap<>();
+            ttk=ExpectedKillTime.seconds(targetHp,speed,hp -> {
+                int defence=VardorvisRules.defence(monster,hp);
+                return hpDistributions.computeIfAbsent(defence,key -> {
+                    int roll=(key+9)*(monster.defenceFor(style)+64);
+                    double chance=fang?WikiAccuracyRoll.fang(fixedAttackRoll,roll):WikiAccuracyRoll.normal(fixedAttackRoll,roll);
+                    return distributionForAccuracy.apply(chance);
+                });
+            });
+        }
         displayedMaxHit=attackDist.max();
 
         // Soulreaper is stateful: production ranking starts at zero stacks, then
         // scores the actual 0/1/2/3/4 -> 5-stack ramp over this target's HP.
         // Accuracy does not change with stacks; only Strength/max hit does.
-        if(SoulreaperAxeEffects.isSoulreaper(weapon)&&!RaidCombatRules.core(monster))
+        if(finiteFight&&SoulreaperAxeEffects.isSoulreaper(weapon)&&!RaidCombatRules.core(monster))
         {
             double[] stackEv=new double[6];
             int potentialMax=displayedMaxHit;
+            int[] soulMaxima=new int[6];
             for(int stacks=0;stacks<=5;stacks++)
             {
                 int soulEff=SoulreaperAxeEffects.effectiveStrength(str,prayer.getStrength(),stance.getStrengthBoost(),voidMelee,stacks);
                 int soulMax=WikiIntegerStages.maxHitFromEffective(soulEff,strBonus+64);
-                if(salve>1.0) soulMax=MeleeLoadoutEffects.salveMaxHitFromNumerator(soulEff,strBonus,gear,monster);
+                if(salve>1.0) soulMax=MeleeLoadoutEffects.salveMaxHit(soulMax,gear,monster);
                 if(slayerMeleeBonus) soulMax=SlayerMeleeEffects.maxHit(soulMax,true,true,false);
                 soulMax=(int)Math.floor(soulMax*MeleeWeaponEffects.damageMultiplier(weapon,monster,style));
                 soulMax=(int)Math.floor(soulMax*inquisitor);
+                soulMaxima[stacks]=soulMax;
                 HitDistribution soulDist=MeleeWeaponEffects.standardDistribution(soulMax,accuracy);
                 if(CorporealBeastRules.reduced(monster,weapon,style)) soulDist=soulDist.transform(HitDistribution.divide(2,0));
                 soulDist=WikiNpcTransforms.apply(soulDist,monster,style,weapon,null,false);
@@ -262,6 +313,25 @@ public class MeleeCombatCalculator
             displayedMaxHit=potentialMax;
             dps=SoulreaperAxeEffects.rampDps(stackEv,targetHp,seconds);
             ttk=ExpectedKillTime.approximateSeconds(targetHp,dps);
+            if(VardorvisRules.supported(monster))
+            {
+                final int fixedRoll=attackRoll;
+                java.util.Map<String,HitDistribution.AttackDistribution> states=new java.util.HashMap<>();
+                java.util.function.BiFunction<Integer,Integer,HitDistribution.AttackDistribution> stateAtHp=(stack,hp)->{
+                    int defence=VardorvisRules.defence(monster,hp);
+                    return states.computeIfAbsent(stack+":"+defence,key->{
+                        double chance=WikiAccuracyRoll.normal(fixedRoll,(defence+9)*(monster.defenceFor(style)+64));
+                        HitDistribution.AttackDistribution d=WikiPlayerVsNpcCalc.standardAttacker(soulMaxima[stack],chance);
+                        d=WikiPlayerVsNpcCalc.applyCorp(d,monster,weapon,style);
+                        return WikiPlayerVsNpcCalc.finalDistribution(d,monster,style,weapon,null,false,gear.values());
+                    });
+                };
+                ttk=ExpectedKillTime.secondsWithStates(targetHp,speed,6,stateAtHp);
+                HitDistribution.AttackDistribution initial=stateAtHp.apply(0,targetHp);
+                dps=initial.expectedDamage()/seconds;
+                displayedMaxHit=initial.max();
+            }
+
         }
 
 
@@ -277,6 +347,7 @@ public class MeleeCombatCalculator
             ttk=Double.POSITIVE_INFINITY;
         }
 
+        if(FracturedArchiveRules.blade(monster))ttk=Double.POSITIVE_INFINITY;
         return new CombatResult(dps,ttk,accuracy,displayedMaxHit,attackRoll,defenceRoll,
             attackBonus,strBonus,speed,effAtk,effStr,stance,prayer,preWeaponAttackRoll,preWeaponMaxHit);
     }
@@ -299,6 +370,7 @@ public class MeleeCombatCalculator
         // dominated whenever a prayer is available. Evaluating it for every
         // temporary beam state doubled the hottest part of the search without
         // ever being able to produce the winning loadout.
+        if(account.isZealUnlocked())return new MeleePrayer[]{MeleePrayer.ZEAL};
         if (p >= 70 && account.isPietyUnlocked()) return new MeleePrayer[]{MeleePrayer.PIETY};
         if (p >= 60 && account.isChivalryUnlocked()) return new MeleePrayer[]{MeleePrayer.CHIVALRY};
         if (p >= 44) return new MeleePrayer[]{MeleePrayer.HIGH};

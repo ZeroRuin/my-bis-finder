@@ -63,7 +63,7 @@ public final class SimpleSupplyRecommender {
    }
    else if(RangedAmmoRules.usesLoadedDarts(weapon)&&ranged.getLoadedAmmo()!=null)
     addFullStackById(out,bank,ranged.getLoadedAmmo().getItem().getItemId(),
-      "Full owned stack loaded into "+weapon.getItem().getName());
+      "Owned spare darts for "+weapon.getItem().getName()+" (manual ammo selection; loaded quantity unknown)");
   }
 
   if(style==AttackStyle.RANGED)

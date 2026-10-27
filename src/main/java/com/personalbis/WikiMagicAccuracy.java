@@ -28,11 +28,24 @@ public final class WikiMagicAccuracy
         Collection<EquipmentCandidate> gear, MonsterDefinition monster, MagicSpell spell,
         boolean onSlayerTask)
     {
+        return calculateInternal(magicLevel,prayerFactor,magicBonus,gear,monster,spell,onSlayerTask,0);
+    }
+
+    /** Powered staff Accurate: +2 after prayer, before Void and equipment rolls. */
+    public static Result calculatePoweredAccurate(int magicLevel,double prayerFactor,int magicBonus,
+        Collection<EquipmentCandidate> gear,MonsterDefinition monster,boolean onSlayerTask)
+    {
+        return calculateInternal(magicLevel,prayerFactor,magicBonus,gear,monster,null,onSlayerTask,2);
+    }
+
+    private static Result calculateInternal(int magicLevel,double prayerFactor,int magicBonus,
+        Collection<EquipmentCandidate> gear,MonsterDefinition monster,MagicSpell spell,
+        boolean onSlayerTask,int stanceBonus)
+    {
         int prayerNumerator = (int)Math.round(prayerFactor * 100.0);
         int effective = WikiIntegerStages.factor(Math.max(1, magicLevel), prayerNumerator, 100);
-        // PBIS optimizes autocast loadouts. Accurate (+2) is reserved for a later
-        // explicit manual-cast stance input, matching the upstream distinction.
-        effective += 9;
+        // Ordinary autocast has no stance accuracy bonus. Powered Accurate has +2.
+        effective += stanceBonus + 9;
 
         boolean magicVoid = has(gear, "Void mage helm")
             && has(gear, "Void knight gloves")
@@ -121,7 +134,7 @@ public final class WikiMagicAccuracy
     private static boolean has(Collection<EquipmentCandidate> gear, String name)
     {
         if (gear != null) for (EquipmentCandidate c : gear)
-            if (c != null && c.getItem() != null && equals(c.getItem().getName(), name)) return true;
+            if (c != null && c.getItem() != null && (equals(c.getItem().getName(), name) || ((name.startsWith("Void ")||name.startsWith("Elite void ")) && VoidEquipment.matches(c.getItem().getName(),name)))) return true;
         return false;
     }
 

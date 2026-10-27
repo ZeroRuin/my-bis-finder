@@ -89,8 +89,17 @@ final class RaidScaling
             m.getStabDefence(),m.getSlashDefence(),m.getCrushDefence(),m.getMagicDefence(),m.getLightDefence(),m.getStandardDefence(),m.getHeavyDefence(),attrs,m.getSize(),m.getWeaknessElement(),m.getWeaknessSeverity(),m.getMagicAttack());
     }
 
+    private static int scaleDrainOffensive(int base,RaidSettings s,boolean single)
+    {
+        if(single){int factor=Math.max(s.coxHp,55);if(s.challenge)factor=factor*150/100;return Math.max(1,base*factor/99);}
+        int n=s.coxParty-1,highestHp=Math.max(55,Math.min(99,55+44*s.coxHp/99));
+        int value=base*highestHp/99;value=value*(100+(int)Math.sqrt(n)*7+n)/100;
+        if(s.challenge)value=value*150/100;return Math.max(50,Math.min(5000,value));
+    }
+
     static MonsterDefinition apply(MonsterDefinition m, RaidSettings s)
     {
+        if(FracturedArchiveRules.isTfa(m))return FracturedArchiveRules.scale(m,s.tfaParty);
         if (m == null || (!isCox(m) && !isToa(m))) return m;
         int hp=m.getHitpoints(), def=m.getDefenceLevel(), magic=m.getMagicLevel(), ranged=m.getRangedLevel();
         List<String> attrs = new ArrayList<>(m.getAttributes());
@@ -144,6 +153,14 @@ final class RaidScaling
                 }
                 hp=Math.max(50,Math.min(30000,hp));off=Math.max(50,Math.min(5000,off));defensive=Math.max(50,Math.min(20000,defensive));
             }
+            // BGS overflow passes through Strength/Attack before Magic. Preserve
+            // the source-scaled offensive levels without adding incoming damage.
+            int sourceAttack=DefenceReductionPlan.metadata(m,"npc_attack_level:");
+            int sourceStrength=DefenceReductionPlan.metadata(m,"npc_strength_level:");
+            int drainOff=scaleDrainOffensive(Math.max(baseOff,Math.max(sourceAttack,sourceStrength)),s,single);
+            attrs.removeIf(a->a.startsWith("npc_attack_level:")||a.startsWith("npc_strength_level:"));
+            if(sourceAttack>=0)attrs.add("npc_attack_level:"+(sourceAttack==1?1:drainOff));
+            if(sourceStrength>=0)attrs.add("npc_strength_level:"+(sourceStrength==1?1:drainOff));
             if(def!=1) def=defensive;
             if(ranged!=1) ranged=off;
             if(magic!=1) magic=magicDef?defensive:off;

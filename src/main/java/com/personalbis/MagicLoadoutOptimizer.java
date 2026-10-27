@@ -24,6 +24,7 @@ public class MagicLoadoutOptimizer {
   List<EquipmentCandidate> weapons=weaponsForAttacks(ranked.get(EquipmentSlot.WEAPON),attackCandidates,m);
   OptimizedMagicLoadout global=null;
   for(EquipmentCandidate weapon:weapons){
+   CalculationCancellation.check();
    if(requiredSlot==EquipmentSlot.SHIELD&&weapon!=null&&weapon.isTwoHanded())continue;
    // Alpha 50.2: optimise complete loadout families independently.
    // A Void family is never allowed to compete with ordinary raw-stat branches
@@ -80,7 +81,7 @@ public class MagicLoadoutOptimizer {
  private OptimizedMagicLoadout evaluateFamily(List<Map<EquipmentSlot,EquipmentCandidate>> beam,
    List<BankItem> bank,MonsterDefinition m,boolean task,EquipmentCandidate weapon,List<MagicSpell> attackCandidates){
   OptimizedMagicLoadout best=null;
-  PoweredStaff powered=weapon==null?null:PoweredStaff.forWeapon(weapon.getItem().getName());
+  PoweredStaff powered=weapon==null||weapon.getItem().getItemId()==34727?null:PoweredStaff.forWeapon(weapon.getItem().getName());
   for(Map<EquipmentSlot,EquipmentCandidate> gear:beam){
    if(powered!=null&&account.real(Skill.MAGIC)>=powered.minLevel){
     MagicCombatResult r=calc.calculatePowered(gear,m,powered,task);
@@ -122,7 +123,7 @@ public class MagicLoadoutOptimizer {
   if(best==null)return null;
   Map<EquipmentSlot,EquipmentCandidate> gear=new EnumMap<>(best.getItems());
   MagicCombatResult current=best.getResult();
-  PoweredStaff powered=weapon==null?null:PoweredStaff.forWeapon(weapon.getItem().getName());
+  PoweredStaff powered=weapon==null||weapon.getItem().getItemId()==34727?null:PoweredStaff.forWeapon(weapon.getItem().getName());
   for(EquipmentSlot slot:EquipmentSlot.values()){
    if(slot==EquipmentSlot.WEAPON||gear.containsKey(slot))continue;
    if(slot==EquipmentSlot.SHIELD&&weapon!=null&&weapon.isTwoHanded())continue;
@@ -168,7 +169,7 @@ public class MagicLoadoutOptimizer {
  }
  private EquipmentCandidate findNamed(List<EquipmentCandidate> items,String name){
   if(items!=null)for(EquipmentCandidate c:items)if(c!=null&&!c.getRequirementResult().isBlocked()
-    &&c.getItem()!=null&&c.getItem().getName().equalsIgnoreCase(name))return c;
+    &&c.getItem()!=null&&(c.getItem().getName().equalsIgnoreCase(name)||((name.startsWith("void ")||name.startsWith("elite void "))&&VoidEquipment.matches(c.getItem().getName(),name))))return c;
   return null;
  }
  private Map<EquipmentSlot,EquipmentCandidate> ahrimBundle(
@@ -260,12 +261,12 @@ public class MagicLoadoutOptimizer {
   return r;
  }
 
- private boolean runesAvailable(MagicSpell sp,List<BankItem> bank,EquipmentCandidate weapon,Collection<EquipmentCandidate> gear){
+ static boolean runesAvailable(MagicSpell sp,List<BankItem> bank,EquipmentCandidate weapon,Collection<EquipmentCandidate> gear){
   Map<String,Integer> have=new HashMap<>();for(BankItem b:bank)have.put(b.getName().toLowerCase(),b.getQuantity());
   String wn=weapon==null?"":weapon.getItem().getName().toLowerCase();
   for(Map.Entry<String,Integer> e:sp.runes.entrySet()){String rune=e.getKey().toLowerCase();if(provides(wn,rune)||MagicTomeEffects.providesRune(gear,rune))continue;if(have.getOrDefault(rune,0)<e.getValue())return false;}return true;
  }
- private boolean provides(String w,String r){
+ private static boolean provides(String w,String r){
   if(w.equals("kodai wand")&&r.equals("water rune"))return true;
   if(w.contains("staff")||w.contains("battlestaff")){
    if(r.equals("air rune")&&(w.contains("air")||w.contains("smoke")||w.contains("dust")||w.contains("mist")))return true;

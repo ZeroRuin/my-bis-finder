@@ -133,7 +133,7 @@ public class MonsterDatabase
     private static MonsterDefinition fromWiki(WikiMonster wiki, String version)
     {
         return new MonsterDefinition(
-            TheatreOfBloodRules.npcId(wiki.id,wiki.name,version), wiki.name.trim(), version, wiki.level, wiki.skills.def,
+            TheatreOfBloodRules.npcId(wiki.id,wiki.name,version), wiki.id==16675?"The Blade (Ocellus)":wiki.name.trim(), version, wiki.level, wiki.skills.def,
             wiki.skills.magic, wiki.skills.ranged, RaidTargetVariants.hp(wiki, version),
             wiki.defensive == null ? 0 : wiki.defensive.stab,
             wiki.defensive == null ? 0 : wiki.defensive.slash,
@@ -142,10 +142,15 @@ public class MonsterDatabase
             wiki.defensive == null ? 0 : wiki.defensive.light,
             wiki.defensive == null ? 0 : wiki.defensive.standard,
             wiki.defensive == null ? 0 : wiki.defensive.heavy,
-            withFlatArmour(wiki.attributes, wiki.defensive == null ? 0 : wiki.defensive.flat_armour),
+            withDrainSkills(withFlatArmour(wiki.attributes, wiki.defensive == null ? 0 : wiki.defensive.flat_armour),wiki.skills.atk,wiki.skills.str),
             wiki.size, wiki.weakness == null ? null : wiki.weakness.element,
             wiki.weakness == null ? 0 : wiki.weakness.severity,
             wiki.offensive == null ? 0 : wiki.offensive.magic);
+    }
+
+    private static List<String> withDrainSkills(List<String> attributes,int attack,int strength)
+    {
+        List<String> result=new ArrayList<>(attributes);result.add("npc_attack_level:"+attack);result.add("npc_strength_level:"+strength);return result;
     }
 
     private static List<String> withFlatArmour(List<String> attrs, int flatArmour)

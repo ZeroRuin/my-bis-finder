@@ -19,14 +19,21 @@ You do not need to enter your bank into a separate calculator.
 - **Time to kill and sustained DPS:** estimates finite-fight kill time from hit
   distributions, including misses, multi-hit attacks and overkill. Sustained DPS
   is also displayed and helps distinguish otherwise equal results.
-- **Prayer-aware equipment choices:** favours higher equipment Prayer bonus when
-  combat results tie. Eligible owned items can fill unused slots when they preserve
-  the calculated offensive result; weapon, shield and ammunition restrictions
-  still apply. This is a preference within the search, rather than a guarantee
-  of the highest possible Prayer bonus in every slot.
+- **Prayer or Defence fill option:** choose under **Advanced**, with Prayer fill
+  as the default. Defence fill favours defensive gear while preserving calculated
+  accuracy, max hit, attack speed, DPS and TTK.
 - **Target-specific combat calculations:** accounts for supported defence stats,
   elemental weaknesses, immunities, weapon passives and multi-hit mechanics;
   also recommends the best supported special-attack weapon from your owned gear.
+- **Vardorvis HP scaling:** set starting HP for supported variants and account
+  for falling Defence throughout estimated TTK.
+- **Optional defence reductions:** enter supported owned-item reductions under
+  **Advanced**. Effects are assumed successful and pre-applied for the estimate;
+  individual controls can be hidden or reset.
+- **Blowpipe ammo selection:** choose compatible darts separately for each
+  bank-scanned blowpipe type; internal contents and quantities remain unknown.
+- **Void and attack styles:** improved normal and elite Void loadout searches,
+  with supported weapon attack labels matching the game.
 - **Enchanted bolts and ammunition:** models supported Ruby, Diamond, Onyx and
   Dragonstone bolt effects, including supported diary bonuses and target
   restrictions. Ruby bolt damage changes as enemy HP falls during TTK calculations;
@@ -41,7 +48,9 @@ You do not need to enter your bank into a separate calculator.
   with your Slayer gem, helmet or master; disable task mode to search manually.
 - **Recommended-item bank view:** the bank button groups the selected loadout's
   equipment, ammunition and supplies so you can find and withdraw them using
-  normal bank interactions. Toggle it off to restore the normal bank layout.
+  normal bank interactions. Selected defence-reduction items and required runes
+  appear below equipment. **Other items** defaults hidden and can be shown in
+  settings. Toggle the bank view off to restore the normal layout.
 - **Optional GIM shared storage:** enable **Include group storage** under
   **Advanced**, then scan your personal bank and shared storage to include their
   gear and supplies. Both storage interfaces show recommendations and references
@@ -53,7 +62,10 @@ You do not need to enter your bank into a separate calculator.
   regenerate to apply them. The editable list persists in your RuneLite profile.
 - **Readable loadout summaries:** shows selected gear, combat statistics, spell
   or ammunition and prayer. The statistics panel expands to fit wrapped text,
-  including longer spell names.
+  including longer spell names. Modelling notes are in tooltips; a red indicator
+  beside **Advanced** highlights available ammo or reduction controls.
+- **Calculation controls:** reduced calculation overhead and memory pressure,
+  with an option to cancel a calculation.
 
 ## Getting started
 
@@ -107,17 +119,43 @@ Excluded runes prevent spells that require them unless eligible equipment
 provides those runes. Powered weapons' stored charges are separate from loose
 rune ownership.
 
+Search **`tfa`** (or **`tfa ocellus`**) to filter The Fractured Archive targets.
+Supported bosses have a saved 2–8 player party selector. HP scaling is provisional;
+phase estimates exclude movement, team DPS and encounter timing. Raid equipment,
+Zeal and unlocked elemental fragments are included where their effects are modelled.
+See [raid modelling notes](docs/RAID-OPTIONS.md) for the remaining limitations.
+
 ## Advanced options
 
 Expand **Advanced** beneath the target to see available options. It starts
-collapsed, and checked options appear green.
+collapsed. A red **!** highlights available blowpipe ammo or defence reduction
+controls; hover it for details.
 
-- **Include Ruby bolts (e)** appears when suitable bolts are owned in the checked
-  ownership sources. Disable it to omit them from calculations.
-- **Include group storage** appears on GIM accounts and is off by default.
+- **Prayer or Defence fill:** Prayer fill is the default. Defence fill favours
+  defensive gear while preserving calculated accuracy, max hit, attack speed,
+  DPS and TTK. It compares equipment bonuses, not incoming damage or survival.
+- **Include Ruby bolts (e):** appears when suitable bolts are owned. Disable it
+  to leave Ruby bolts out of the search.
+- **Blowpipe ammo:** each supported blowpipe type scanned in your personal bank
+  gets its own compatible-dart dropdown. Select the darts you intend to use;
+  an unselected blowpipe is excluded. Internal contents and quantities are not
+  detected, and loose dart ownership does not determine the selection.
+- **Defensive Reductions:** owned supported weapons or supplies reveal manual
+  hit-count, damage or spell controls. All default off. Selected effects are
+  assumed successful and pre-applied, then held fixed for the estimate; setup
+  time, special damage, energy and recovery are excluded. **Reset reductions**
+  clears them, and collapsed Advanced shows how many types are selected.
+- **Include group storage:** appears on GIM accounts and is off by default.
+  Scan both stores to include supported shared gear and supplies.
 
-Preferences persist across restarts. Changing an option requires regeneration;
-storage updates do not automatically recalculate loadouts.
+In RuneLite's plugin settings, individual reduction controls can be hidden;
+hiding one also clears its selected value. **Hide Other items** is enabled by
+default for the planner bank view and can be disabled to show unrelated items.
+Selected reduction weapons and required runes appear below equipment in that view.
+
+Preferences persist in the active RuneLite configuration profile. Regenerate
+after changing calculation options; storage updates do not automatically
+recalculate loadouts. Modelling details are available in control and stats tooltips.
 
 ## Understanding the results
 

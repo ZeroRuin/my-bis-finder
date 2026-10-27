@@ -27,6 +27,8 @@ public final class RangedAmmoRules {
   // ammo slot. The Wiki equipment table therefore reports no equipped-ammo
   // applicability; production optimisation must still pair the weapon with
   // an owned dart so its Ranged Strength is included.
+  if(w!=null&&name(w).equals("ascension crossbows"))return a!=null&&ArraysContainsAscension(a.getItem().getItemId());
+  if(a!=null&&name(a).contains("ascension bolt"))return false;
   if(usesLoadedDarts(w))return a!=null&&ammoType(a)==RangedAmmoType.DART;
   if(w!=null){ WikiEquipmentEngine.AmmoApplicability wa=WikiEquipmentEngine.ammoApplicability(w.getItem().getItemId(),a==null?null:a.getItem().getItemId()); if(wa==WikiEquipmentEngine.AmmoApplicability.INVALID)return false; if(wa==WikiEquipmentEngine.AmmoApplicability.INCLUDED)return true; }
   RangedAmmoType need=weaponAmmo(w);
@@ -67,11 +69,12 @@ public final class RangedAmmoRules {
   }
   return true;
  }
+ private static boolean ArraysContainsAscension(int id){return id==34684||id==34690||id==34696||id==34702||id==34708;}
  private static boolean isHuntersSunlightCrossbow(String n){
   return n.contains("hunter")&&n.contains("sunlight")&&n.contains("crossbow");
  }
  private static boolean isHuntersCrossbow(String n){
-  return n.contains("hunter")&&n.contains("crossbow")&&!n.contains("sunlight");
+  return n.contains("hunter")&&n.contains("crossbow")&&!n.contains("sunlight")&&!n.contains("dragon hunter");
  }
  private static int arrowTier(String n){
   if(n.contains("dragon arrow"))return 7;if(n.contains("amethyst arrow"))return 6;if(n.contains("rune arrow"))return 5;
@@ -101,6 +104,7 @@ public final class RangedAmmoRules {
 
  public static DefenceClass defenceClass(EquipmentCandidate w){
   if(w==null)return DefenceClass.STANDARD;
+  if(name(w).equals("ascension crossbows"))return DefenceClass.HEAVY;
   String n=name(w), c=w.getWeaponCategory().toLowerCase();
   // Light: arrows, darts, knives and blowpipe-like rapid projectiles.
   if(weaponAmmo(w)==RangedAmmoType.ARROW || weaponAmmo(w)==RangedAmmoType.DART ||

@@ -168513,5 +168513,501 @@
       "ranged": 0
     },
     "isTwoHanded": false
+  },
+  {
+    "name": "Ascension bolts",
+    "id": 34684,
+    "weight": 0,
+    "version": "",
+    "slot": "ammo",
+    "image": "Ascension bolts 5.png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 53,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Ascension crossbows",
+    "id": 34681,
+    "weight": 6,
+    "version": "",
+    "slot": "weapon",
+    "image": "Ascension crossbows.png",
+    "speed": 3,
+    "category": "Crossbow",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 3,
+      "ranged": 34
+    },
+    "defensive": {
+      "stab": -7,
+      "slash": -5,
+      "crush": 0,
+      "magic": 10,
+      "ranged": 0
+    },
+    "isTwoHanded": true
+  },
+  {
+    "name": "Diamond ascension bolts",
+    "id": 34690,
+    "weight": 0,
+    "version": "",
+    "slot": "ammo",
+    "image": "Diamond ascension bolts 5.png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 58,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Diamond ascension bolts (e)",
+    "id": 34696,
+    "weight": 0,
+    "version": "",
+    "slot": "ammo",
+    "image": "Diamond ascension bolts (e) 5.png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 58,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Living record (tier 1)",
+    "id": 34659,
+    "weight": 0.453,
+    "version": "",
+    "slot": "cape",
+    "image": "Living record (tier 1).png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Living record (tier 2)",
+    "id": 34661,
+    "weight": 0.453,
+    "version": "",
+    "slot": "cape",
+    "image": "Living record (tier 2).png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Living record (tier 3)",
+    "id": 34663,
+    "weight": 0.453,
+    "version": "",
+    "slot": "cape",
+    "image": "Living record (tier 3).png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Living record (tier 4)",
+    "id": 34665,
+    "weight": 0.453,
+    "version": "",
+    "slot": "cape",
+    "image": "Living record (tier 4).png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Living record (tier 5)",
+    "id": 34667,
+    "weight": 0.453,
+    "version": "",
+    "slot": "cape",
+    "image": "Living record (tier 5).png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Obligator",
+    "id": 34715,
+    "weight": 4.989,
+    "version": "Charged",
+    "slot": "weapon",
+    "image": "Obligator.png",
+    "speed": 5,
+    "category": "Extending Chain Mace",
+    "bonuses": {
+      "str": 40,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 3
+    },
+    "offensive": {
+      "stab": 22,
+      "slash": -8,
+      "crush": 120,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 16,
+      "crush": 0,
+      "magic": 3,
+      "ranged": 8
+    },
+    "isTwoHanded": true
+  },
+  {
+    "name": "Obligator",
+    "id": 34717,
+    "weight": 4.989,
+    "version": "Uncharged",
+    "slot": "weapon",
+    "image": "Obligator (uncharged).png",
+    "speed": 5,
+    "category": "Extending Chain Mace",
+    "bonuses": {
+      "str": 40,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 3
+    },
+    "offensive": {
+      "stab": 22,
+      "slash": -8,
+      "crush": 120,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 16,
+      "crush": 0,
+      "magic": 3,
+      "ranged": 8
+    },
+    "isTwoHanded": true
+  },
+  {
+    "name": "Onyx ascension bolts",
+    "id": 34702,
+    "weight": 0,
+    "version": "",
+    "slot": "ammo",
+    "image": "Onyx ascension bolts 5.png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 58,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Onyx ascension bolts (e)",
+    "id": 34708,
+    "weight": 0,
+    "version": "",
+    "slot": "ammo",
+    "image": "Onyx ascension bolts (e) 5.png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 58,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Rondache",
+    "id": 34719,
+    "weight": 4.122,
+    "version": "",
+    "slot": "shield",
+    "image": "Rondache.png",
+    "speed": 0,
+    "category": "Unarmed",
+    "bonuses": {
+      "str": 8,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": -5,
+      "ranged": -8
+    },
+    "defensive": {
+      "stab": 35,
+      "slash": 41,
+      "crush": 38,
+      "magic": -6,
+      "ranged": 55
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Zorya's tome",
+    "id": 34725,
+    "weight": 5,
+    "version": "Charged",
+    "slot": "weapon",
+    "image": "Zorya's tome.png",
+    "speed": 3,
+    "category": "Powered Staff",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 150,
+      "prayer": 2
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 45,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 1,
+      "slash": 5,
+      "crush": 5,
+      "magic": 10,
+      "ranged": 0
+    },
+    "isTwoHanded": true
+  },
+  {
+    "name": "Zorya's tome",
+    "id": 34727,
+    "weight": 4,
+    "version": "Uncharged",
+    "slot": "weapon",
+    "image": "Zorya's tome (uncharged).png",
+    "speed": 3,
+    "category": "Powered Staff",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 150,
+      "prayer": 2
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 45,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 1,
+      "slash": 5,
+      "crush": 5,
+      "magic": 10,
+      "ranged": 0
+    },
+    "isTwoHanded": true
   }
 ]

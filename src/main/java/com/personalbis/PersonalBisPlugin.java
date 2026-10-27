@@ -96,6 +96,7 @@ public class PersonalBisPlugin extends Plugin
     @Override
     protected void shutDown()
     {
+        if(panel!=null)panel.cancelPendingCalculations();
         mouseManager.unregisterMouseListener(bankButtonMouseListener);
         bankFilter.deactivate();
         eventBus.unregister(bankFilter);
@@ -132,7 +133,7 @@ public class PersonalBisPlugin extends Plugin
     @Subscribe
     public void onGameStateChanged(GameStateChanged event)
     {
-        if (event.getGameState() == GameState.LOGIN_SCREEN) panel.clearGroupStorage();
+        if (event.getGameState() == GameState.LOGIN_SCREEN) {panel.clearGroupStorage();panel.clearBlowpipeBankSnapshot();}
         if (event.getGameState() == GameState.LOGGED_IN)
         {
             panel.refreshAll();
@@ -152,7 +153,8 @@ public class PersonalBisPlugin extends Plugin
     @Subscribe
     public void onProfileChanged(ProfileChanged event)
     {
-        if(panel!=null)panel.reloadRaidSettings();
+        bankFilter.refreshLayout();
+        if(panel!=null){panel.reloadVardorvisHp();panel.reloadRaidSettings();panel.reloadBlowpipeAmmo();panel.reloadFillPreference();panel.reloadDefenceReduction();}
     }
 
     @Subscribe
@@ -161,7 +163,12 @@ public class PersonalBisPlugin extends Plugin
         if ("personalbis".equals(event.getGroup()))
         {
             if(panel==null)return;
-            if(RaidSettings.CONFIG_KEY.equals(event.getKey()))panel.reloadRaidSettings();
+            if("hideOtherBankItems".equals(event.getKey()))bankFilter.refreshLayout();
+            else if(VardorvisHpSettings.CONFIG_KEY.equals(event.getKey()))panel.reloadVardorvisHp();
+            else if(RaidSettings.CONFIG_KEY.equals(event.getKey()))panel.reloadRaidSettings();
+            else if(BlowpipeAmmoPlan.CONFIG_KEY.equals(event.getKey()))panel.reloadBlowpipeAmmo();
+            else if(FillPreference.CONFIG_KEY.equals(event.getKey()))panel.reloadFillPreference();
+            else if(ManualDefenceReduction.CONFIG_KEY.equals(event.getKey()) || event.getKey().startsWith("hideReduction"))panel.reloadDefenceReduction();
             else if (ItemExclusions.KEY.equals(event.getKey())) panel.exclusionsChanged();
             else clientThread.invokeLater(panel::updatePlayerStats);
         }

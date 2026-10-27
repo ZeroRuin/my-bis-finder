@@ -4,7 +4,8 @@ public enum MeleeStance
 {
     ACCURATE("Accurate", 3, 0),
     AGGRESSIVE("Aggressive", 0, 3),
-    CONTROLLED("Controlled", 1, 1);
+    CONTROLLED("Controlled", 1, 1),
+    SMASH("Smash",0,3);
 
     private final String displayName;
     private final int attackBoost;

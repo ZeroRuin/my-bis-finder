@@ -31,7 +31,8 @@ public final class WikiRangedEffects {
  }
 
  public static int postAccuracy(int roll,EquipmentCandidate weapon,MonsterDefinition m,RangedStance stance,int distance){
-  roll=(int)Math.floor(roll*RangedWeaponEffects.accuracyMultiplier(weapon,m));
+  roll=RangedWeaponEffects.isTwistedBow(weapon)?RangedWeaponEffects.scaleTwisted(roll,m,true)
+   :(int)Math.floor(roll*RangedWeaponEffects.accuracyMultiplier(weapon,m));
   if(isChargedRevWeapon(weapon,m))roll=WikiIntegerStages.factor(roll,3,2);
   if(isChinchompa(weapon))roll=WikiIntegerStages.factor(roll,chinchompaNumerator(stance,distance),4);
   return roll;
@@ -42,7 +43,8 @@ public final class WikiRangedEffects {
   // Rev and dragon-hunter damage were already folded into the additive Slayer
   // factor above; without Slayer they remain ordinary multiplicative stages.
   if(!(task&&slayer&&RangedWeaponEffects.isDragonHunterCrossbow(weapon)&&RangedWeaponEffects.isDraconic(m)))
-   max=(int)Math.floor(max*RangedWeaponEffects.damageMultiplier(weapon,m));
+   max=RangedWeaponEffects.isTwistedBow(weapon)?RangedWeaponEffects.scaleTwisted(max,m,false)
+    :(int)Math.floor(max*RangedWeaponEffects.damageMultiplier(weapon,m));
   if(isTonalztics(weapon))max=WikiIntegerStages.factor(max,3,4);
   return max;
  }

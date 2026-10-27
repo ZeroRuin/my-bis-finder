@@ -89,6 +89,25 @@ public final class HitDistribution {
         public AttackDistribution(List<HitDistribution> dists){this.dists=new ArrayList<>(dists);}
         public List<HitDistribution> dists(){return Collections.unmodifiableList(dists);}
         public void addDist(HitDistribution d){dists.add(d);}
+        /** Total damage after per-hitsplat transforms. Convolve independent components
+         * numerically instead of materialising their Cartesian product of hitsplats.
+         * Correlated hits within each WeightedHit stay together before convolution.
+         */
+        public double[] damageProbabilities(){
+            double[] total={1.0};
+            for(HitDistribution component:dists){
+                CalculationCancellation.check();
+                int maximum=0;
+                for(WeightedHit hit:component.hits)maximum=Math.max(maximum,Math.max(0,hit.sum()));
+                double[] part=new double[maximum+1];
+                for(WeightedHit hit:component.hits)part[Math.max(0,hit.sum())]+=hit.probability;
+                double[] next=new double[total.length+part.length-1];
+                for(int a=0;a<total.length;a++)if(total[a]!=0.0)
+                    for(int b=0;b<part.length;b++)if(part[b]!=0.0)next[a+b]+=total[a]*part[b];
+                total=next;
+            }
+            return total;
+        }
         public HitDistribution zipped(){if(dists.isEmpty())return HitDistribution.single(0,false);HitDistribution r=dists.get(0);for(int i=1;i<dists.size();i++)r=r.zip(dists.get(i));return r;}
         public HitDistribution singleHitsplat(){if(dists.isEmpty())return HitDistribution.single(0,false);HitDistribution r=dists.get(0);for(int i=1;i<dists.size();i++)r=r.zip(dists.get(i)).cumulative();return r;}
         public AttackDistribution transform(Transformer t,boolean transformInaccurate){List<HitDistribution> o=new ArrayList<>();for(HitDistribution d:dists)o.add(d.transform(t,transformInaccurate));return new AttackDistribution(o);}

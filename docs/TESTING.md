@@ -2,7 +2,57 @@
 
 Open the source folder in IntelliJ, reload Gradle and run **run**. Disable the
 installed Plugin Hub copy while using the development copy. Use real accounts
-and assignments for interface checks; no simulation controls are included.
+and assignments for interface checks. Planning uses actual bank, inventory and
+equipped ownership, with optional GIM shared storage. Temporary synthetic-bank
+controls have been removed.
+
+## Sidebar cleanup verification
+
+1. Confirm no test-bank option exists, including in a profile that previously
+   enabled it. Open the actual bank and verify recommendations use owned gear.
+2. Scan a blowpipe: Advanced shows a red ! with an availability tooltip. Only
+   bank-scanned blowpipe families show ammo controls; unknown ammo stays unknown.
+3. Scan supported reduction gear/supplies. Controls default off and show only
+   while owned and unhidden. Hide an active reduction in RuneLite settings:
+   its value clears, the old result becomes stale, and its control disappears.
+   Unhide it and confirm it returns at zero. Hiding all owned reductions removes
+   their alert, unless a blowpipe control is still available.
+4. Select two reduction types; collapse Advanced and check “2 selected”. Reset
+   reductions and check all amounts clear without changing fill/ammo/raid settings.
+5. Switch profiles and restart. Hide preferences and amounts remain independent.
+   Logout/unknown bank state must not apply saved effects; confirmed missing
+   ownership clears only affected amounts. No reduction paragraph appears in stats.
+6. Check alert placement and tooltips at normal sidebar width in RuneLite.
+   Headless Swing checks passed with an external config-service double; full
+   client compilation/layout checks were unavailable locally.
+
+## Bank section order and Other items setting
+
+1. Generate with a selected drain: equipment appears above Defence reducing
+   items, followed by Recommended supplies. A shared weapon/rune stack appears once.
+2. In the planner bank view, Other items defaults hidden (heading and items).
+   Disable Hide Other items in RuneLite settings and confirm they reappear
+   immediately without regeneration. Toggle back, then switch config profiles.
+3. Turn off the planner bank view and confirm the ordinary bank is restored.
+   Repeat in supported GIM storage; opening/closing either view must preserve
+   native withdrawal actions and normal item visibility.
+
+## Stats and reduction bank section
+
+1. Generate melee/ranged/magic results and confirm only the six stat fields are
+   printed. Check Vardorvis, Dharok and supported raid/Guardian notes appear in
+   the stats tooltip instead. Empty/missing-requirement warnings remain clear.
+2. Select an owned reduction weapon, regenerate and open the planner bank view.
+   The new section contains its real bank stack with normal native withdrawal
+   actions. A weapon also recommended for direct specials appears once.
+3. Select Vulnerability with known loose supplies: Water/Earth/Soul stacks appear
+   in the section. Spell supplies shared with the normal magic loadout appear
+   once. No new empty Recommended header should remain.
+4. Reset/hide the effect or confirm ownership loss: the old section clears until
+   regeneration. With all reductions off, ordinary gear and supplies remain.
+5. Test alternate owned weapon IDs, exclusions, placeholders, carried/equipped
+   items, profile changes and optional GIM views. No unavailable bank stack may
+   gain a withdrawal entry. Verify layout and clicking in the real client.
 
 ## Automated verification
 
@@ -10,6 +60,11 @@ Run these Gradle tasks before releasing a code change:
 
 ```text
 compileJava compileTestJava
+defenceReductionBankItemsSelfTest
+ttkPerformanceSelfTest
+salveRoundingSelfTest
+combatStyleLabelsSelfTest
+poweredStanceSelfTest
 mechanicsSelfTest
 gimStorageSelfTest
 itemExclusionSelfTest
@@ -205,3 +260,135 @@ whole-raid timing, room downtime, damage from teammates or Dawnbringer.
   generation should replace the current spell. Immune targets clear the row.
 - `SpecialAttackSelfTest` covers distribution boundaries, Zaryte bolt effects,
   owned-weapon selection, score units and row proportions.
+
+
+## Local HP/fill/drains test batch
+
+See [HP-FILL-DRAINS.md](HP-FILL-DRAINS.md) for the modelling choices, five new
+local self-test tasks, validation limits and real-client checklist. This source
+build remains local and has not changed the Plugin Hub submission.
+
+## Local test 4 comparison
+
+See [combat styles](COMBAT-STYLES.md) and [mechanic notes](HP-FILL-DRAINS.md).
+Use the Wiki share with the same item charge state and actual account boosts.
+The supplied share selects uncharged Serp; use charged Serp to compare the
+plugin's charged helmet. Known Charged/Uncharged dataset variants now appear in
+sidebar gear tooltips, without inventing remaining charges.
+
+Check Lunge on Fang, with Stab/Aggressive on hover. Test other modelled weapon
+styles and powered Accurate/ordinary Spell labels. Normal loadout DPS excludes
+the special weapon's separate burst score. Verify the final displayed Defence-fill
+gear has the same accuracy, max hit, speed, ordinary DPS and TTK as its baseline.
+
+Ten isolated Java suites and 34 Python tests passed in the local environment;
+175 Java sources passed Java 11 syntax parsing. The Salve/style/powered suites
+compiled production helpers using an EquipmentInventorySlot compile-only enum
+double outside this project. A full compiler attempt remains blocked by missing
+RuneLite/Gson/injection dependencies. The existing full Java regression suites,
+including the new special-isolation assertions, and real RuneLite UI were not run.
+
+## Local test 5 checks
+
+Local tasks: `vardorvisHpSelfTest`, `vardorvisShortlistSelfTest`,
+the then-temporary test-bank tier check (now removed), plus the previous focused checks. Thirteen isolated Java
+suites passed (some with external compile-only API/UI doubles); all 34 Python
+tests passed and 181 sources passed Java 11 syntax parsing. The full production
+compile was attempted and blocked by missing RuneLite, Gson and injection
+libraries. The dependency-backed full regression suite was not run.
+
+In RuneLite, check Quest/Post-quest/Awakened HP defaults, lower HP generation,
+variant changes, logout/restart and profile restoration. Check source changes,
+cancellation and reduced-bank ownership controls. Compare a generated fixed set
+at matching starting HP against an independent calculator. Measure real-bank
+and test-bank first-generation times and responsiveness. A full broader-search
+comparison of the checkpoint heuristic remains outstanding.
+
+## Local test 6 checks
+
+Passed 15 focused Java self-test suites (including expanded drain plans and
+Void/elite Void), plus isolated profile/ownership Swing checks, CoX intermediate
+skill scaling, and actual melee/ranged/powered calculator checks with an external
+account API double. These doubles are outside the project and not packaged.
+All 34 Python tests, Java 11 syntax parsing of 186 sources and whitespace checks
+passed. Actual combat calculators and their plain-Java dependencies compiled in
+that isolated harness. A full production compile was attempted but remains
+blocked by missing RuneLite/Gson/injection libraries. Full client integration and
+the original dependency-backed regression suite were not run.
+
+For manual testing, first compare one drain at a time against the Wiki at the
+same HP/raid settings, then combine effects in the documented order. Confirm
+Tonalztics counts hitsplats, BGS/Seercull/Ayak use damage amounts, curse toggles
+are alternatives, and ordinary stats still exclude special damage. Check missing
+weapons, charged/active variants, exclusions, profile switches, logout/restart
+and unknown versus complete bank scans. Check dropdown popup colours, typed
+number values and arrows, Vard HP, raid controls and per-blowpipe ammo choices.
+Standard 10% Vulnerability only; no enhanced Tome of Water assumption.
+
+## Local test 7
+
+The new `twistedBowRoundingSelfTest` passes against a fixture generated from
+PlayerVsNPCCalc.tbowScaling at Wiki commit
+89c3e25b344aea90d0189746e4b5f73dde0f0383, covering every Magic value 0–350.
+The actual ranged calculator also reproduces SpicesFlowersDisposal with an
+external account API test double (92 Ranged, Rigour, identical equipment):
+Defence187, attack roll48405, defence roll28224, max82, accuracy70.84452341%,
+DPS9.68493003 and TTK29.11521551s. The ordinary Void/drained-zero calculator
+integration check still passes. Full RuneLite dependency-backed build remains
+unverified here. Rerun the same share in the development client.
+
+User-reported real-client checks: BGS controls operate with real ownership;
+Vorkath with the test bank and two warhammer hits matches the Wiki. K'ril's
+newly identified Tbow rounding discrepancy is fixed locally; awaiting retest.
+
+## User testing follow-up — 19 October 2026
+
+User reports matching Wiki calculations for K'ril using Elder maul, Dragon
+warhammer, Arclight, Emberlight and Tonalztics in the tested setups/attack style.
+Eye of Ayak and Seercull comparisons also match; the target/setup for those two
+checks was not specified. These reports validate the tested cases, not every
+possible combination or target.
+
+Deferred to the next update phase: investigate Yama phases and target stats.
+The user could not match defence-reduction results against the Wiki, but did
+not check an unmodified/no-reduction baseline. Root cause remains unresolved:
+first compare identical phase, base stats, gear and account settings with all
+reductions off, then introduce individual reductions. Do not change Yama in
+this batch based on this report.
+
+## Local test 8 checks
+
+`voidLoadoutFamiliesSelfTest` checks normal/mixed/elite melee and ranged families,
+ornaments, missing/blocked pieces, required target gear, immutable seeds and
+DHCB ammo fallback. Actual optimizer checks with external account/ownership API
+doubles confirm independent melee families and a Vorkath fixture using 92 Ranged,
+Rigour, Salve(ei), normal ammo and both weapons. Elite Void/DHCB wins that fixture
+with Ruby included and excluded. This is not a global-optimum proof or a promise
+for every level/gear/bolt/drain selection. A real-client comparison remains needed.
+
+The temporary bank coverage check confirms all 218 neck IDs, 127 ring IDs and
+nine drain-weapon families remain, while activity-only arrows/Gauntlet gear are
+removed. Snapshot checks cover the new exclusions. Full RuneLite compilation
+remains unverified in this environment without its dependencies.
+
+### Rapid bank withdrawals
+
+Run `bankWithdrawalSelfTest` for personal/shared bank click consistency. This checks native and low-priority widget operations, valid and stale slots, reused/hidden widgets, unknown bank state and inactive-planner behaviour.
+
+In RuneLite, open the planner bank view and rapidly left-click several different equipment/supply stacks. Repeat while emptying stacks, with placeholders enabled and disabled, and with Other items visible and hidden. Verify each withdrawal matches the clicked item. Also check right-click Withdraw-1/5/10/X/All, noted withdrawal, an open menu during a bank update, personal/shared storage, and returning to ordinary tabs/search. A stale click may be ignored; it must never redirect to another item.
+
+The October 2026 assistant check used an extracted handler with API doubles and Java 11 compilation settings; it was not a dependency-backed RuneLite build or an in-client reproduction. Run the Gradle task and client checks locally before release.
+
+Follow-up bank test: generate a Bowfa loadout while a blowpipe with a saved dart selection is banked. Withdraw the blowpipe and confirm results stay available; deposit it and confirm the saved dart selection returns. A manual dart edit must still require regeneration. Test Ring of shadows charged and uncharged independently, withdrawing the final copy with placeholders enabled/disabled. Only an existing native placeholder may remain visible; no replacement withdrawable widget is created.
+
+
+### Fractured Archive
+
+Run `gradle fracturedArchiveSelfTest` alongside the existing mechanics, raid,
+Slayer and bank-withdrawal suites. It covers the supplied HP tables, saved-party
+migration, filters, floors, weapon distributions, ammunition and supported rules.
+In RuneLite, check `tfa` and `tfa ocellus`, party changes and profile restoration;
+compare charged/uncharged weapon ownership, Zeal and fragment unlocks; confirm
+The Blade shows DPS with no finite kill time. Recheck rapid bank withdrawals,
+loadout persistence and withdrawing/depositing an uncharged Ring of shadows.
+In-client testing remains necessary; offline checks do not simulate the raid.

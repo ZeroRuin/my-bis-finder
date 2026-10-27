@@ -9,10 +9,18 @@ public class RangedCombatCalculator {
  public RangedCombatResult calculate(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
   RangedCombatResult best=null;
   for(RangedStance st:RangedStance.values())for(RangedPrayer p:prayers()){
+   EquipmentCandidate weapon=gear.get(EquipmentSlot.WEAPON);
+   if(weapon!=null&&"Salamander".equalsIgnoreCase(weapon.getWeaponCategory())&&st!=RangedStance.RAPID)continue;
    RangedCombatResult r=calculate(gear,m,task,st,p); if(best==null||FinalLoadoutSelection.betterTtk(r.getExpectedTtkSeconds(),r.getDps(),best.getExpectedTtkSeconds(),best.getDps()))best=r;
   } return best;
  }
  public RangedCombatResult calculate(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task,RangedStance st,RangedPrayer p){
+  return calculateInternal(gear,m,task,st,p,true);
+ }
+ RangedCombatResult calculateSnapshot(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task,RangedStance st,RangedPrayer p){
+  return calculateInternal(gear,m,task,st,p,false);
+ }
+ private RangedCombatResult calculateInternal(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task,RangedStance st,RangedPrayer p,boolean finiteFight){
   int atk=0,str=0,speed=4; boolean slayer=false; EquipmentCandidate weapon=gear.get(EquipmentSlot.WEAPON);
   for(EquipmentCandidate c:gear.values()){if(c==null)continue;
    if(c.getSlot()==EquipmentSlot.AMMO && !RangedAmmoRules.compatible(weapon,c)) continue;
@@ -32,10 +40,10 @@ public class RangedCombatCalculator {
   roll=WikiRangedEffects.accuracyAfterExclusive(roll,gear.values(),m,task,slayer);
   roll=WikiRangedEffects.postAccuracy(roll,weapon,m,st,4);
   if(RaidCombatRules.wardenP2(m)&&RangedWeaponEffects.isTwistedBow(weapon))
-   roll=(int)Math.floor(roll*RangedWeaponEffects.twistedAccuracy(m));
-  int def=m==null?1:Math.max(1,m.getDefenceLevel()), bonus=RangedAmmoRules.targetDefence(m,weapon);
+   roll=RangedWeaponEffects.scaleTwisted(roll,m,true);
+  int def=m==null?1:Math.max(0,VardorvisRules.startingDefence(m)), bonus=RangedAmmoRules.targetDefence(m,weapon);
   int defRoll=RaidScaling.defenceRoll(m,(def+9)*(bonus+64));
-  double acc=WikiAccuracyRoll.normal(roll,defRoll);
+  double acc=FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,defRoll);
   boolean strengthRanged=EquipmentSetRules.strengthRanged(weapon);
   int damageLevel=strengthRanged?Math.max(1,RaidScaling.boosted(account,Skill.STRENGTH,m)):level;
   if(strengthRanged){str=0;for(EquipmentCandidate c:gear.values())if(c!=null){
@@ -64,13 +72,33 @@ public class RangedCombatCalculator {
   Map<Integer,HitDistribution.AttackDistribution> hpDists=ruby?new HashMap<>():null;
   HitDistribution rubyBase=ruby?WikiPlayerVsNpcCalc.rangedRubyBaseDistribution(
       m,level,normalMin,normalMax,acc,account.isKandarinHardCompleted()):null;
-  double ttk=ruby
+  double ttk=!finiteFight||VardorvisRules.supported(m)?Double.POSITIVE_INFINITY:ruby
       ?ExpectedKillTime.seconds(targetHp,actualSpeed,hp->hpDists.computeIfAbsent(EnchantedBoltEffects.rubyHpBucket(hp),key->
           WikiPlayerVsNpcCalc.rangedRubyFinalDistributionAtHp(rubyBase,weapon,ammo,m,
               account.isKandarinHardCompleted(),key)))
       :ExpectedKillTime.seconds(rangedDist,targetHp,actualSpeed);
+  if(finiteFight&&VardorvisRules.supported(m)){
+   final int fixedRoll=roll, fixedMin=normalMin, fixedMax=normalMax;
+   Map<String,HitDistribution.AttackDistribution> evolving=new HashMap<>();
+   ttk=ExpectedKillTime.seconds(targetHp,actualSpeed,hp->{
+    int defence=VardorvisRules.defence(m,hp);
+    int rubyHp=ruby?EnchantedBoltEffects.rubyHpBucket(hp):targetHp;
+    String key=defence+":"+rubyHp;
+    return evolving.computeIfAbsent(key,k->{
+     double chance=WikiAccuracyRoll.normal(fixedRoll,(defence+9)*(bonus+64));
+     if(ruby){
+      HitDistribution base=WikiPlayerVsNpcCalc.rangedRubyBaseDistribution(m,level,fixedMin,fixedMax,chance,account.isKandarinHardCompleted());
+      return WikiPlayerVsNpcCalc.rangedRubyFinalDistributionAtHp(base,weapon,ammo,m,account.isKandarinHardCompleted(),rubyHp);
+     }
+     return WikiPlayerVsNpcCalc.finalDistribution(
+      WikiPlayerVsNpcCalc.rangedAttacker(weapon,ammo,m,level,fixedMin,fixedMax,chance,account.isKandarinHardCompleted(),gear.values()),
+      m,AttackStyle.RANGED,weapon,null,false,gear.values());
+    });
+   });
+  }
   max=rangedDist.max();
   if(!WikiTargetEligibility.rangedCanDamage(m) || !LeafyTargetRules.rangedCanDamage(m,ammo) || !MeleeWeaponEffects.ratBoneCanDamage(weapon,m)){max=0;dps=0.0;ttk=Double.POSITIVE_INFINITY;}
+  if(FracturedArchiveRules.blade(m))ttk=Double.POSITIVE_INFINITY;
   return new RangedCombatResult(dps,ttk,acc,max,roll,defRoll,atk,str,actualSpeed,eff,dmgEff,st,p,preSpecMax);
  }
  private RangedPrayer[] prayers(){int x=account.real(Skill.PRAYER);
