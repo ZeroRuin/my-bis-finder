@@ -76,6 +76,87 @@ def equivalent(left, right):
     return collections.Counter(map(canonical, left)) == collections.Counter(map(canonical, right))
 
 
+def record_key(kind, row):
+    if kind == 'spells':
+        return row['name'], row['spellbook']
+    return row['id'], row.get('version', '')
+
+
+def incremental_json(kind, previous, incoming):
+    """Keep unchanged records verbatim and in order; append genuinely new records.
+
+    Match exact records before identities so duplicate IDs/versions cannot consume
+    a different, unchanged profile. Genuine stat changes/removals remain visible.
+    Decode bytes directly: Path.read_text() would normalize CRLF before we can
+    preserve it. No semantic changes are made to the incoming dataset.
+    """
+    source = previous.decode('utf-8')
+    decoder = json.JSONDecoder()
+    old, spans = [], []
+    pos = source.index('[') + 1
+    while True:
+        while pos < len(source) and source[pos].isspace():
+            pos += 1
+        if source[pos] == ']':
+            break
+        start = pos
+        row, pos = decoder.raw_decode(source, pos)
+        old.append(row)
+        spans.append((start, pos))
+        while pos < len(source) and source[pos].isspace():
+            pos += 1
+        if source[pos] == ',':
+            pos += 1
+        elif source[pos] != ']':
+            raise ValueError('Invalid JSON array separator')
+    if not old:
+        raise ValueError('Cannot preserve an empty baseline')
+
+    exact = collections.defaultdict(collections.deque)
+    for index, row in enumerate(incoming):
+        exact[canonical(row)].append(index)
+    matched, used = {}, set()
+    for index, row in enumerate(old):
+        candidates = exact[canonical(row)]
+        if candidates:
+            target = candidates.popleft()
+            matched[index] = target
+            used.add(target)
+    changed = collections.defaultdict(collections.deque)
+    for index, row in enumerate(incoming):
+        if index not in used:
+            changed[record_key(kind, row)].append(index)
+    for index, row in enumerate(old):
+        if index not in matched and changed[record_key(kind, row)]:
+            target = changed[record_key(kind, row)].popleft()
+            matched[index] = target
+            used.add(target)
+
+    newline = '\r\n' if '\r\n' in source else '\n'
+    prefix, suffix = source[:spans[0][0]], source[spans[-1][1]:]
+    indent = prefix.rsplit('\n', 1)[-1] if '\n' in prefix else ''
+    separator = (source[spans[0][1]:spans[1][0]] if len(spans) > 1
+                 else ',' + newline + indent if '\n' in prefix else ', ')
+    multiline = '\n' in source[spans[0][0]:spans[0][1]]
+
+    def encode(row):
+        if not multiline:
+            return json.dumps(row, ensure_ascii=False)
+        return json.dumps(row, ensure_ascii=False, indent=2).replace('\n', newline + indent)
+
+    records = []
+    for index, row in enumerate(old):
+        if index in matched:
+            replacement = incoming[matched[index]]
+            records.append(source[spans[index][0]:spans[index][1]]
+                           if canonical(row) == canonical(replacement) else encode(replacement))
+    records.extend(encode(row) for index, row in enumerate(incoming) if index not in used)
+    result = (prefix + separator.join(records) + suffix).encode('utf-8')
+    if not equivalent(json.loads(result), incoming):
+        raise ValueError('Incremental JSON output differs from incoming data')
+    return result
+
+
 def run(root):
     directory = root / 'src/main/resources/wiki-data'
     manifest = json.loads((directory / 'manifest.json').read_text())
@@ -85,7 +166,8 @@ def run(root):
     staged, lines = {}, [f'Upstream: https://github.com/{UPSTREAM}/commit/{head}', '']
     for kind in FILES:
         filename = kind + '.json'
-        old = json.loads((directory / filename).read_text())
+        previous = (directory / filename).read_bytes()
+        old = json.loads(previous)
         new = json.loads(fetch(f'https://raw.githubusercontent.com/{UPSTREAM}/{head}/cdn/json/{filename}'))
         validate(kind, new, old)
         if equivalent(old, new):
@@ -97,7 +179,7 @@ def run(root):
         if changed_at < previous_date:
             lines.append(f'- {filename}: skipped older upstream snapshot ({changed_at}; local {previous_date}).')
             continue
-        encoded = (json.dumps(new, ensure_ascii=False, indent=2) + '\n').encode()
+        encoded = incremental_json(kind, previous, new)
         staged[filename] = encoded
         before, after = collections.Counter(map(canonical, old)), collections.Counter(map(canonical, new))
         lines.append(f'- {filename}: {len(old)} → {len(new)} records; {sum((after-before).values())} new/changed rows, {sum((before-after).values())} removed/replaced rows.')

@@ -50,4 +50,62 @@ class UpdateTests(unittest.TestCase):
         new=copy.deepcopy(self.rows);del new['monsters'][0]['defensive']['heavy']
         self.scenario(new,fails=True)
 
+class IncrementalJsonTests(unittest.TestCase):
+    def render(self, kind, original, incoming):
+        output = updater.incremental_json(kind, original, incoming)
+        self.assertTrue(updater.equivalent(json.loads(output), incoming))
+        return output
+
+    def test_append_retains_original_crlf_bytes_and_no_final_newline(self):
+        original = b'[\r\n  {\r\n    "id": 1,\r\n    "name": "Existing"\r\n  }\r\n]'
+        incoming = json.loads(original) + [{'id': 2, 'name': 'New'}]
+        output = self.render('equipment', original, incoming)
+        self.assertTrue(output.startswith(original[:-3] + b',\r\n'))
+        self.assertEqual(output.count(b'\n'), output.count(b'\r\n'))
+        self.assertTrue(output.endswith(b'\r\n]'))
+
+    def test_upstream_reorder_does_not_move_unchanged_records(self):
+        original = b'[\n  {"id":1,"name":"First"},\n  { "id":2, "name":"Second" }\n]\n'
+        rows = json.loads(original)
+        self.assertEqual(self.render('equipment', original, rows[::-1]), original)
+
+    def test_updated_stats_stay_in_place_and_other_record_is_verbatim(self):
+        original = b'[\n  {"id":1,"speed":4},\n  { "id":2, "speed":5 }\n]\n'
+        rows = json.loads(original)
+        rows[0]['speed'] = 3
+        rows.reverse()
+        output = self.render('equipment', original, rows)
+        self.assertEqual(json.loads(output)[0]['speed'], 3)
+        self.assertIn(b'{ "id":2, "speed":5 }', output)
+
+    def test_duplicate_id_exact_match_precedes_changed_identity(self):
+        original = b'[{"id":1,"version":"","hp":10}, {"id":1,"version":"","hp":20}]'
+        rows = [{'id':1,'version':'','hp':20}, {'id':1,'version':'','hp':11}]
+        output = self.render('monsters', original, rows)
+        self.assertEqual([r['hp'] for r in json.loads(output)], [11,20])
+        self.assertIn(b'{"id":1,"version":"","hp":20}', output)
+
+    def test_variants_and_identical_duplicates_are_preserved(self):
+        original = b'[{"id":1,"version":"A"}, {"id":1,"version":"B"}, {"id":1,"version":"A"}]'
+        rows = json.loads(original)
+        self.assertEqual(self.render('monsters', original, rows[::-1]), original)
+        rows.pop()
+        self.assertEqual(len(json.loads(self.render('monsters', original, rows))), 2)
+
+    def test_genuine_removal_does_not_rewrite_remaining_record(self):
+        original = b'[\n  {"id":1},\n  { "id":2 }\n]\n'
+        self.assertEqual(self.render('equipment', original, [{'id':2}]), b'[\n  { "id":2 }\n]\n')
+
+    def test_spell_identity_includes_spellbook_and_preserves_unicode(self):
+        original = '[{"name":"Éther","spellbook":"standard","max_hit":1}]'.encode()
+        rows = json.loads(original) + [{'name':'Éther','spellbook':'ancient','max_hit':2}]
+        output = self.render('spells', original, rows)
+        self.assertTrue(output.startswith(original[:-1]))
+        self.assertEqual(len(json.loads(output)), 2)
+
+    def test_numeric_representation_change_is_not_silently_discarded(self):
+        output = self.render('equipment', b'[{"id":1,"weight":1}]', [{'id':1,'weight':1.0}])
+        self.assertIn(b'1.0', output)
+
+
 if __name__=='__main__':unittest.main()

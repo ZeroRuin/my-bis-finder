@@ -9,8 +9,8 @@
     "spells": 61
   },
   "sha256": {
-    "equipment.json": "c0b9af28a0775a89cf72f1e681e9dc17843bcf30fe181bd29f43f59a845a9c6b",
-    "monsters.json": "e809b35e25f862e332c926270e9bbf6d3bed7ed1c7f92622035d1d662f4c924c",
+    "equipment.json": "3598e581e7eb3b659f882c04f63348549dc18c67a96d6cdcb9171c84ddc3d04f",
+    "monsters.json": "d130a1ba7fb3afa964d8ab5c8ae56022381facf6faa5179d9e2336ea12ebfeed",
     "spells.json": "40f6920c4cf0493e57c7b6c819c3215c550adc353ed88676297f6bf794c99083"
   },
   "supplements": {
