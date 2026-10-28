@@ -1,16 +1,16 @@
 {
   "packVersion": "0.5.0-alpha2",
   "mode": "bundled-offline",
-  "dataSnapshotDate": "2026-09-13",
-  "source": "user-supplied OSRS Wiki DPS Calculator generated JSON datasets",
+  "dataSnapshotDate": "2026-10-28",
+  "source": "OSRS Wiki DPS Calculator published JSON; see upstreamFiles for per-file provenance",
   "counts": {
-    "equipment": 5452,
-    "monsters": 2883,
+    "equipment": 5461,
+    "monsters": 2919,
     "spells": 61
   },
   "sha256": {
-    "equipment.json": "3598e581e7eb3b659f882c04f63348549dc18c67a96d6cdcb9171c84ddc3d04f",
-    "monsters.json": "d130a1ba7fb3afa964d8ab5c8ae56022381facf6faa5179d9e2336ea12ebfeed",
+    "equipment.json": "1e70f1ecf678fe931c3611c50bbb615cd57222d526466cecdf155d35372d13a8",
+    "monsters.json": "9280fa42f84a05ac0d5f278b7b09ab1dc855742f2f9b16fc80505c7282da4ee3",
     "spells.json": "40f6920c4cf0493e57c7b6c819c3215c550adc353ed88676297f6bf794c99083"
   },
   "supplements": {
@@ -20,5 +20,20 @@
       "importedAt": "2026-10-27",
       "scope": "TFA NPCs and equipment only; existing non-TFA records retained unchanged"
     }
+  },
+  "upstreamFiles": {
+    "equipment.json": {
+      "commit": "c1f7737a7fea01adc9d0c1fe59e88d4584c5bc48",
+      "changedAt": "2026-10-24"
+    },
+    "monsters.json": {
+      "commit": "c1f7737a7fea01adc9d0c1fe59e88d4584c5bc48",
+      "changedAt": "2026-10-24"
+    }
+  },
+  "importBaselineDates": {
+    "equipment.json": "2026-09-13",
+    "monsters.json": "2026-09-13",
+    "spells.json": "2026-09-13"
   }
 }
