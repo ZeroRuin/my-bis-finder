@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Sync bundled equipment and monster records with the supplied OSRS DPS Calculator snapshot.
+- Offer one Bork target with a phase dropdown; stunned Bork reduces melee defence bonuses by 100 and rolls normal accuracy.
+- Validate Slayer mappings when importing new monster data.
+
 ## 0.9.7 — Advanced Options, Bank Layout and The Fractured Archive
 
 - Add The Fractured Archive target filters, provisional party HP scaling, phase profiles and defence-reduction floors; add supported raid equipment, Zeal and elemental fragments.

@@ -135,6 +135,8 @@ public class PersonalBisPanel extends PluginPanel
     private final JLabel advancedAlert = new JLabel(" !");
     private final JLabel activeReductions = new JLabel();
     private final JPanel groupStorageOptions = new JPanel();
+    private final JComboBox<FracturedArchiveRules.BorkPhase> borkPhase =
+        new JComboBox<>(FracturedArchiveRules.BorkPhase.values());
     private final RaidOptionsPanel raidOptions = new RaidOptionsPanel(this::raidOptionsChanged);
     private final VardorvisHpOptions vardorvisHpOptions=new VardorvisHpOptions(this::vardorvisHpChanged);
     private boolean advancedExpanded;
@@ -440,6 +442,14 @@ public class PersonalBisPanel extends PluginPanel
             });
         });
         content.add(targetCard);
+        styleCombo(borkPhase);
+        borkPhase.setAlignmentX(Component.LEFT_ALIGNMENT);
+        borkPhase.setMaximumSize(new Dimension(Integer.MAX_VALUE,borkPhase.getPreferredSize().height));
+        borkPhase.setToolTipText("Bork phase: Smork HP or stunned");
+        borkPhase.getAccessibleContext().setAccessibleName("Bork phase");
+        borkPhase.setVisible(false);
+        borkPhase.addActionListener(e->invalidateRaidOptions());
+        content.add(borkPhase);
         content.add(vardorvisHpOptions);
         content.add(raidOptions);
         content.add(Box.createVerticalStrut(4));
@@ -1021,6 +1031,7 @@ content.add(Box.createVerticalStrut(5));
         raidOptions.showFor(targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null);
         boolean stylesReady=RecommendationReadiness.stylesVisible(targetReady);
         MonsterDefinition currentTarget=targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null;
+        borkPhase.setVisible(FracturedArchiveRules.isBork(currentTarget));
         boolean immune=TargetStyleImmunity.immune(currentTarget,selectedStyle);
         boolean showImmunity=targetReady&&loadoutsGenerated&&styleExplicitlySelected&&immune;
         immunityNotice.setText(showImmunity?TargetStyleImmunity.message(currentTarget,selectedStyle):"");
@@ -1660,10 +1671,12 @@ content.add(Box.createVerticalStrut(5));
         final long generation=calculationGeneration.incrementAndGet();
         final RaidSettings requestedRaid=raidOptions.settings();
         final VardorvisHpSettings requestedVardHp=vardorvisHpOptions.settings();
-        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid,requestedVardHp));
+        final FracturedArchiveRules.BorkPhase requestedBorkPhase =
+            (FracturedArchiveRules.BorkPhase)borkPhase.getSelectedItem();
+        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid,requestedVardHp,requestedBorkPhase));
     }
 
-    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid,VardorvisHpSettings requestedVardHp)
+    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid,VardorvisHpSettings requestedVardHp,FracturedArchiveRules.BorkPhase requestedBorkPhase)
     {
         if (client.getGameState() != GameState.LOGGED_IN) return;
         if (!targetExplicitlySelected || (!bankChecked) || (!calculateAllStyles && !styleExplicitlySelected))
@@ -1698,7 +1711,7 @@ content.add(Box.createVerticalStrut(5));
         // generation, even while the user batches changes in the settings list.
         final List<BankItem> bankSnapshot = new ArrayList<>(generationBank);
         final List<BankItem> ownedGearSnapshot = new ArrayList<>(generationOwned);
-        final MonsterDefinition scaledMonster=RaidScaling.withOwnedBoosts(RaidScaling.apply(requestedVardHp.apply(unscaledMonster),requestedRaid),account,ownedGearSnapshot);
+        final MonsterDefinition scaledMonster=RaidScaling.withOwnedBoosts(RaidScaling.apply(FracturedArchiveRules.withBorkPhase(requestedVardHp.apply(unscaledMonster),requestedBorkPhase),requestedRaid),account,ownedGearSnapshot);
         final DefenceReductionPlan selectedReduction=manualDefenceReduction.revalidate(
             DefenceReductionPlan.available(ownedGearSnapshot,account.real(Skill.MAGIC)));
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);

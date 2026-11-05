@@ -43,6 +43,7 @@ public class EquipmentIntelligence
         for (BankItem bankItem : bank)
         {
             int canonicalId = itemManager.canonicalize(bankItem.getItemId());
+            if (canonicalId == 34607 || bankItem.getItemId() == 34607) continue;
             ItemStats itemStats = itemManager.getItemStats(canonicalId);
             if (itemStats == null || !itemStats.isEquipable() || itemStats.getEquipment() == null)
             {

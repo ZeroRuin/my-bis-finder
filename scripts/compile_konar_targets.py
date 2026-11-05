@@ -34,10 +34,8 @@ def resolve(monsters, rule):
                 else 'Exact spawn/manual evidence or remaining review required')
 
 
-def main():
-    raw = (DATA / 'konar-target-rules.json').read_bytes()
+def compile_pack(raw, combat):
     pack = json.loads(raw)
-    combat = (ROOT / 'src/main/resources/wiki-data/monsters.json').read_bytes()
     monsters = json.loads(combat)
     pack['rulesSha256'] = hashlib.sha256(raw).hexdigest()
     pack['combatSourceSha256'] = hashlib.sha256(combat).hexdigest()
@@ -45,6 +43,12 @@ def main():
     for areas in pack['tasks'].values():
         for area, rules in areas.items():
             areas[area] = [resolve(monsters, rule) for rule in rules]
+    return pack
+
+
+def main():
+    pack = compile_pack((DATA / 'konar-target-rules.json').read_bytes(),
+                        (ROOT / 'src/main/resources/wiki-data/monsters.json').read_bytes())
     (DATA / 'konar-targets.json').write_text(json.dumps(pack, indent=2) + '\n')
     rules = [r for a in pack['tasks'].values() for rs in a.values() for r in rs]
     print(f'{sum(bool(r["automaticIds"]) for r in rules)}/{len(rules)} species/area rules automatically resolved.')

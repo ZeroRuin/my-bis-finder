@@ -1,23 +1,10 @@
 My BiS Finder offline Wiki data pack
 
-The bundled equipment and monster records are derived from Old School RuneScape
-Wiki data and are included for offline loadout calculation. No live Wiki requests
-occur at runtime.
+Equipment (5,096 records) and monsters (2,921 records) were synced on
+6 November 2026 to the supplied OSRS DPS Calculator archive. The record
+contents match the archive; existing file layout is retained where possible
+to keep the diff readable. The 61 bundled spells retain their prior snapshot.
 
-Bundled records:
-equipment: 5452
-monsters: 2883
-spells: 61
-
-The bundled equipment and monster snapshot was last refreshed on 13 September
-2026. This is the local dataset snapshot date and does not imply that every
-upstream Wiki record was changed on that date.
-
-See src/main/resources/wiki-data/manifest.json for the recorded source
-description, record counts and SHA-256 hashes used to identify the bundled
-dataset.
-
-TFA-only supplement added 27 October 2026 from weirdgloop/osrs-dps-calc
-commit def70220a9a886195213640254b2c00b66879d70. Baseline non-TFA records
-are unchanged. See docs/RAID-OPTIONS.md for provisional user-supplied Wiki
-scaling and mechanics, supported effects and exclusions.
+See src/main/resources/wiki-data/manifest.json for source and local SHA-256
+hashes. Deadman-only imbued ancient cape remains excluded by the planner.
+No live Wiki requests occur at plugin runtime.

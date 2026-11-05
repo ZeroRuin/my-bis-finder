@@ -3,7 +3,7 @@
   "sourceCommit": "6a3ca6f19d65c5609434b51cac8dee9d4af97c02",
   "sourceSha256": "3addfaa6a66a4e05b0a340d73a395cc794bfe444249f2cc1622a6a43c2dcb91b",
   "sourceBlob": "1b01d6c11d298e275bd08a2823a81f2a17ba1e76",
-  "combatSourceSha256": "d130a1ba7fb3afa964d8ab5c8ae56022381facf6faa5179d9e2336ea12ebfeed",
+  "combatSourceSha256": "4d98110d9dbf6e1ec8b359e047dd1bfa752389d3c2e6fe8384b2a05a8f2d86f9",
   "scopeSha256": "89b61e789413d29cd4b3c3dad2b21e32f2be37e66d7c90aae30223756d1de8e9",
   "scope": [
     "Konar",
@@ -5193,6 +5193,5 @@
         58
       ]
     }
-  ],
-  "supplementValidation": "2026-10-27: all original combat profiles verified unchanged; TFA-only additions. Original task and location resolutions retained."
+  ]
 }

@@ -1,4 +1,5 @@
 import copy
+import hashlib
 import json
 from pathlib import Path
 import tempfile
@@ -19,7 +20,16 @@ class UpdateTests(unittest.TestCase):
             for kind,rows in self.rows.items(): (directory/(kind+'.json')).write_text(json.dumps(rows))
             manifest={'dataSnapshotDate':'2026-09-13','counts':dict.fromkeys(updater.FILES,1),'sha256':{}}
             (directory/'manifest.json').write_text(json.dumps(manifest))
-            before={p.name:p.read_bytes() for p in directory.iterdir()}
+            slayer = directory.parent / 'slayer-data'
+            slayer.mkdir()
+            digest = hashlib.sha256((directory / 'monsters.json').read_bytes()).hexdigest()
+            review = {'combatSourceSha256': digest, 'rows': [{'id': 1, 'name': 'Monster', 'eligible': True}]}
+            (slayer / 'reviewed-locations.json').write_text(json.dumps(review))
+            (slayer / 'restricted-location-matches.json').write_text(json.dumps(
+                {'combatSourceSha256': digest, 'rows': [{'name': 'Monster', 'catalogueIds': [1]}]}))
+            (slayer / 'konar-target-rules.json').write_text(json.dumps(
+                {'tasks': {'Monsters': {'Area': [{'name': 'Other'}]}}}))
+            before = {p: p.read_bytes() for p in directory.parent.rglob('*.json')}
             def fetch(url):
                 if '/commits/main' in url:return json.dumps({'sha':'a'*40}).encode()
                 if '/commits?' in url:return json.dumps([{'commit':{'committer':{'date':date+'T00:00:00Z'}}}]).encode()
@@ -27,9 +37,18 @@ class UpdateTests(unittest.TestCase):
             with patch.object(updater,'fetch',fetch),patch.dict('os.environ',{'WIKI_UPDATE_REPORT':str(root/'report.md'),'GITHUB_OUTPUT':str(root/'output'),'GITHUB_STEP_SUMMARY':str(root/'summary')},clear=True):
                 if fails:
                     with self.assertRaises(ValueError):updater.run(root)
-                    self.assertEqual(before,{p.name:p.read_bytes() for p in directory.iterdir()})
+                    self.assertEqual(before, {p: p.read_bytes() for p in directory.parent.rglob('*.json')})
                     return
                 changed=updater.run(root)
+            if (directory / 'monsters.json').read_bytes() != before[directory / 'monsters.json']:
+                digest = hashlib.sha256((directory / 'monsters.json').read_bytes()).hexdigest()
+                for name in ('reviewed-locations', 'restricted-location-matches', 'konar-targets'):
+                    pack = json.loads((slayer / (name + '.json')).read_text())
+                    self.assertEqual(pack['combatSourceSha256'], digest)
+                    if name == 'konar-targets':
+                        self.assertEqual(pack['tasks']['Monsters']['Area'][0]['automaticIds'], [2])
+                    else:
+                        self.assertEqual(pack['rows'], json.loads(before[slayer / (name + '.json')])['rows'])
             return changed,json.loads((directory/'manifest.json').read_text()),json.loads((directory/'equipment.json').read_text())
 
     def test_identical_no_update(self):self.assertFalse(self.scenario(self.rows)[0])
@@ -49,6 +68,27 @@ class UpdateTests(unittest.TestCase):
     def test_missing_numeric_field_rejected(self):
         new=copy.deepcopy(self.rows);del new['monsters'][0]['defensive']['heavy']
         self.scenario(new,fails=True)
+
+    def test_unrelated_monster_update_preserves_reviews_and_rebuilds_konar(self):
+        self.rows['monsters'][0]['level'] = 1
+        self.rows['monsters'].append(dict(copy.deepcopy(self.rows['monsters'][0]), id=2, name='Other'))
+        new = copy.deepcopy(self.rows)
+        new['monsters'][1]['skills']['hp'] = 2
+        self.assertTrue(self.scenario(new)[0])
+
+    def test_changed_reviewed_profile_blocks_all_writes(self):
+        new = copy.deepcopy(self.rows)
+        new['monsters'][0]['skills']['hp'] = 2
+        new['equipment'][0]['speed'] = 5
+        self.scenario(new, fails=True)
+
+    def test_new_variant_of_reviewed_species_needs_review(self):
+        self.rows['monsters'].extend(dict(self.rows['monsters'][0], id=i, name=f'Other {i}')
+                                     for i in range(2, 6))
+        new = copy.deepcopy(self.rows)
+        new['monsters'].append(dict(new['monsters'][0], id=6))
+        self.scenario(new, fails=True)
+
 
 class IncrementalJsonTests(unittest.TestCase):
     def render(self, kind, original, incoming):

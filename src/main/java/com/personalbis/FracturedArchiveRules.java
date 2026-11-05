@@ -12,7 +12,23 @@ final class FracturedArchiveRules {
     static boolean isTfa(MonsterDefinition m){return m!=null&&IDS.contains(m.getId());}
     static boolean blade(MonsterDefinition m){return m!=null&&m.getId()==16675;}
     static boolean imp(MonsterDefinition m){return m!=null&&m.getId()==16650;}
-    static boolean stunnedBork(MonsterDefinition m){return m!=null&&m.getId()==16640&&m.getVersion().equals("Stunned");}
+    enum BorkPhase {
+        FULL("Smork HP 100% - 75%"), HIGH("Smork HP 75% - 50%"),
+        LOW("Smork HP 50% - 25%"), EMPTY("Smork HP 25% - 0%"), STUNNED("Stunned");
+        private final String label;
+        BorkPhase(String label){this.label=label;}
+        @Override public String toString(){return label;}
+    }
+    static boolean isBork(MonsterDefinition m){return m!=null&&m.getId()==16640;}
+    static MonsterDefinition withBorkPhase(MonsterDefinition m,BorkPhase phase){
+        if(!isBork(m))return m;
+        int delta=phase==BorkPhase.STUNNED?100:0;
+        return new MonsterDefinition(m.getId(),m.getName(),phase.toString(),m.getCombatLevel(),
+            m.getDefenceLevel(),m.getMagicLevel(),m.getRangedLevel(),m.getHitpoints(),
+            m.getStabDefence()-delta,m.getSlashDefence()-delta,m.getCrushDefence()-delta,
+            m.getMagicDefence(),m.getLightDefence(),m.getStandardDefence(),m.getHeavyDefence(),
+            m.getAttributes(),m.getSize(),m.getWeaknessElement(),m.getWeaknessSeverity(),m.getMagicAttack());
+    }
     static boolean hpSupported(MonsterDefinition m){
         if(m==null)return false;
         switch(m.getId()){
@@ -43,18 +59,16 @@ final class FracturedArchiveRules {
     static int floor(MonsterDefinition m){
         if(m==null)return -1;
         switch(m.getId()){
-            case 16659:case 16660:return 156;case 16652:return 78;case 16640:return 180;
+            case 16659:case 16660:return 156;case 16652:return 120;case 16640:return 180;
             case 16667:return 117;case 16684:return 102;case 16673:case 16674:return 129;case 16677:return 150;
             case 16641:case 16665:case 16643:case 16645:case 16647:case 16675:return 0;
             default:return -1;
         }
     }
     static int borkStage(MonsterDefinition m){
-        if(m==null||m.getId()!=16640||stunnedBork(m))return -1;
-        String v=m.getVersion();
-        if(v.equals("Armour stage 2")||v.contains("75–50"))return 1;
-        if(v.equals("Armour stage 3")||v.contains("50–25"))return 2;
-        if(v.equals("Armour stage 4")||v.contains("25–0"))return 3;
+        if(!isBork(m)||BorkPhase.STUNNED.toString().equals(m.getVersion()))return -1;
+        for(BorkPhase phase:BorkPhase.values())
+            if(phase.toString().equals(m.getVersion()))return phase.ordinal();
         return 0;
     }
     static HitDistribution transform(HitDistribution d,MonsterDefinition m,AttackStyle style){
@@ -75,7 +89,7 @@ final class FracturedArchiveRules {
         if(m.getId()==16677)s+=" Phase 3 baseline; phase 4 shares base stats but prayers, rear bonus and conditional reductions are not modelled. Phase-2 damage transfer is excluded.";
         if(m.getId()==16665)s+=" No add-clear time or healing is included.";
         if(m.getId()==16652)s+=" Ezekiel enrage damage reduction is not modelled.";
-        if(m.getId()==16640)s+=" Bork armour stages 1–4 correspond to Smorks HP 100–75%, 75–50%, 50–25% and 25–0%. Magic resistance follows upstream (0/2/4/6); the supplied Wiki prose conflicts. Stunned melee always hits; alleged rear bonus excluded.";
+        if(m.getId()==16640)s+=" Bork armour stages 1–4 correspond to Smorks HP 100–75%, 75–50%, 50–25% and 25–0%. Magic resistance follows upstream (0/2/4/6); the supplied Wiki prose conflicts. Stunned subtracts 100 from each melee defence bonus; alleged rear bonus excluded.";
         if(m.getId()==16643||m.getId()==16645||m.getId()==16647)s+=" Shared shield pool: estimate is for one depletion, not the full five-cycle encounter.";
         return s;
     }

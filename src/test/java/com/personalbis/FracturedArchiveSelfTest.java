@@ -45,7 +45,7 @@ public final class FracturedArchiveSelfTest {
         }
         check(TargetSearch.search(all,"tfa xarth",0).stream().allMatch(m->m.getName().toLowerCase(Locale.ROOT).contains("xarth")),"qualified filter");
         check(all.stream().noneMatch(m->m.getId()>=16678&&m.getId()<=16681),"unverified conditional adds excluded");
-        int[][] floors={{16659,156},{16652,78},{16640,180},{16641,0},{16667,117},{16665,0},{16643,0},{16645,0},{16684,102},{16673,129},{16675,0},{16677,150}};
+        int[][] floors={{16659,156},{16652,120},{16640,180},{16641,0},{16667,117},{16665,0},{16643,0},{16645,0},{16684,102},{16673,129},{16675,0},{16677,150}};
         for(int[] f:floors)check(ManualDefenceReduction.floor(find(all,f[0],null))==f[1],"floor "+f[0]);
         near(DemonbaneEffects.multiplier(find(all,16665,null),70),1.17,"Dreadnoth truncation");
         near(DemonbaneEffects.multiplier(find(all,16684,null),70),1.56,"Xarth demonbane");
@@ -100,11 +100,28 @@ public final class FracturedArchiveSelfTest {
         check(!TargetStyleImmunity.immune(blade,AttackStyle.RANGED)&&!TargetStyleImmunity.immune(blade,AttackStyle.MAGIC),"Blade keeps Ranged and Magic");
         check(TargetStyleImmunity.message(blade,AttackStyle.MELEE_CRUSH).contains("phase mechanics"),"Blade explains planning exclusion");
         check(find(all,16641,null).getName().equals("The Smorks"),"Smorks remains a separate target");
-        for(int i=1;i<=4;i++){
-            MonsterDefinition bork=find(all,16640,"Armour stage "+i);
-            check(bork.getName().equals("Bork")&&!bork.getVersion().contains("Smorks"),"Bork label stage "+i);
-            check(FracturedArchiveRules.borkStage(bork)==i-1,"Bork mechanics retained stage "+i);
-            near(WikiNpcTransforms.apply(HitDistribution.linear(1,30,30),bork,AttackStyle.RANGED,null,"",false).expectedHit(),30-(8+2*(i-1)),"Bork armour stage "+i);
+        MonsterDefinition bork=find(all,16640,null);
+        check(all.stream().filter(m->m.getId()==16640).count()==1,"single Bork target");
+        for(FracturedArchiveRules.BorkPhase phase:FracturedArchiveRules.BorkPhase.values()){
+            MonsterDefinition phased=RaidScaling.apply(FracturedArchiveRules.withBorkPhase(bork,phase),eight);
+            boolean stunned=phase==FracturedArchiveRules.BorkPhase.STUNNED;
+            int stage=phase.ordinal(), delta=stunned?100:0;
+            check(phased.getStabDefence()==bork.getStabDefence()-delta
+                &&phased.getSlashDefence()==bork.getSlashDefence()-delta
+                &&phased.getCrushDefence()==bork.getCrushDefence()-delta,"Bork phase defence "+phase);
+            check(phased.getDefenceLevel()==bork.getDefenceLevel()
+                &&phased.getMagicDefence()==bork.getMagicDefence()
+                &&phased.getHeavyDefence()==bork.getHeavyDefence(),"Bork keeps other defences");
+            near(WikiNpcTransforms.apply(HitDistribution.linear(1,30,30),phased,AttackStyle.RANGED,null,"",false).expectedHit(),
+                stunned?30:30-(8+2*stage),"Bork armour "+phase);
+            near(WikiNpcTransforms.apply(HitDistribution.linear(1,30,30),phased,AttackStyle.MAGIC,null,"",false).expectedHit(),
+                stunned?30:30-2*stage,"Bork magic resistance "+phase);
+            if(stunned){
+                CombatResult result=new MeleeCombatCalculator(account).calculateSnapshotForStance(
+                    Collections.emptyMap(),AttackStyle.MELEE_SLASH,phased,false,MeleeStance.ACCURATE,MeleePrayer.ZEAL);
+                near(result.getAccuracy(),WikiAccuracyRoll.normal(result.getAttackRoll(),result.getDefenceRoll()),"stunned Bork rolls normal accuracy");
+                check(result.getAccuracy()<1,"stunned Bork melee is not guaranteed");
+            }
         }
         SwingUtilities.invokeAndWait(()->{
             RaidOptionsPanel p=new RaidOptionsPanel(()->{},new java.awt.Font("Dialog",0,12),new java.awt.Font("Dialog",1,12));

@@ -133,13 +133,14 @@ charging and Shield Slam are excluded. Zeal requires its permanent unlock and
 84 Prayer/75 Attack/75 Strength; elemental fragments require their permanent
 unlocks and each add two base damage to standard spells of that element.
 
-The TFA supplement is pinned to `weirdgloop/osrs-dps-calc` commit
-`def70220a9a886195213640254b2c00b66879d70` (2026-10-27), plus supplied Wiki
-screenshots and mechanics text. All 2,860 prior monster and 5,436 equipment
-profiles are retained unchanged. The Slayer source hash was updated only after
-that exact-profile audit; all 470 existing user review decisions are retained.
+The bundled equipment and monster records match the supplied November 2026
+OSRS DPS Calculator archive. The party HP estimates still use the supplied
+Wiki tables. See WIKI-DATA-NOTES.txt for data provenance.
 
-Bork target labels use Armour stage 1–4 (the Smorks HP thresholds remain in the
-tooltip); The Smorks stays separate. Ocellus Phase 2 / The Blade excludes all melee
+Bork appears once in the target picker. The phase dropdown below it sets the
+Smork HP band or Stunned; The Smorks stays a separate target. Stunned
+subtracts 100 from stab, slash and crush defence bonuses and uses normal
+accuracy rolls. Changing the phase requires regenerating the loadout.
+Ocellus Phase 2 / The Blade excludes all melee
 recommendations because of practical phase mechanics, including BEST selection.
 Ranged and Magic remain available; this is a planning restriction, not immunity.

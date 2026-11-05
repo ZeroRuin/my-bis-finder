@@ -41,7 +41,7 @@ jobs:
           gradle-version: '8.10.2'
       - name: Compile and check mechanics against updated data
         if: steps.data.outputs.changed == 'true'
-        run: gradle --no-daemon mechanicsSelfTest
+        run: gradle --no-daemon mechanicsSelfTest slayerTaskSelfTest reviewedSlayerLocationsSelfTest
       - name: Create or refresh the data update PR
         if: steps.data.outputs.changed == 'true'
         shell: bash
@@ -51,7 +51,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git switch -c "$branch"
-          git add src/main/resources/wiki-data WIKI-DATA-NOTES.txt
+          git add src/main/resources/wiki-data src/main/resources/slayer-data WIKI-DATA-NOTES.txt
           git commit -m 'data: refresh published OSRS Wiki datasets'
           expected=$(git ls-remote origin "refs/heads/$branch" | cut -f1)
           git push --force-with-lease="refs/heads/$branch:$expected" origin "HEAD:refs/heads/$branch"

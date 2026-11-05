@@ -157,6 +157,45 @@ def incremental_json(kind, previous, incoming):
     return result
 
 
+def refresh_slayer(directory, previous, updated):
+    # A reviewed picker entry can represent several NPC IDs. Compare the
+    # entire named family (including order), as well as the referenced IDs.
+    old, new = json.loads(previous), json.loads(updated)
+    old_hash = hashlib.sha256(previous).hexdigest()
+    new_hash = hashlib.sha256(updated).hexdigest()
+    refreshed = {}
+    for filename in ('reviewed-locations.json', 'restricted-location-matches.json'):
+        pack = json.loads((directory / filename).read_bytes())
+        if pack['combatSourceSha256'] != old_hash:
+            raise ValueError(f'{filename}: baseline needs Slayer review before importing monsters')
+        names = {row['name'].strip().lower() for row in pack['rows']}
+        ids = {row['id'] for row in pack['rows'] if 'id' in row}
+        for row in pack['rows']:
+            ids.update(row.get('catalogueIds', []))
+            ids.update(row.get('evidenceNpcIds', []))
+
+        def profiles(records):
+            result = collections.defaultdict(list)
+            for row in records:
+                name = row['name'].strip().lower()
+                if name in names or row['id'] in ids:
+                    result[name].append(canonical({k: v for k, v in row.items() if k != 'image'}))
+            return result
+
+        before, after = profiles(old), profiles(new)
+        affected = sorted(name for name in before.keys() | after.keys()
+                          if before.get(name) != after.get(name))
+        if affected:
+            raise ValueError(f'{filename}: review changed Slayer profiles before importing: '
+                             + ', '.join(affected))
+        pack['combatSourceSha256'] = new_hash
+        refreshed[filename] = pack
+    from compile_konar_targets import compile_pack
+    refreshed['konar-targets.json'] = compile_pack(
+        (directory / 'konar-target-rules.json').read_bytes(), updated)
+    return refreshed
+
+
 def run(root):
     directory = root / 'src/main/resources/wiki-data'
     manifest = json.loads((directory / 'manifest.json').read_text())
@@ -186,6 +225,12 @@ def run(root):
         manifest['counts'][kind] = len(new)
         manifest['sha256'][filename] = hashlib.sha256(encoded).hexdigest()
         manifest.setdefault('upstreamFiles', {})[filename] = {'commit': head, 'changedAt': changed_at}
+    slayer_dir = directory.parent / 'slayer-data'
+    slayer = {}
+    if 'monsters.json' in staged:
+        slayer = refresh_slayer(slayer_dir, (directory / 'monsters.json').read_bytes(),
+                                staged['monsters.json'])
+        lines.append('- Slayer: reviewed and spawn mappings validated; automatic Konar targets rebuilt.')
     # Nothing is written until all downloads and validation succeed.
     if staged:
         manifest.setdefault('importBaselineDates', {kind + '.json': manifest['dataSnapshotDate'] for kind in FILES})
@@ -194,6 +239,8 @@ def run(root):
         for filename, encoded in staged.items():
             (directory / filename).write_bytes(encoded)
         (directory / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+        for filename, pack in slayer.items():
+            (slayer_dir / filename).write_text(json.dumps(pack, indent=2) + '\n', encoding='utf-8')
         notes = root / 'WIKI-DATA-NOTES.txt'
         notes.write_text('My BiS Finder offline Wiki data pack\n\nPublished OSRS Wiki DPS Calculator JSON datasets.\nSource: https://github.com/' + UPSTREAM + '\nNo live Wiki requests occur at plugin runtime.\n\nLast local import: ' + manifest['dataSnapshotDate'] + '\n\n' + '\n'.join(f'{k}: {v}' for k, v in manifest['counts'].items()) + '\n\nSee src/main/resources/wiki-data/manifest.json for hashes and per-file upstream commits/dates. Mechanics and special-case code require separate review.\n')
     report = '\n'.join(lines) + '\n\nValidation: JSON/schema/count checks passed. Mechanics self-test must pass before the workflow creates or updates its PR.\n'

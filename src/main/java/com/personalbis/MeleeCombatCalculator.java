@@ -134,7 +134,7 @@ public class MeleeCombatCalculator
                 ? 1.0-Math.pow(1.0-WikiAccuracyRoll.normal(attackRoll,defenceRoll),2)
                 : WikiAccuracyRoll.fang(attackRoll,defenceRoll);
 
-        if(RaidCombatRules.core(monster)||FracturedArchiveRules.stunnedBork(monster)||FracturedArchiveRules.imp(monster))accuracy=1.0;
+        if(RaidCombatRules.core(monster)||FracturedArchiveRules.imp(monster))accuracy=1.0;
 
         int maxHit=WikiIntegerStages.maxHitFromEffective(effStr,strBonus+64);
         maxHit=WikiMeleeEffects.maxAfterCrystalBlessing(maxHit,gear.values());

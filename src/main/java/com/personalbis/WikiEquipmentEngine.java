@@ -61,7 +61,7 @@ public final class WikiEquipmentEngine {
    for(Map.Entry<String,List<Integer>> e:ammo.entrySet())AMMO.put(Integer.parseInt(e.getKey()),e.getValue());
    Type et=new TypeToken<List<WikiEquipment>>(){}.getType();
    List<WikiEquipment> eq=g.fromJson(new InputStreamReader(WikiEquipmentEngine.class.getResourceAsStream("/wiki-data/equipment.json"),StandardCharsets.UTF_8),et);
-   for(WikiEquipment w:eq) if(!EQUIPMENT.containsKey(w.id)||empty(EQUIPMENT.get(w.id).version)) EQUIPMENT.put(w.id,w);
+   for(WikiEquipment w:eq) if(w.id!=34607&&(!EQUIPMENT.containsKey(w.id)||empty(EQUIPMENT.get(w.id).version))) EQUIPMENT.put(w.id,w);
    // RuneLite gameval ItemID: preserve the charge state of locked quivers.
    CANONICAL.put(28949,28947); CANONICAL.put(28953,28951);
    // Ordinary ancient MA2/max capes have the same equipment stats as other MA2 capes.

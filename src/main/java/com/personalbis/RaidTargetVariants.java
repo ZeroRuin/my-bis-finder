@@ -16,7 +16,6 @@ final class RaidTargetVariants
     static List<String> versions(WikiMonster w)
     {
         String v=w.version==null?"":w.version;
-        if(w.id==16640)return Arrays.asList("Armour stage 1","Armour stage 2","Armour stage 3","Armour stage 4","Stunned");
         if(w.attributes!=null&&w.attributes.contains("xerician"))
         {
             if(w.name.equals("Great Olm"))
