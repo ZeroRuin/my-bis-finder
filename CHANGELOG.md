@@ -1,13 +1,15 @@
 # Changelog
 
-## 0.9.7.2 — Remove Unused Code and Tidy Tests
+## 0.9.7.2 — Tormented Demon Variants, Scurrius Rats and Code Clean-up
 
-- Add a Tormented Demon variant dropdown: Shielded, Shielded (Defenceless) and Unshielded. Shielded variants take 20% less damage unless using demonbane or abyssal weapons; Defenceless and Unshielded are always hit; Unshielded takes ticks² − 16 bonus damage from spells, crossbows, chinchompas and crush attacks, which also attack one tick faster.
-- Giant rat (Scurrius) is always hit and dies to one hit, as in the Wiki DPS calculator; rat bone weapons still attack it every tick.
-- Remove 12 unused classes, 32 unused or test-only methods, a duplicate Slayer flag and unused imports; no change to recommendations.
-- Magic accuracy uses one shared roll-ordering step instead of a second copy of the same logic.
-- Remove the unused Show sidebar setting.
-- Check magic max-hit and accuracy boundaries against the calculator the plugin uses, replacing checks of an unused copy.
+- Add a Tormented Demon variant dropdown: Shielded, Shielded (Defenceless) and Unshielded, matching the Wiki DPS calculator.
+  - Shielded variants take 20% less damage unless using demonbane or abyssal weapons.
+  - Defenceless and Unshielded are always hit.
+  - Unshielded takes attack speed² − 16 bonus damage from spells, crossbows, chinchompas and crush attacks, which also attack one tick faster.
+- Giant rat (Scurrius) is always hit and dies to one hit; rat bone weapons still attack it every tick.
+- Remove 12 unused classes, 32 unused or test-only methods, a duplicate Slayer flag, the unused Show sidebar setting and unused imports; recommendations are unchanged.
+- Magic accuracy uses one shared roll-ordering step instead of two copies of the same logic.
+- Tests check the code the plugin runs, including magic max-hit and accuracy boundaries, instead of unused copies.
 - Run all 31 self-tests with `gradle test`, and run them with the Python checks on every push and pull request.
 - List all 31 self-tests in the testing guide.
 - Add an optional `-PruneLiteVersion` Gradle property for local builds; Plugin Hub builds still use the latest release.
