@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.7.3 — Sidebar Code Clean-up
+
+- Move the sidebar's colours and styling into one shared class; the sidebar looks the same.
+- Share the per-style optimiser caching instead of keeping two copies; results are unchanged.
+- Remove raid number-box styling that was always overwritten.
+- Build and test with Java 11 in CI, matching the Plugin Hub.
+
 ## 0.9.7.2 — Tormented Demon Variants, Scurrius Rats and Code Clean-up
 
 - Add a Tormented Demon variant dropdown: Shielded, Shielded (Defenceless) and Unshielded, matching the Wiki DPS calculator.

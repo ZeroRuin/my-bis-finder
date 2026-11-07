@@ -34,7 +34,7 @@ jobs:
         if: steps.data.outputs.changed == 'true'
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '11'
       - uses: gradle/actions/setup-gradle@v4
         if: steps.data.outputs.changed == 'true'
         with:

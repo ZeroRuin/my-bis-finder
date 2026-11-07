@@ -46,7 +46,7 @@ jobs:
         if: steps.source.outputs.eligible == 'true'
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '11'
       - uses: gradle/actions/setup-gradle@v4
         if: steps.source.outputs.eligible == 'true'
         with:

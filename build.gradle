@@ -30,7 +30,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.7.2'
+version = '0.9.7.3'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
