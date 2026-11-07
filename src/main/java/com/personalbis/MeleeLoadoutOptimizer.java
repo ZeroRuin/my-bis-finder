@@ -13,11 +13,6 @@ public class MeleeLoadoutOptimizer
         final EnumMap<EquipmentSlot,List<EquipmentCandidate>> choices=new EnumMap<>(EquipmentSlot.class);
         final Map<String,CombatResult> exact=new HashMap<>();
     }
-    private static final class WeaponSearchResult
-    {
-        final EquipmentCandidate weapon; final OptimizedLoadout loadout;
-        WeaponSearchResult(EquipmentCandidate w,OptimizedLoadout l){weapon=w;loadout=l;}
-    }
 
     @Inject
     public MeleeLoadoutOptimizer(EquipmentIntelligence intelligence,MeleeCombatCalculator calculator)
