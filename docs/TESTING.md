@@ -56,29 +56,48 @@ controls have been removed.
 
 ## Automated verification
 
-Run these Gradle tasks before releasing a code change:
+Run all of these Gradle tasks before releasing a code change (31 self-tests).
+Pass `--continue` so one failure does not hide the rest:
 
 ```text
-compileJava compileTestJava
-defenceReductionBankItemsSelfTest
-ttkPerformanceSelfTest
-salveRoundingSelfTest
-combatStyleLabelsSelfTest
-poweredStanceSelfTest
-mechanicsSelfTest
-gimStorageSelfTest
-itemExclusionSelfTest
-loadoutStatsSizingSelfTest
-slayerTaskSelfTest
-reviewedSlayerLocationsSelfTest
-slayerGsonSelfTest
-hueycoatlSelfTest
-theatreOfBloodSelfTest
-raidOptionsSelfTest
-targetStyleImmunitySelfTest
-combatSearchSelfTest
-specialAttackSelfTest
+gradle --continue \
+  compileJava \
+  compileTestJava \
+  mechanicsSelfTest \
+  gimStorageSelfTest \
+  itemExclusionSelfTest \
+  loadoutStatsSizingSelfTest \
+  slayerTaskSelfTest \
+  reviewedSlayerLocationsSelfTest \
+  slayerGsonSelfTest \
+  hueycoatlSelfTest \
+  theatreOfBloodSelfTest \
+  raidOptionsSelfTest \
+  targetStyleImmunitySelfTest \
+  combatSearchSelfTest \
+  specialAttackSelfTest \
+  vardorvisSelfTest \
+  blowpipeAmmoPlanSelfTest \
+  hpStateTtkSelfTest \
+  defenceFillSelfTest \
+  manualDefenceReductionSelfTest \
+  ttkPerformanceSelfTest \
+  salveRoundingSelfTest \
+  combatStyleLabelsSelfTest \
+  poweredStanceSelfTest \
+  vardorvisHpSelfTest \
+  vardorvisShortlistSelfTest \
+  voidEquipmentSelfTest \
+  defenceReductionPlanSelfTest \
+  twistedBowRoundingSelfTest \
+  voidLoadoutFamiliesSelfTest \
+  defenceReductionBankItemsSelfTest \
+  bankWithdrawalSelfTest \
+  fracturedArchiveSelfTest
 ```
+
+To build against a fixed RuneLite version instead of `latest.release`, add
+`-PruneLiteVersion=<version>` to any Gradle command. Plugin Hub builds use the default.
 
 Run the data-tool checks with:
 

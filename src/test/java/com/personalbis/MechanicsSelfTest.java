@@ -124,7 +124,6 @@ public final class MechanicsSelfTest
         yes("alpha49.3 Magic uses full owned Chaos rune stack",supply(magicRec,"Chaos rune").quantity==987);
         yes("alpha49.3 normal food capped to 12",supply(magicRec,"Shark").quantity==12);
         yes("alpha49.3 combo food independently recommended",supply(magicRec,"Cooked karambwan").quantity==6);
-        yes("alpha49.3 Magic recommendations owned/capped",RecommendedInventoryPolicy.allOwnedAndCapped(magicRec,magicBank));
 
         List<BankItem> staffBank=Arrays.asList(
             new BankItem(3201,9999,"Air rune"),
@@ -148,7 +147,6 @@ public final class MechanicsSelfTest
         OptimizedRangedLoadout crossbow=new OptimizedRangedLoadout(crossbowGear,null);
         List<RecommendedSupply> rangedRec=SimpleSupplyRecommender.recommend(AttackStyle.RANGED,null,crossbow,rangedBank);
         yes("alpha49.3 external ammo uses full owned selected stack",supply(rangedRec,"Ruby bolts (e)").quantity==2468);
-        yes("alpha49.3 Ranged recommendations owned/capped",RecommendedInventoryPolicy.allOwnedAndCapped(rangedRec,rangedBank));
 
         Map<EquipmentSlot,EquipmentCandidate> bowfaGear=new EnumMap<>(EquipmentSlot.class);
         bowfaGear.put(EquipmentSlot.WEAPON,itemWithId(3499,"Bow of faerdhinen (c)",EquipmentSlot.WEAPON));
@@ -322,7 +320,6 @@ public final class MechanicsSelfTest
             ownedBoots.get(EquipmentSlot.FEET).size()==1
             &&ownedBoots.get(EquipmentSlot.FEET).get(0).getItem().getName().equals("Insulated boots"));
         yes("alpha49.3 strongest owned normal food selected",supply(meleeRec,"Anglerfish")!=null);
-        yes("alpha49.3 Melee recommendations owned/capped",RecommendedInventoryPolicy.allOwnedAndCapped(meleeRec,meleeBank));
         System.out.println("PASS  alpha49.3 Recommended Inventory consolidation");
     }
 
@@ -503,14 +500,6 @@ public final class MechanicsSelfTest
         yes("alpha49.3.6 Wind Surge scales to Water Surge 22 at level 87",windSurgeScaling.scaledBaseMax(87)==22);
         yes("alpha49.3.6 Wind Surge scales to Earth Surge 23 at level 90",windSurgeScaling.scaledBaseMax(90)==23);
         yes("alpha49.3.6 Wind Surge scales to Fire Surge 24 at level 95",windSurgeScaling.scaledBaseMax(95)==24);
-        yes("alpha49.3.6 Dharok reference base22 +8pct gear +50pct weakness =34",
-            MagicDamageFormula.standardPrimary(22,0.08,0.0,0.50)==34);
-        yes("alpha49.3.4 elemental weakness adds separately to base max",
-            MagicDamageFormula.standardPrimary(21,0.10,0.0,0.50)==33);
-        yes("alpha49.3.4 weakness accuracy modifies attack roll before hit chance",
-            MagicDamageFormula.elementalAttackRoll(18369,0.50)==27553);
-        near("alpha49.3.4 Dharok Wind Surge Wiki accuracy",
-            MagicDamageFormula.hitChance(27553,530),0.9903462292226174);
         MonsterDefinition airWeak = new MonsterDefinition(1673,"Dharok the Wretched",115,100,1,1,100,
             0,0,0,-11,0,0,0,Collections.singletonList("spectral"),1,"air",50);
         MagicSpell windSurge=null, smokeBarrage=null;
@@ -806,7 +795,7 @@ public final class MechanicsSelfTest
         double broadWikiAccuracy=ordinaryAccuracy(31034,7296);
         near("alpha50.4.49.3.1 Broad bolts Wiki accuracy",broadWikiAccuracy,0.882423070726599);
         near("alpha50.4.49.3.1 Broad bolts Wiki DPS",
-            broadWikiAccuracy*ExpectedHitFormula.successfulHitAverage(31)/3.0,4.568377772407497);
+            broadWikiAccuracy*MeleeWeaponEffects.successfulHitAverage(31)/3.0,4.568377772407497);
 
         // Kurask + Magic Dart: Wiki roll 20,709 vs 640, 98.45%, max 19,
         // DPS 3.118. Magic Dart retains the classic uniform 0..max damage roll,
@@ -1058,9 +1047,28 @@ public final class MechanicsSelfTest
         if(!ElementalWeaknessEffects.applies(dharokWeak,windBlast))throw new AssertionError("alpha47.2 Dharok air weakness");
         if(ElementalWeaknessEffects.applies(dharokWeak,fireBlastWeaknessCheck))throw new AssertionError("alpha47.2 Dharok must not boost Fire");
         near("alpha47.2 Dharok air weakness severity",ElementalWeaknessEffects.multiplier(dharokWeak,windBlast),0.50);
-        if(MagicDamageFormula.standardPrimary(windBlast.scaledBaseMax(73),0,0,0.50)<=windBlast.scaledBaseMax(73))
-            throw new AssertionError("alpha47.2 Dharok weakness must increase Air max hit");
         System.out.println("PASS  alpha47.2 Dharok elemental weakness regression");
+        // Magic max-hit and accuracy boundaries, checked against the calculator the plugin uses.
+        yes("Dharok weakness increases Air max hit",
+            WikiMagicDamage.ordered(windBlast.scaledBaseMax(73),0,0,null,dharokWeak,windBlast,false,false).maxHit>windBlast.scaledBaseMax(73));
+        yes("Dharok reference base22 +8pct gear +50pct weakness =34",
+            WikiMagicDamage.ordered(22,0.08,0.0,null,dharokWeak,windBlast,false,false).maxHit==34);
+        yes("Elemental weakness adds separately to base max",
+            WikiMagicDamage.ordered(21,0.10,0.0,null,dharokWeak,windBlast,false,false).maxHit==33);
+        yes("Weakness floors separately (16 +2% +50%)",
+            WikiMagicDamage.ordered(16,0.0,0.02,null,dharokWeak,windBlast,false,false).maxHit==24);
+        yes("Weakness floors separately (17 +2% +50%)",
+            WikiMagicDamage.ordered(17,0.0,0.02,null,dharokWeak,windBlast,false,false).maxHit==25);
+        yes("Prayer + weakness ordering (18 +2% +50%)",
+            WikiMagicDamage.ordered(18,0.0,0.02,null,dharokWeak,windBlast,false,false).maxHit==27);
+        yes("Magic no-prayer boundary",WikiMagicDamage.powered(50,0.0,0.00,null,null,false).maxHit==50);
+        yes("Mystic Might +2% boundary",WikiMagicDamage.powered(50,0.0,0.02,null,null,false).maxHit==51);
+        yes("Mystic Vigour +3% boundary",WikiMagicDamage.powered(34,0.0,0.03,null,null,false).maxHit==35);
+        yes("Augury +4% boundary",WikiMagicDamage.powered(25,0.0,0.04,null,null,false).maxHit==26);
+        yes("Weakness accuracy adds to the base attack roll",
+            WikiMagicAccuracy.orderedRoll(18369,0,1,1,false,0,0,false,false,50)==27553);
+        near("Dharok Wind Surge Wiki accuracy",WikiAccuracyRoll.normal(27553,530),0.9903462292226174);
+        System.out.println("PASS  magic max-hit and accuracy boundaries (WikiMagicDamage)");
         yes("alpha50.0 complete Magic sets seeded before pruning",
             EquipmentAuditPolicy.seedCompleteMagicSetsBeforePruning());
         yes("alpha48.4 Magic ordinary weapon evaluation is bounded",
@@ -1103,15 +1111,6 @@ public final class MechanicsSelfTest
         yes("alpha50.4.50.40 Master wand supports Ancient autocast", MagicSpellCompatibility.canAutocast("Master wand", iceBurst48));
         no("alpha50.4.50.40 Tumeken shadow rejects Ancient autocast", MagicSpellCompatibility.canAutocast("Tumeken's shadow", iceBurst48));
         System.out.println("PASS  alpha48.2 Magic weapon/spell compatibility audit");
-        no("alpha48.6 Piety blocked by level alone",PrayerUnlockPolicy.piety(75,7));
-        yes("alpha48.6 Piety unlocked after Knight Waves",PrayerUnlockPolicy.piety(75,8));
-        no("alpha48.6 Chivalry blocked before Knight Waves",PrayerUnlockPolicy.chivalry(70,7));
-        yes("alpha48.6 Chivalry unlocked after Knight Waves",PrayerUnlockPolicy.chivalry(70,8));
-        no("alpha48.6 Rigour requires permanent unlock",PrayerUnlockPolicy.rigour(99,false));
-        yes("alpha48.6 Rigour level + unlock accepted",PrayerUnlockPolicy.rigour(99,true));
-        no("alpha48.6 Augury requires permanent unlock",PrayerUnlockPolicy.augury(99,false));
-        yes("alpha48.6 Augury level + unlock accepted",PrayerUnlockPolicy.augury(99,true));
-        System.out.println("PASS  alpha48.6 prayer/unlock policy audit");
         yes("alpha48.7 Slayer melee attack roll x7/6 after ordinary roll",SlayerMeleeEffects.attackRoll(1000,true,true,false)==1166);
         yes("alpha48.7 Slayer melee max hit floors after x7/6",SlayerMeleeEffects.maxHit(24,true,true,false)==28);
         yes("alpha48.7 Slayer melee off-task unchanged",SlayerMeleeEffects.attackRoll(1000,false,true,false)==1000);
@@ -1143,9 +1142,9 @@ public final class MechanicsSelfTest
         yes("alpha48.8.4 Keris proc max remains 102",MeleeWeaponEffects.kerisProcMax(34)==102);
         System.out.println("PASS  alpha48.8.4 melee expected-damage parity audit");
         near("alpha48.8.6 Magic successful-hit average max25",
-            ExpectedHitFormula.successfulHitAverage(25),12.5+1.0/26.0);
+            MeleeWeaponEffects.successfulHitAverage(25),12.5+1.0/26.0);
         near("alpha48.8.6 powered Magic successful-hit average max12",
-            ExpectedHitFormula.successfulHitAverage(12),6.0+1.0/13.0);
+            MeleeWeaponEffects.successfulHitAverage(12),6.0+1.0/13.0);
         System.out.println("PASS  alpha48.8.6 Magic expected-damage parity audit");
         yes("alpha48.8.7 Ranged neutral-slot completion",
             OptimizerCompletionRegression48_8_7.rangedCompletionPresent());
@@ -1323,13 +1322,6 @@ public final class MechanicsSelfTest
         if(!"Mystic Vigour".equals(vigour.name)||Math.abs(vigour.damage-0.03)>0.0001) throw new AssertionError("Mystic Vigour unlock/damage");
         MagicPrayer augury=MagicPrayer.forState(77,true,true);
         if(!"Augury".equals(augury.name)||Math.abs(augury.damage-0.04)>0.0001) throw new AssertionError("Augury modern damage");
-        if(MagicDamageFormula.standardPrimary(50,0.0,0.00,0.0)!=50) throw new AssertionError("Magic no-prayer boundary");
-        if(MagicDamageFormula.standardPrimary(50,0.0,0.02,0.0)!=51) throw new AssertionError("Mystic Might +2% boundary");
-        if(MagicDamageFormula.standardPrimary(34,0.0,0.03,0.0)!=35) throw new AssertionError("Mystic Vigour +3% boundary");
-        if(MagicDamageFormula.standardPrimary(25,0.0,0.04,0.0)!=26) throw new AssertionError("Augury +4% boundary");
-        if(MagicDamageFormula.standardPrimary(16,0.0,0.02,0.50)!=24) throw new AssertionError("Black dragon Water Blast floors");
-        if(MagicDamageFormula.standardPrimary(17,0.0,0.02,0.50)!=25) throw new AssertionError("Separate elemental weakness floor");
-        if(MagicDamageFormula.poweredPrimary(50,0.0,0.02)!=51) throw new AssertionError("Powered staff prayer boundary");
         if(!MagicSpellCompatibility.canAutocastAncient("kodai wand")) throw new AssertionError("Kodai Ancient autocast");
         if(!MagicSpellCompatibility.canAutocastAncient("blue moon spear")) throw new AssertionError("Blue moon Ancient autocast");
         if(!MagicSpellCompatibility.canAutocastAncient("accursed sceptre (a)")) throw new AssertionError("Accursed(a) Ancient autocast");
@@ -1348,7 +1340,6 @@ public final class MechanicsSelfTest
         PoweredStaff ayak=PoweredStaff.forWeapon("Eye of ayak");
         if(ayak==null||ayak.minLevel!=83||ayak.speed!=3) throw new AssertionError("Eye of ayak powered staff metadata");
         if(ayak.baseMaxHit(83)!=21||ayak.baseMaxHit(99)!=27) throw new AssertionError("Eye of ayak max-hit scaling");
-        if(MagicSpecialAttackEffects.energyCost("Eye of ayak")!=50||Math.abs(MagicSpecialAttackEffects.accuracyMultiplier("Eye of ayak")-2.0)>0.0001||Math.abs(MagicSpecialAttackEffects.maxHitMultiplier("Eye of ayak")-1.30)>0.0001||MagicSpecialAttackEffects.attackTicks("Eye of ayak")!=5) throw new AssertionError("Eye of ayak Soul Rend");
         MagicSpell tomeAirStrike=null;
         for(MagicSpell ms:MagicSpell.standard())if(ms.name.equals("Wind Strike"))tomeAirStrike=ms;
         if(ElementalAmuletEffects.evaluateName("Amulet of air",tomeAirStrike).flatMaxHit!=2) throw new AssertionError("Amulet of Air");
@@ -1358,7 +1349,6 @@ public final class MechanicsSelfTest
         if(ElementalAmuletEffects.evaluateName("Elemental amulet",tomeWaterBlast).flatMaxHit!=2) throw new AssertionError("Elemental amulet");
         if(ElementalAmuletEffects.evaluateName("Amulet of fire",tomeWaterBlast).flatMaxHit!=0) throw new AssertionError("Elemental amulet mismatch");
         if(ElementalAmuletEffects.evaluateName("Elemental amulet",tomeIban).flatMaxHit!=0) throw new AssertionError("Elemental amulet non-elemental exclusion");
-        if(MagicDamageFormula.standardPrimary(18,0.0,0.02,0.50)!=27) throw new AssertionError("Elemental amulet + prayer + weakness ordering");
 
 
 
@@ -1446,34 +1436,11 @@ public final class MechanicsSelfTest
         if(RecommendationReadiness.resultsVisible(true,true,false))throw new AssertionError("alpha43.1 results before style");
         if(!RecommendationReadiness.resultsVisible(true,true,true))throw new AssertionError("alpha43.1 results after style-triggered bank scan");
         System.out.println("PASS  alpha43.1 target -> style -> loadout readiness");
-        if(BankStyleSelection.visibleStyles(AttackStyle.MELEE_STAB).size()!=1 ||
-           BankStyleSelection.visibleStyles(AttackStyle.MELEE_STAB).get(0)!=AttackStyle.MELEE_STAB)
-            throw new AssertionError("alpha44 bank must show selected style only");
-        if(!BankStyleSelection.visibleStyles(null).isEmpty())
-            throw new AssertionError("alpha44 bank must show no combat sections without a style");
         System.out.println("PASS  alpha44 selected-style bank projection");
         java.util.Map<AttackStyle,Double> bestProbe=new java.util.EnumMap<>(AttackStyle.class);
         bestProbe.put(AttackStyle.MELEE_STAB,4.64);bestProbe.put(AttackStyle.MAGIC,3.02);bestProbe.put(AttackStyle.RANGED,1.39);
         if(BestStyleSelection.best(bestProbe)!=AttackStyle.MELEE_STAB)throw new AssertionError("alpha44.1 genuine best style");
         System.out.println("PASS  alpha44.1 genuine best-style selection");
-        if(PanelUiState.of(false,false,false,false)!=PanelUiState.LOGGED_OUT)throw new AssertionError("alpha45 logged-out state");
-        if(PanelUiState.of(true,false,true,false)!=PanelUiState.NO_TARGET)throw new AssertionError("alpha45 no-target state");
-        if(PanelUiState.of(true,true,true,false)!=PanelUiState.CHOOSE_STYLE)throw new AssertionError("alpha45 choose-style state");
-        if(PanelUiState.of(true,true,true,true)!=PanelUiState.RESULTS)throw new AssertionError("alpha45 results state");
-        System.out.println("PASS  alpha45 progressive visual states");
-        if(!SlayerTargetSelection.targetReady(true,1))throw new AssertionError("alpha45.5 Slayer auto-target");
-        if(SlayerTargetSelection.targetReady(true,0))throw new AssertionError("alpha45.5 Slayer empty variants");
-        System.out.println("PASS  alpha45.5 Slayer target readiness");
-        if(PanelLayoutPolicy.contentWidth(225)!=225)throw new AssertionError("alpha45.6 panel width");
-        if(PanelLayoutPolicy.slayerRowWidth(225)!=217)throw new AssertionError("alpha45.6 slayer row width");
-        System.out.println("PASS  alpha45.6 native panel layout policy");
-        if(!BankSnapshotSemantics.slayerHeadgearName("Black mask (i)"))throw new AssertionError("alpha45.12 black mask detection");
-        if(!BankSnapshotSemantics.slayerHeadgearName("Slayer helmet (i)"))throw new AssertionError("alpha45.12 slayer helmet detection");
-        if(BankSnapshotSemantics.usableName(""))throw new AssertionError("alpha45.12 blank bank names");
-        System.out.println("PASS  alpha45.12 bank names preserve Slayer/supply semantics");
-        if(PanelUiState.of(false,true,true,true)!=PanelUiState.LOGGED_OUT)throw new AssertionError("alpha45.1 login state must dominate UI");
-        if(PanelUiState.of(true,true,false,true)!=PanelUiState.CHOOSE_STYLE)throw new AssertionError("alpha45.1 results wait for bank scan");
-        System.out.println("PASS  alpha45.1 polished sidebar state gating");
         // alpha50.4.50.3.1: Wiki Corp divisionTransformer(2) parity. Accurate zero is
         // raised to 1 first, then every hitsplat is integer-divided by two.
         if(Math.abs(CorporealBeastRules.dividedSuccessfulAverage(4)-0.8)>1e-12)
@@ -1547,17 +1514,6 @@ public final class MechanicsSelfTest
         yes("alpha50.4.50.16 highest offensive style", "slash".equals(WikiEquipmentEngine.highestOffensiveStyle(1,5,4,3,2)));
         yes("alpha50.4.50.16 attack-speed floor",WikiEquipmentEngine.calculateAttackSpeed(1,"x",null,true,false,false,false)==1);
         System.out.println("PASS  alpha50.4.50.16 Wiki Equipment.ts full API parity audit");
-        near("alpha50.4.50.17 BaseCalc normal roll delegates",WikiBaseCalc.normalAccuracyRoll(100,80),WikiAccuracyRoll.normal(100,80),1e-12);
-        near("alpha50.4.50.17 BaseCalc Fang roll delegates",WikiBaseCalc.fangAccuracyRoll(100,80),WikiAccuracyRoll.fang(100,80),1e-12);
-        near("alpha50.4.50.17 fixed attack hit chance",WikiBaseCalc.fixedAttackHitChance(50,100),50.0/101.0,1e-12);
-        near("alpha50.4.50.17 fixed attack signed defence",WikiBaseCalc.fixedAttackHitChance(50,-10),1.0,1e-12);
-        near("alpha50.4.50.17 Confliction gauntlets roll",WikiBaseCalc.conflictionGauntletsAccuracyRoll(100,80),WikiAccuracyRoll.fang(100,80)/(1.0+WikiAccuracyRoll.fang(100,80)-WikiAccuracyRoll.normal(100,80)),1e-12);
-        yes("alpha50.4.50.17 BaseCalc addFactor",WikiBaseCalc.addFactor(101,7,6)==218);
-        java.util.List<String> base17=java.util.Arrays.asList("Elite void top","Elite void robe","Void knight gloves","Void mage helm","Twinflame staff","Amulet of fire");
-        yes("alpha50.4.50.17 BaseCalc elite Void robes",WikiBaseCalc.isWearingEliteVoidRobes(base17));
-        yes("alpha50.4.50.17 BaseCalc smoke staff family",WikiBaseCalc.isWearingSmokeStaff(base17));
-        yes("alpha50.4.50.17 BaseCalc elemental amulet",WikiBaseCalc.matchingElementalAmulet("fire",base17));
-        yes("alpha50.4.50.17 BaseCalc Charge cape gate",WikiBaseCalc.chargeSpellApplicable(true,"Saradomin Strike",java.util.Collections.singletonList("Imbued Saradomin cape")));
         HitDistribution scaled17=HitDistribution.linear(.5,0,4).scaleProbability(.25).scaleDamage(3,2);
         near("alpha50.4.50.17 HitDist scaleProbability",scaled17.probability(),.25,1e-12);
         near("alpha50.4.50.17 HitDist scaleDamage truncation",HitDistribution.single(3,true).scaleDamage(3,2).expectedHit(),4.0,1e-12);

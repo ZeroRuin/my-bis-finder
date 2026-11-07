@@ -43,29 +43,6 @@ public final class EquipmentAuditPolicy
     public static boolean evaluateAllOwnedMeleeWeapons(){ return true; }
     public static boolean evaluateAllOwnedRangedWeapons(){ return true; }
 
-    public static boolean specialMagicWeapon(String name, MonsterDefinition m)
-    {
-        if(name==null)return false; String n=name.toLowerCase();
-        if(PoweredStaff.forWeapon(n)!=null||PoweredStaff.requiresContext(n))return true;
-        if(n.contains("iban")||n.contains("slayer's staff")||n.contains("slayer staff")
-            ||n.contains("ancient staff")||n.contains("ancient sceptre")||n.contains("kodai")
-            ||n.contains("nightmare staff")||n.contains("master wand")
-            ||n.contains("saradomin staff")||n.contains("guthix staff")||n.contains("zamorak staff")
-            ||n.contains("staff of light")||n.contains("staff of balance")||n.contains("staff of the dead")
-            ||n.contains("dragon hunter wand")||n.contains("twinflame")||n.contains("smoke battlestaff")
-            ||n.contains("mystic smoke staff"))return true;
-        String e=m==null?"":m.getWeaknessElement();
-        return !e.isEmpty()&&elementalRuneProvider(n,e);
-    }
-    private static boolean elementalRuneProvider(String n,String e)
-    {
-        if(!(n.contains("staff")||n.contains("battlestaff")))return false;
-        if(e.equals("air"))return n.contains("air")||n.contains("smoke")||n.contains("dust")||n.contains("mist");
-        if(e.equals("water"))return n.contains("water")||n.contains("steam")||n.contains("mud")||n.contains("mist");
-        if(e.equals("earth"))return n.contains("earth")||n.contains("lava")||n.contains("mud")||n.contains("dust");
-        if(e.equals("fire"))return n.contains("fire")||n.contains("lava")||n.contains("smoke")||n.contains("steam");
-        return false;
-    }
     public static boolean specialRangedWeapon(String name)
     {
         if(name==null)return false; String n=name.toLowerCase();

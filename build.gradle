@@ -16,7 +16,8 @@ repositories {
     mavenCentral()
 }
 
-def runeLiteVersion = 'latest.release'
+// Plugin Hub builds use latest.release; pass -PruneLiteVersion=<version> to pin one locally.
+def runeLiteVersion = project.findProperty('runeLiteVersion') ?: 'latest.release'
 def pluginMainClass = 'com.personalbis.PersonalBisPluginTest'
 
 dependencies {
@@ -26,7 +27,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.7.1'
+version = '0.9.7.2'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'

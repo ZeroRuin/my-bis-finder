@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.7.2 — Remove Unused Code and Tidy Tests
+
+- Remove 12 unused classes, 17 unused methods, a duplicate Slayer flag and unused imports; no change to recommendations.
+- Remove the unused Show sidebar setting.
+- Check magic max-hit and accuracy boundaries against the calculator the plugin uses, replacing checks of an unused copy.
+- List all 31 self-tests in the testing guide.
+- Add an optional `-PruneLiteVersion` Gradle property for local builds; Plugin Hub builds still use the latest release.
+
 ## 0.9.7.1 — Salve and Slayer Helm Fixes, Bork Phases
 
 - Sync bundled equipment and monster records with the supplied OSRS DPS Calculator snapshot.

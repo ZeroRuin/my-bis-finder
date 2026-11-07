@@ -111,12 +111,6 @@ public class EquipmentIntelligence
 
     }
 
-    public List<EquipmentCandidate> allForSlot(List<BankItem> bank, AttackStyle style, EquipmentSlot slot)
-    {
-        Map<EquipmentSlot, List<EquipmentCandidate>> ranked = rank(bank, style);
-        List<EquipmentCandidate> candidates = ranked.get(slot);
-        return candidates == null ? Collections.<EquipmentCandidate>emptyList() : candidates;
-    }
 
     private int attackForStyle(WikiEquipment stats, AttackStyle style)
     {

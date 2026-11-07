@@ -20,13 +20,6 @@ public final class FinalLoadoutSelection
         return ttk < 0 || (ttk == 0 && better(candidateDps,currentDps));
     }
 
-    public static int compareTtk(double leftTtk, double leftDps, double rightTtk, double rightDps)
-    {
-        double l=Double.isFinite(leftTtk)?leftTtk:Double.POSITIVE_INFINITY;
-        double r=Double.isFinite(rightTtk)?rightTtk:Double.POSITIVE_INFINITY;
-        int ttk=Double.compare(l,r);
-        return ttk!=0?ttk:Double.compare(rightDps,leftDps);
-    }
 
     public static boolean compatibleShield(EquipmentCandidate weapon, EquipmentCandidate shield)
     {

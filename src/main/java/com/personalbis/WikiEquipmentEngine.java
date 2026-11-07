@@ -85,11 +85,6 @@ public final class WikiEquipmentEngine {
   if(ammoId!=null && valid.contains(ammoId)) return AmmoApplicability.INCLUDED;
   return AmmoApplicability.INVALID;
  }
- public static boolean exactAmmoCompatible(EquipmentCandidate weapon,EquipmentCandidate ammo){
-  if(weapon==null)return ammo==null;
-  AmmoApplicability a=ammoApplicability(weapon.getItem().getItemId(),ammo==null?null:ammo.getItem().getItemId());
-  return a!=AmmoApplicability.INVALID;
- }
  public static boolean isBlowpipeId(int id){return id==12926||id==28688||id==31575||id==31579||id==31583;}
  public static int transformMeleeAttack(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition monster,int attack){ return "keris partisan of amascut".equals(name(gear.get(EquipmentSlot.WEAPON)))&&!isToa(monster)?attack-50:attack; }
  public static Totals transform(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition monster,String spellbook,

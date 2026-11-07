@@ -43,9 +43,6 @@ public final class MeleeWeaponEffects {
  }
 
 
- public static boolean hasKerisProc(EquipmentCandidate w, MonsterDefinition m){
-  return isKeris(w)&&isScarabTarget(m);
- }
  public static int kerisProcMax(int modifiedMax){return modifiedMax*3;}
 
  /**

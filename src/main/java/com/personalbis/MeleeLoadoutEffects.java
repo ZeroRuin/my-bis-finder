@@ -17,10 +17,6 @@ public final class MeleeLoadoutEffects
         return (n.contains("(e)") || n.contains("(ei)")) ? 1.20 : (7.0/6.0);
     }
 
-    public static boolean hasSalveEffect(Map<EquipmentSlot,EquipmentCandidate> gear, MonsterDefinition monster)
-    {
-        return salveMultiplier(gear,monster) > 1.0;
-    }
 
     public static int salveAttackRoll(int baseAttackRoll, Map<EquipmentSlot,EquipmentCandidate> gear, MonsterDefinition monster)
     {

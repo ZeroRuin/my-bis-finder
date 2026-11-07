@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -54,7 +53,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Skill;
@@ -171,7 +169,6 @@ public class PersonalBisPanel extends PluginPanel
     private String lastSlayerLocation = "";
     private final JTextArea slayerAssignmentNote = new AutoSizingTextArea();
     private Set<String> unverifiedTaskTargets = Collections.emptySet();
-    private volatile boolean slayerMode;
     private volatile boolean slayerTargetMode;
     private volatile boolean includeRubyBoltsEnabled=true;
     private AttackStyle selectedStyle = AttackStyle.MELEE_SLASH;
@@ -427,7 +424,6 @@ public class PersonalBisPanel extends PluginPanel
         slayerTask.addActionListener(e ->
         {
             slayerTargetMode = slayerTask.isSelected();
-            slayerMode = slayerTargetMode;
             invalidateOptimizerCache();
             updateSlayerUiState();
             if (!slayerTargetMode)
@@ -1716,7 +1712,7 @@ content.add(Box.createVerticalStrut(5));
             DefenceReductionPlan.available(ownedGearSnapshot,account.real(Skill.MAGIC)));
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
         final AttackStyle requestedStyle=selectedStyle;
-        final boolean requestedSlayerMode=slayerMode;
+        final boolean requestedSlayerMode=slayerTargetMode;
         final Map<BlowpipeAmmoPlan.Pipe,BlowpipeAmmoPlan.Dart> assumptions=new EnumMap<>(BlowpipeAmmoPlan.Pipe.class);
         assumptions.putAll(blowpipeAmmoSelections);
         assumptions.entrySet().removeIf(entry->generationExclusions.excludes(entry.getValue().label,entry.getValue().label));
@@ -2181,10 +2177,6 @@ content.add(Box.createVerticalStrut(5));
         return null;
     }
 
-    public void showBankView()
-    {
-        bankFilter.toggle();
-    }
 
     private class MonsterRenderer extends DefaultListCellRenderer
     {
