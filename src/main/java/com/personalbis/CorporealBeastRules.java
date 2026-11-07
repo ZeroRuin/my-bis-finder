@@ -11,11 +11,4 @@ public final class CorporealBeastRules {
   return false;
  }
  public static boolean reduced(MonsterDefinition m,EquipmentCandidate w,AttackStyle style){return isCorp(m)&&!meleeCorpbane(w,style);}
- /** Corp's divisionTransformer(2) floors each hitsplat after accurate-zero conversion. */
- public static double dividedSuccessfulAverage(int max){
-  if(max<=0)return 0.0; return HitDistribution.linear(1.0,0,max).accurateZeroToOne().transform(HitDistribution.divide(2,0)).expectedHit();
- }
- public static double dividedUniformAverage(int min,int max){
-  if(max<min)return 0.0; return HitDistribution.linear(1.0,min,max).transform(HitDistribution.divide(2,0)).expectedHit();
- }
 }

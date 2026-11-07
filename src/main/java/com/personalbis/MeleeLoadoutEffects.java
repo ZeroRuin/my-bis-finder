@@ -17,7 +17,6 @@ public final class MeleeLoadoutEffects
         return (n.contains("(e)") || n.contains("(ei)")) ? 1.20 : (7.0/6.0);
     }
 
-
     public static int salveAttackRoll(int baseAttackRoll, Map<EquipmentSlot,EquipmentCandidate> gear, MonsterDefinition monster)
     {
         return salveMaxHit(baseAttackRoll,gear,monster);
@@ -41,16 +40,6 @@ public final class MeleeLoadoutEffects
             && named(gear.get(EquipmentSlot.HANDS),"void knight gloves");
     }
 
-    public static double voidAccuracyMultiplier(Map<EquipmentSlot,EquipmentCandidate> gear)
-    {
-        return hasVoidMelee(gear) ? 1.10 : 1.0;
-    }
-
-    public static double voidDamageMultiplier(Map<EquipmentSlot,EquipmentCandidate> gear)
-    {
-        return hasVoidMelee(gear) ? 1.10 : 1.0;
-    }
-
     /**
      * Current (22 July 2026+) Inquisitor crush bonus. The old full-set and
      * mace-amplified effects were removed: helm is +0.5%, hauberk +1.0%,
@@ -71,7 +60,6 @@ public final class MeleeLoadoutEffects
     {
         return 1.0 + inquisitorBonus(gear,style);
     }
-
 
     /** Full obsidian armour (helm/body/legs) gives obsidian melee weapons +10% accuracy and damage. */
     public static boolean hasObsidianArmourSet(Map<EquipmentSlot,EquipmentCandidate> gear)

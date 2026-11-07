@@ -118,10 +118,6 @@ public final class WikiEquipmentEngine {
   if(monster!=null&&monster.getId()==7223&&!manualCast&&("Bone mace".equals(weaponName)||"Bone shortbow".equals(weaponName)||"Bone staff".equals(weaponName)))speed=1;
   return Math.max(speed,1);
  }
- /** Returns the Wiki offensive style name with the greatest value; ties keep stab->slash->crush->magic->ranged order. */
- public static String highestOffensiveStyle(int stab,int slash,int crush,int magic,int ranged){
-  String best="stab";int v=stab;if(slash>v){best="slash";v=slash;}if(crush>v){best="crush";v=crush;}if(magic>v){best="magic";v=magic;}if(ranged>v)best="ranged";return best;
- }
  /**
   * Full data-driven Equipment.ts aggregation. item IDs are canonicalised before stats/ammo checks.
   * blowpipeDartId models the Wiki itemVars.blowpipeDartId field; null means no loaded dart.

@@ -56,8 +56,19 @@ controls have been removed.
 
 ## Automated verification
 
-Run all of these Gradle tasks before releasing a code change (31 self-tests).
-Pass `--continue` so one failure does not hide the rest:
+Run every self-test before releasing a code change:
+
+```text
+gradle test
+```
+
+This compiles the plugin and runs all 31 self-tests through JUnit (`SelfTestSuite`),
+each in its own JVM. The **CI** workflow runs the same command, plus the Python
+checks, on every push to `main` and every pull request. A new self-test with a
+`main()` must be added to `SelfTestSuite.selfTests()`; the suite fails if one is missing.
+
+Each self-test also keeps its own Gradle task for running it alone. To run them
+without JUnit, pass `--continue` so one failure does not hide the rest:
 
 ```text
 gradle --continue \

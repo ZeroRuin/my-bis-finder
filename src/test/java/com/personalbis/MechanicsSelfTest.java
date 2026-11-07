@@ -388,16 +388,15 @@ public final class MechanicsSelfTest
         near("alpha50.4.35 Wiki Greater demon Emberlight DPS", ordinaryAccuracy(36308,3776)*MeleeWeaponEffects.successfulHitAverage(45)/2.4, 8.89585, 0.00002);
         near("alpha50.4.35 Wiki Vorkath DHL accuracy", ordinaryAccuracy(28131,20070), 0.6433, 0.00005);
         near("alpha50.4.35 Wiki Vorkath DHL DPS", ordinaryAccuracy(28131,20070)*MeleeWeaponEffects.successfulHitAverage(45)/2.4, 6.03633, 0.00002);
-        near("alpha50.4.35 Wiki Vorkath Fang accuracy", MeleeWeaponEffects.fangAccuracy(25606,20070), 0.7952, 0.00005);
-        near("alpha50.4.35 Wiki Vorkath Fang DPS", MeleeWeaponEffects.fangAccuracy(25606,20070)*MeleeWeaponEffects.fangAverageHit(46)/3.0, 6.09653, 0.00002);
+        near("alpha50.4.35 Wiki Vorkath Fang accuracy", WikiAccuracyRoll.fang(25606,20070), 0.7952, 0.00005);
+        near("alpha50.4.35 Wiki Vorkath Fang DPS", WikiAccuracyRoll.fang(25606,20070)*MeleeWeaponEffects.fangAverageHit(46)/3.0, 6.09653, 0.00002);
         near("alpha50.4.35 Wiki KQ Keris accuracy", ordinaryAccuracy(19706,22866), 0.4309, 0.00005);
         near("alpha50.4.35 Wiki KQ Keris DPS", ordinaryAccuracy(19706,22866)*MeleeWeaponEffects.kerisAverageHit(45)/2.4, 4.20184, 0.00002);
         near("alpha50.4.35 Wiki KQ Breaching accuracy", ordinaryAccuracy(26208,22866), 0.5637, 0.00005);
         near("alpha50.4.35 Wiki KQ Breaching DPS", ordinaryAccuracy(26208,22866)*MeleeWeaponEffects.kerisAverageHit(45)/2.4, 5.49740, 0.00002);
         near("alpha49.2.1 Fang exact same-defence-roll accuracy sample",
-            MeleeWeaponEffects.fangAccuracy(10000,10000),
+            WikiAccuracyRoll.fang(10000,10000),
             (10000.0*(4.0*10000.0+5.0))/(6.0*(10001.0)*(10001.0)));
-
 
         near("Dragon hunter lance dragon accuracy", MeleeWeaponEffects.accuracyMultiplier(lance,dragon,AttackStyle.MELEE_STAB), 1.20);
         near("Dragon hunter lance dragon damage", MeleeWeaponEffects.damageMultiplier(lance,dragon,AttackStyle.MELEE_STAB), 1.20);
@@ -407,7 +406,6 @@ public final class MechanicsSelfTest
         near("alpha50.4.50.37 Keris Akkha control", MeleeWeaponEffects.damageMultiplier(keris,akkha,AttackStyle.MELEE_STAB), 1.0);
         near("alpha50.4.50.38 Keris Zebak control", MeleeWeaponEffects.damageMultiplier(keris,zebak,AttackStyle.MELEE_STAB), 1.0);
         near("alpha50.4.50.38 Keris Ba-Ba control", MeleeWeaponEffects.damageMultiplier(keris,baba,AttackStyle.MELEE_STAB), 1.0);
-        near("Keris expected critical multiplier", MeleeWeaponEffects.averageDamageMultiplier(keris,kalphite,AttackStyle.MELEE_STAB), 1.33*(53.0/51.0));
         yes("alpha50.4.31 Keris partisan of the sun identified as Keris", MeleeWeaponEffects.isKeris(kerisSun));
         near("alpha50.4.31 Keris sun Kalphite damage", MeleeWeaponEffects.damageMultiplier(kerisSun,kalphite,AttackStyle.MELEE_STAB), 1.33);
         near("alpha50.4.32 Keris sun has no general Kalphite accuracy bonus", MeleeWeaponEffects.accuracyMultiplier(kerisSun,kalphite,AttackStyle.MELEE_STAB), 1.0);
@@ -489,7 +487,7 @@ public final class MechanicsSelfTest
         yes("Salve floors base max hit before applying enhanced bonus",
             MeleeLoadoutEffects.salveMaxHit(WikiIntegerStages.maxHitFromEffective(141,147+64),loadout,undead) == 55);
         near("alpha49.2.5 Vorkath Fang reference accuracy",
-            MeleeWeaponEffects.fangAccuracy(29311,20070), 0.8437002370446669);
+            WikiAccuracyRoll.fang(29311,20070), 0.8437002370446669);
         near("alpha49.3.3 Wiki magic_str 50 means five percent",
             50.0/1000.0,0.05);
         near("alpha49.3.3 Wiki magic_str 10 means one percent",
@@ -519,8 +517,6 @@ public final class MechanicsSelfTest
         loadout.put(EquipmentSlot.LEGS, weapon("Void knight robe"));
         loadout.put(EquipmentSlot.HANDS, weapon("Void knight gloves"));
         yes("Full Void melee detected", MeleeLoadoutEffects.hasVoidMelee(loadout));
-        near("Void melee accuracy", MeleeLoadoutEffects.voidAccuracyMultiplier(loadout), 1.10);
-        near("Void melee damage", MeleeLoadoutEffects.voidDamageMultiplier(loadout), 1.10);
         loadout.remove(EquipmentSlot.HANDS);
         no("Incomplete Void melee not active", MeleeLoadoutEffects.hasVoidMelee(loadout));
 
@@ -540,14 +536,14 @@ public final class MechanicsSelfTest
         yes("alpha50.4.46 split max 43 first = 21", MeleeWeaponEffects.splitFirstMax(43)==21);
         yes("alpha50.4.46 split max 43 second = 22", MeleeWeaponEffects.splitSecondMax(43)==22);
         near("alpha50.4.46 independent two-hit success EV max43",
-            MeleeWeaponEffects.independentTwoHitSuccessfulAverage(43),
+            MeleeWeaponEffects.independentTwoHitDistribution(43,1.0).expectedHit(),
             MeleeWeaponEffects.successfulHitAverage(21)+MeleeWeaponEffects.successfulHitAverage(22));
         near("alpha50.4.46 dual mac sequential EV at 50pct",
-            MeleeWeaponEffects.dualMacuahuitlExpectedDamage(43,0.5),
+            MeleeWeaponEffects.dualMacuahuitlDistribution(43,0.5).expectedHit(),
             0.5*MeleeWeaponEffects.successfulHitAverage(21)+0.25*MeleeWeaponEffects.successfulHitAverage(22));
         near("alpha50.4.46 dual mac converges to independent at 100pct",
-            MeleeWeaponEffects.dualMacuahuitlExpectedDamage(43,1.0),
-            MeleeWeaponEffects.independentTwoHitSuccessfulAverage(43));
+            MeleeWeaponEffects.dualMacuahuitlDistribution(43,1.0).expectedHit(),
+            MeleeWeaponEffects.independentTwoHitDistribution(43,1.0).expectedHit());
         yes("alpha50.4.46 dual mac identified", MeleeWeaponEffects.isDualMacuahuitl(weapon("Dual macuahuitl")));
         yes("alpha50.4.46 Torag independent two-hit identified", MeleeWeaponEffects.isIndependentTwoHit(weapon("Torag's hammers")));
         yes("alpha50.4.46 Sulphur independent two-hit identified", MeleeWeaponEffects.isIndependentTwoHit(weapon("Sulphur blades")));
@@ -559,25 +555,25 @@ public final class MechanicsSelfTest
         double dualMacAcc = ordinaryAccuracy(24038, 20070);
         near("alpha50.4.47 Wiki Vorkath Dual macuahuitl accuracy", dualMacAcc, 0.5825117517367611);
         near("alpha50.4.47 Wiki Vorkath Dual macuahuitl DPS",
-            MeleeWeaponEffects.dualMacuahuitlExpectedDamage(39, dualMacAcc) / 2.4,
+            MeleeWeaponEffects.dualMacuahuitlDistribution(39,dualMacAcc).expectedHit() / 2.4,
             3.7384769710936347);
 
         double toragAcc = ordinaryAccuracy(20296, 38356);
         near("alpha50.4.47 Wiki Vorkath Torag hammers accuracy", toragAcc, 0.2645670933597518);
         near("alpha50.4.47 Wiki Vorkath Torag hammers DPS",
-            toragAcc * MeleeWeaponEffects.independentTwoHitSuccessfulAverage(38) / 3.0,
+            toragAcc * MeleeWeaponEffects.independentTwoHitDistribution(38,1.0).expectedHit() / 3.0,
             1.68441049439042);
 
         double sulphurAcc = ordinaryAccuracy(11662, 20070);
         near("alpha50.4.47 Wiki Vorkath Sulphur blades accuracy", sulphurAcc, 0.29051865876139704);
         near("alpha50.4.47 Wiki Vorkath Sulphur blades DPS",
-            sulphurAcc * MeleeWeaponEffects.independentTwoHitSuccessfulAverage(36) / 2.4,
+            sulphurAcc * MeleeWeaponEffects.independentTwoHitDistribution(36,1.0).expectedHit() / 2.4,
             2.1916319871473813);
 
         double temotliAcc = ordinaryAccuracy(18762, 38356);
         near("alpha50.4.47 Wiki Vorkath Glacial temotli accuracy", temotliAcc, 0.24457074328023568);
         near("alpha50.4.47 Wiki Vorkath Glacial temotli DPS",
-            temotliAcc * MeleeWeaponEffects.independentTwoHitSuccessfulAverage(36) / 2.4,
+            temotliAcc * MeleeWeaponEffects.independentTwoHitDistribution(36,1.0).expectedHit() / 2.4,
             1.8450073615877427);
         System.out.println("PASS  alpha50.4.47 Wiki-locked multi-hit melee suite");
 
@@ -622,7 +618,6 @@ public final class MechanicsSelfTest
         yes("alpha50.4.50.2 Efaritay ordinary t2 half-damage route",VampyreTargetRules.tier2HalfDamage(aid,weapon("Dragon scimitar"),vamp2));
         yes("alpha50.4.50.2 silver t2 cap10 route",VampyreTargetRules.tier2SilverCap10(noAid,weapon("Silverlight"),vamp2));
         System.out.println("PASS  alpha50.4.50.2 Wiki-source vampyre eligibility/modifier audit");
-
 
         // alpha50.4.50.4 — shared Wiki PlayerVsNPCCalc.isImmune target/style layer.
         MonsterDefinition kraken504=new MonsterDefinition(494,"Kraken",1,1,1,1,100);
@@ -674,8 +669,6 @@ public final class MechanicsSelfTest
         near("alpha50.4.50.10 Scythe distribution EV preserved",MeleeWeaponEffects.scytheDistribution(40,3,.5).expectedHit(),MeleeWeaponEffects.scytheExpectedDamage(40,3,.5),1e-12);
         near("alpha50.4.50.10 Keris distribution EV preserved",MeleeWeaponEffects.kerisDistribution(34,.75).expectedHit(),.75*MeleeWeaponEffects.kerisAverageHit(34),1e-12);
         near("alpha50.4.50.10 Fang distribution EV preserved",MeleeWeaponEffects.fangDistribution(46,.75).expectedHit(),.75*MeleeWeaponEffects.fangAverageHit(46),1e-12);
-        near("alpha50.4.50.10 independent two-hit EV preserved",MeleeWeaponEffects.independentTwoHitDistribution(43,.5).expectedHit(),MeleeWeaponEffects.independentTwoHitExpectedDamage(43,.5),1e-12);
-        near("alpha50.4.50.10 dual mac EV preserved",MeleeWeaponEffects.dualMacuahuitlDistribution(43,.5).expectedHit(),MeleeWeaponEffects.dualMacuahuitlExpectedDamage(43,.5),1e-12);
         HitDistribution armourTwo=WikiNpcTransforms.apply(HitDistribution.single(10,true).zip(HitDistribution.single(8,true)),flat509,AttackStyle.MELEE_SLASH,null,null,false);
         near("alpha50.4.50.10 flat armour applies per melee splat",armourTwo.expectedHit(),6.0,1e-12);
         System.out.println("PASS  alpha50.4.50.10 melee distributions -> NPC transform pipeline");
@@ -759,7 +752,6 @@ public final class MechanicsSelfTest
             leafWikiAccuracy * MeleeWeaponEffects.successfulHitAverage(leafWikiFinalMax) / 3.0,
             6.087201407024462);
         System.out.println("PASS  alpha50.4.48.1 Wiki-locked Leaf-bladed battleaxe vs Kurask (no shield)");
-
 
         // alpha50.4.49 — exact Wiki Vorkath checkpoint for full Obsidian armour
         // + Berserker necklace + Toktz-xil-ak, Piety, Stab/Accurate. Wiki shows
@@ -888,13 +880,6 @@ public final class MechanicsSelfTest
         no("alpha50.4.50.40 Dorgeshuun crossbow rejects broad bolts", RangedAmmoRules.compatible(weapon("Dorgeshuun crossbow"),weapon("Broad bolts")));
         System.out.println("PASS  alpha48.3 ranged ammo compatibility audit");
         // alpha46 equipment-intelligence audit invariants
-        yes("alpha46 2H suppresses shield", !EquipmentAuditPolicy.shieldAllowed(twoHandedWeapon("Test 2H")));
-        yes("alpha46 1H permits shield", EquipmentAuditPolicy.shieldAllowed(weapon("Test 1H")));
-        yes("alpha46 ranged/magic Slayer requires imbue", EquipmentAuditPolicy.slayerAppliesToRangedOrMagic("Slayer helmet (i)"));
-        no("alpha46 unimbued Slayer helm has no ranged/magic task bonus", EquipmentAuditPolicy.slayerAppliesToRangedOrMagic("Slayer helmet"));
-        yes("alpha46 demon weapon retained", EquipmentAuditPolicy.monsterSpecificMeleeWeapon("Emberlight",demon));
-        yes("alpha46 dragon weapon retained", EquipmentAuditPolicy.monsterSpecificMeleeWeapon("Dragon hunter lance",dragon));
-        yes("alpha46 Kalphite weapon retained", EquipmentAuditPolicy.monsterSpecificMeleeWeapon("Keris partisan",kalphite));
         yes("alpha46 ranged Salve retained as synergy", RangedLoadoutEffects.synergy(weapon("Salve amulet(ei)")));
         yes("alpha46 magic Salve retained as synergy", MagicLoadoutEffects.synergy(weapon("Salve amulet(ei)")));
         yes("alpha46 Virtus retained for Ancient synergy", MagicLoadoutEffects.synergy(weapon("Virtus robe top")));
@@ -918,13 +903,6 @@ public final class MechanicsSelfTest
             RangedLoadoutEffects.salveAccuracy(salveRanged,undead)>1.0);
         yes("alpha46.1 ranged Salve increases undead damage",
             RangedLoadoutEffects.salveDamage(salveRanged,undead)>1.0);
-
-        yes("alpha46.1 Emberlight retained for demon matchup",
-            EquipmentAuditPolicy.monsterSpecificMeleeWeapon("Emberlight",demon));
-        yes("alpha46.1 DHL retained for dragon matchup",
-            EquipmentAuditPolicy.monsterSpecificMeleeWeapon("Dragon hunter lance",dragon));
-        yes("alpha46.1 Keris retained for Kalphite matchup",
-            EquipmentAuditPolicy.monsterSpecificMeleeWeapon("Keris partisan",kalphite));
 
         MagicLoadoutEffects.Effect magicTask=MagicLoadoutEffects.evaluate(
             Arrays.asList(slotItem("Slayer helmet (i)",EquipmentSlot.HEAD)),demon,true);
@@ -962,19 +940,6 @@ public final class MechanicsSelfTest
             &&EnchantedBoltEffects.rubyHpBucket(750)==500);
         yes("0.9.3 lower TTK outranks higher DPS",
             FinalLoadoutSelection.betterTtk(2.4,4.0,3.0,30.0));
-
-        EquipmentCandidate oneHand=weapon("Rune crossbow");
-        EquipmentCandidate twoHand=twoHandedWeapon("Twisted bow");
-        EquipmentCandidate shield=slotItem("Dragonfire shield",EquipmentSlot.SHIELD);
-        yes("alpha46.2 1H + shield is legal",FinalLoadoutSelection.compatibleShield(oneHand,shield));
-        no("alpha46.2 2H + shield is illegal",FinalLoadoutSelection.compatibleShield(twoHand,shield));
-
-        EquipmentCandidate bolts=slotItem("Runite bolts",EquipmentSlot.AMMO);
-        EquipmentCandidate arrows=slotItem("Rune arrows",EquipmentSlot.AMMO);
-        yes("alpha46.2 crossbow accepts compatible bolts",FinalLoadoutSelection.compatibleAmmo(oneHand,bolts));
-        no("alpha46.2 crossbow rejects arrows",FinalLoadoutSelection.compatibleAmmo(oneHand,arrows));
-        yes("alpha46.2 self-ammo weapon requires empty ammo slot",
-            FinalLoadoutSelection.compatibleAmmo(weapon("Toxic blowpipe"),null));
 
         yes("alpha46.2 ranged Salve survives final candidate shortlist",
             RangedLoadoutEffects.synergy(slotItem("Salve amulet(ei)",EquipmentSlot.NECK)));
@@ -1065,7 +1030,10 @@ public final class MechanicsSelfTest
         yes("Mystic Might +2% boundary",WikiMagicDamage.powered(50,0.0,0.02,null,null,false).maxHit==51);
         yes("Mystic Vigour +3% boundary",WikiMagicDamage.powered(34,0.0,0.03,null,null,false).maxHit==35);
         yes("Augury +4% boundary",WikiMagicDamage.powered(25,0.0,0.04,null,null,false).maxHit==26);
-        yes("Weakness accuracy adds to the base attack roll",
+        WikiMagicAccuracy.Result weakRoll=WikiMagicAccuracy.calculate(99,1.0,100,null,dharokWeak,windBlast,false);
+        yes("Weakness accuracy adds 50% of the base roll in the real calculator",
+            weakRoll.attackRoll==weakRoll.baseRoll+weakRoll.baseRoll*50/100);
+        yes("Weakness accuracy ordering (18369 +50%)",
             WikiMagicAccuracy.orderedRoll(18369,0,1,1,false,0,0,false,false,50)==27553);
         near("Dharok Wind Surge Wiki accuracy",WikiAccuracyRoll.normal(27553,530),0.9903462292226174);
         System.out.println("PASS  magic max-hit and accuracy boundaries (WikiMagicDamage)");
@@ -1350,15 +1318,6 @@ public final class MechanicsSelfTest
         if(ElementalAmuletEffects.evaluateName("Amulet of fire",tomeWaterBlast).flatMaxHit!=0) throw new AssertionError("Elemental amulet mismatch");
         if(ElementalAmuletEffects.evaluateName("Elemental amulet",tomeIban).flatMaxHit!=0) throw new AssertionError("Elemental amulet non-elemental exclusion");
 
-
-
-
-
-
-
-
-
-
         // alpha50.4.42 — July 2026 Inquisitor rework constants. Detailed roll/DPS
         // parity is exposed by the synthetic in-client harness for Wiki comparison.
         java.util.Map<EquipmentSlot,EquipmentCandidate> iqProbe=new java.util.EnumMap<>(EquipmentSlot.class);
@@ -1443,9 +1402,9 @@ public final class MechanicsSelfTest
         System.out.println("PASS  alpha44.1 genuine best-style selection");
         // alpha50.4.50.3.1: Wiki Corp divisionTransformer(2) parity. Accurate zero is
         // raised to 1 first, then every hitsplat is integer-divided by two.
-        if(Math.abs(CorporealBeastRules.dividedSuccessfulAverage(4)-0.8)>1e-12)
+        if(Math.abs(HitDistribution.linear(1.0,0,4).accurateZeroToOne().transform(HitDistribution.divide(2,0)).expectedHit()-0.8)>1e-12)
             throw new AssertionError("Corp divided successful distribution 0..4");
-        if(Math.abs(CorporealBeastRules.dividedUniformAverage(6,40)-11.257142857142858)>1e-12)
+        if(Math.abs(HitDistribution.linear(1.0,6,40).transform(HitDistribution.divide(2,0)).expectedHit()-11.257142857142858)>1e-12)
             throw new AssertionError("Corp Fang divided constrained distribution");
         MonsterDefinition corp=new MonsterDefinition(319,"Corporeal Beast",785,310,350,0,2000);
         if(!CorporealBeastRules.isCorp(corp))throw new AssertionError("Corp target detection");
@@ -1470,8 +1429,8 @@ public final class MechanicsSelfTest
         near("alpha50.4.50.6 multiply truncation",HitDistribution.linear(1.0,0,4).transform(HitDistribution.multiply(3,2,0)).expectedHit(),2.8,1e-12);
         System.out.println("PASS  alpha50.4.50.6 Wiki HitDistribution foundation");
         near("alpha50.4.50.7 Scythe HitDist 3-splat EV",MeleeWeaponEffects.scytheExpectedDamage(40,3,0.5),0.5*MeleeWeaponEffects.scytheAverageHit(40,3),1e-12);
-        near("alpha50.4.50.7 independent two-hit HitDist EV",MeleeWeaponEffects.independentTwoHitExpectedDamage(43,0.5),0.5*MeleeWeaponEffects.independentTwoHitSuccessfulAverage(43),1e-12);
-        near("alpha50.4.50.7 Dual mac HitDist sequential EV",MeleeWeaponEffects.dualMacuahuitlExpectedDamage(43,0.5),0.5*MeleeWeaponEffects.successfulHitAverage(21)+0.25*MeleeWeaponEffects.successfulHitAverage(22),1e-12);
+        near("alpha50.4.50.7 independent two-hit HitDist EV",MeleeWeaponEffects.independentTwoHitDistribution(43,0.5).expectedHit(),0.5*MeleeWeaponEffects.independentTwoHitDistribution(43,1.0).expectedHit(),1e-12);
+        near("alpha50.4.50.7 Dual mac HitDist sequential EV",MeleeWeaponEffects.dualMacuahuitlDistribution(43,0.5).expectedHit(),0.5*MeleeWeaponEffects.successfulHitAverage(21)+0.25*MeleeWeaponEffects.successfulHitAverage(22),1e-12);
         yes("alpha50.4.50.7 Earthbound tecpatl two-hit family",MeleeWeaponEffects.isIndependentTwoHit(weapon("Earthbound tecpatl")));
         System.out.println("PASS  alpha50.4.50.7 Wiki HitDistribution melee multi-hit migration");
         near("alpha50.4.50.8 Keris Wiki scaleDamage distribution",MeleeWeaponEffects.kerisAverageHit(34),(50.0/51.0)*(17.0+1.0/35.0)+(1.0/51.0)*((3.0*34.0*35.0/2.0+1.0)/35.0),1e-12);
@@ -1482,7 +1441,6 @@ public final class MechanicsSelfTest
         near("alpha50.4.50.12 negative attack vs positive defence",WikiAccuracyRoll.normal(-10,100),0.0,1e-12);
         near("alpha50.4.50.12 both-negative roll reversal",WikiAccuracyRoll.normal(-10,-20),1.0-10.0/(2.0*19.0),1e-12);
         near("alpha50.4.50.12 negative roll +2 normalization",WikiAccuracyRoll.normal(-1,100),0.0,1e-12);
-        near("alpha50.4.50.12 Fang positive-roll parity",WikiAccuracyRoll.fang(25606,20070),MeleeWeaponEffects.fangAccuracy(25606,20070),1e-12);
         near("alpha50.4.50.12 Fang positive attack vs negative defence",WikiAccuracyRoll.fang(100,-10),1.0-1.0/(9.0*101.0),1e-12);
         near("alpha50.4.50.12 Fang negative attack vs positive defence",WikiAccuracyRoll.fang(-10,100),0.0,1e-12);
         System.out.println("PASS  alpha50.4.50.12 Wiki signed accuracy-roll parity audit");
@@ -1511,7 +1469,6 @@ public final class MechanicsSelfTest
         yes("alpha50.4.50.16 no-stat exceptions",WikiEquipmentEngine.NO_STAT_EXCEPTIONS.contains("Lightbearer"));
         yes("alpha50.4.50.16 Gauntlet equipment IDs",WikiEquipmentEngine.GAUNTLET_EQUIPMENT_IDS.size()==22&&WikiEquipmentEngine.GAUNTLET_EQUIPMENT_IDS.contains(23861));
         yes("alpha50.4.50.16 Corrupted Gauntlet equipment IDs",WikiEquipmentEngine.CORRUPTED_GAUNTLET_EQUIPMENT_IDS.size()==22&&WikiEquipmentEngine.CORRUPTED_GAUNTLET_EQUIPMENT_IDS.contains(23820));
-        yes("alpha50.4.50.16 highest offensive style", "slash".equals(WikiEquipmentEngine.highestOffensiveStyle(1,5,4,3,2)));
         yes("alpha50.4.50.16 attack-speed floor",WikiEquipmentEngine.calculateAttackSpeed(1,"x",null,true,false,false,false)==1);
         System.out.println("PASS  alpha50.4.50.16 Wiki Equipment.ts full API parity audit");
         HitDistribution scaled17=HitDistribution.linear(.5,0,4).scaleProbability(.25).scaleDamage(3,2);

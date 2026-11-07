@@ -4,30 +4,6 @@ public final class EquipmentAuditPolicy
 {
     private EquipmentAuditPolicy(){}
 
-    public static boolean shieldAllowed(EquipmentCandidate weapon)
-    {
-        return weapon == null || !weapon.isTwoHanded();
-    }
-
-    public static boolean slayerAppliesToRangedOrMagic(String name)
-    {
-        if (name == null) return false;
-        String n=name.toLowerCase();
-        boolean slayer=n.contains("slayer helmet")||n.contains("slayer helm")||n.contains("black mask");
-        return slayer && (n.contains("(i)")||n.contains("imbued"));
-    }
-
-    public static boolean monsterSpecificMeleeWeapon(String name, MonsterDefinition m)
-    {
-        if(name==null||m==null)return false;
-        String n=name.toLowerCase();
-        if(m.hasAttribute("demon")&&(n.contains("arclight")||n.contains("emberlight")||n.contains("silverlight")||n.contains("darklight")))return true;
-        if((m.hasAttribute("dragon")||m.hasAttribute("draconic"))&&n.contains("dragon hunter lance"))return true;
-        if((m.hasAttribute("kalphite")||m.hasAttribute("scabarite"))&&n.contains("keris"))return true;
-        return n.contains("osmumten")&&n.contains("fang") || n.contains("scythe of vitur");
-    }
-
-
     public static int magicWeaponEvaluationLimit(){ return 12; }
 
     /**

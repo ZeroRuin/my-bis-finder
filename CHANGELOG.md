@@ -2,9 +2,11 @@
 
 ## 0.9.7.2 — Remove Unused Code and Tidy Tests
 
-- Remove 12 unused classes, 17 unused methods, a duplicate Slayer flag and unused imports; no change to recommendations.
+- Remove 12 unused classes, 32 unused or test-only methods, a duplicate Slayer flag and unused imports; no change to recommendations.
+- Magic accuracy uses one shared roll-ordering step instead of a second copy of the same logic.
 - Remove the unused Show sidebar setting.
 - Check magic max-hit and accuracy boundaries against the calculator the plugin uses, replacing checks of an unused copy.
+- Run all 31 self-tests with `gradle test`, and run them with the Python checks on every push and pull request.
 - List all 31 self-tests in the testing guide.
 - Add an optional `-PruneLiteVersion` Gradle property for local builds; Plugin Hub builds still use the latest release.
 

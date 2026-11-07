@@ -19,17 +19,4 @@ public final class FinalLoadoutSelection
         int ttk = Double.compare(candidateTtk,currentTtk);
         return ttk < 0 || (ttk == 0 && better(candidateDps,currentDps));
     }
-
-
-    public static boolean compatibleShield(EquipmentCandidate weapon, EquipmentCandidate shield)
-    {
-        return shield == null || weapon == null || !weapon.isTwoHanded();
-    }
-
-    public static boolean compatibleAmmo(EquipmentCandidate weapon, EquipmentCandidate ammo)
-    {
-        if (weapon == null) return ammo == null;
-        if (!RangedAmmoRules.usesExternalAmmo(weapon)) return ammo == null;
-        return ammo != null && RangedAmmoRules.compatible(weapon, ammo);
-    }
 }
