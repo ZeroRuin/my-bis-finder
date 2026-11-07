@@ -60,23 +60,47 @@ public class MeleeLoadoutOptimizer
             if (!supported) continue;
             searchable.add(weapon);
         }
-        final Map<EquipmentSlot,List<EquipmentCandidate>> searchRanked=ranked;
-        List<WeaponSearchResult> results=new ArrayList<>();
-        for(EquipmentCandidate weapon:searchable){
-            CalculationCancellation.check();
-            results.add(new WeaponSearchResult(weapon,optimizeForWeapon(weapon,searchRanked,style,monster,
-                onSlayerTask,requiredEquipment,new SearchContext())));
-        }
-        for(WeaponSearchResult result:results)
+        best=searchWeapons(searchable,ranked,style,monster,onSlayerTask,requiredEquipment,null);
+
+        // On an undead Slayer task the Salve amulet's bonus beats the Slayer helm's,
+        // and the two don't stack, yet the helm's on-task ranking boost can steer
+        // the beam away from the better Salve setup. Being on task can only add
+        // options, so also search without the helm or mask and keep the faster
+        // answer. Skipped when the head slot is a target requirement (Banshees).
+        if(onSlayerTask&&monster!=null&&monster.hasAttribute("undead")&&requiredSlot!=EquipmentSlot.HEAD)
         {
-            OptimizedLoadout weaponBest=result.loadout;
-            if(weaponBest!=null)
+            Map<EquipmentSlot,List<EquipmentCandidate>> noTaskHead=new EnumMap<>(ranked);
+            List<EquipmentCandidate> heads=new ArrayList<>();
+            for(EquipmentCandidate c:ranked.getOrDefault(EquipmentSlot.HEAD,Collections.emptyList()))
+                if(!isTaskHead(c))heads.add(c);
+            if(heads.size()<ranked.getOrDefault(EquipmentSlot.HEAD,Collections.emptyList()).size())
             {
-                if(best==null||FinalLoadoutSelection.betterTtk(weaponBest.getResult().getExpectedTtkSeconds(),weaponBest.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())) best=weaponBest;
+                noTaskHead.put(EquipmentSlot.HEAD,heads);
+                best=searchWeapons(searchable,noTaskHead,style,monster,onSlayerTask,requiredEquipment,best);
             }
         }
 
         return new MeleeOptimizationReport(best);
+    }
+
+    private static boolean isTaskHead(EquipmentCandidate c)
+    {
+        String n=c==null||c.getItem()==null||c.getItem().getName()==null?"":c.getItem().getName().toLowerCase(Locale.ROOT);
+        return n.contains("slayer helm")||n.contains("black mask");
+    }
+
+    private OptimizedLoadout searchWeapons(List<EquipmentCandidate> searchable,
+        Map<EquipmentSlot,List<EquipmentCandidate>> ranked,AttackStyle style,MonsterDefinition monster,
+        boolean onSlayerTask,EquipmentCandidate requiredEquipment,OptimizedLoadout best)
+    {
+        for(EquipmentCandidate weapon:searchable){
+            CalculationCancellation.check();
+            OptimizedLoadout weaponBest=optimizeForWeapon(weapon,ranked,style,monster,
+                onSlayerTask,requiredEquipment,new SearchContext());
+            if(weaponBest!=null&&(best==null||FinalLoadoutSelection.betterTtk(weaponBest.getResult().getExpectedTtkSeconds(),
+                weaponBest.getResult().getDps(),best.getResult().getExpectedTtkSeconds(),best.getResult().getDps())))best=weaponBest;
+        }
+        return best;
     }
 
     private OptimizedLoadout optimizeForWeapon(EquipmentCandidate weapon,
