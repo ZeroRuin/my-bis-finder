@@ -33,19 +33,6 @@ public final class MeleeWeaponEffects {
   return 1.0;
  }
 
- public static double averageDamageMultiplier(EquipmentCandidate w, MonsterDefinition m, AttackStyle s){
-  double base=damageMultiplier(w,m,s);
-  if(isKeris(w)&&isScarabTarget(m)){
-   // 1/51 triple-damage proc: E[multiplier] = 50/51*1 + 1/51*3 = 53/51.
-   return base*(53.0/51.0);
-  }
-  return base;
- }
-
-
- public static boolean hasKerisProc(EquipmentCandidate w, MonsterDefinition m){
-  return isKeris(w)&&isScarabTarget(m);
- }
  public static int kerisProcMax(int modifiedMax){return modifiedMax*3;}
 
  /**
@@ -79,15 +66,6 @@ public final class MeleeWeaponEffects {
  }
 
  /**
-  * Current Fang accuracy outside Tombs of Amascut: roll the player's accuracy
-  * twice against the same defence roll. This is not equivalent to squaring the
-  * ordinary miss chance, which would also effectively re-roll defence.
-  */
- public static double fangAccuracy(int attackRoll,int defenceRoll){
-  return WikiAccuracyRoll.fang(attackRoll,defenceRoll);
- }
-
- /**
   * Fang normal damage uses the integer 15% floor as its lower endpoint, then
   * subtracts that same integer from the true max for the upper endpoint:
   *   min = floor(trueMax * 0.15)
@@ -104,8 +82,6 @@ public final class MeleeWeaponEffects {
   if(trueMax<=0)return 0.0;
   return (fangMinHit(trueMax)+fangDisplayedMaxHit(trueMax))/2.0;
  }
-
-
 
  public static boolean isRatBoneWeapon(EquipmentCandidate w){
   if(w==null)return false; String n=name(w);
@@ -147,28 +123,6 @@ public final class MeleeWeaponEffects {
  public static boolean isSplitTwoHit(EquipmentCandidate w){return isDualMacuahuitl(w)||isIndependentTwoHit(w);}
  public static int splitFirstMax(int combinedMax){return Math.max(0,combinedMax/2);}
  public static int splitSecondMax(int combinedMax){return Math.max(0,combinedMax-splitFirstMax(combinedMax));}
- /**
-  * Torag/Sulphur/Temotli roll both half-hits independently. Accuracy is applied
-  * outside this helper once to the sum of the two successful-hit expectations.
-  */
- public static double independentTwoHitSuccessfulAverage(int combinedMax){
-  // Shared HitDistribution path: both splats are successful here (accuracy=1),
-  // then modern accurate-zero conversion is applied independently per splat.
-  HitDistribution a=HitDistribution.linear(1.0,0,splitFirstMax(combinedMax)).accurateZeroToOne();
-  HitDistribution b=HitDistribution.linear(1.0,0,splitSecondMax(combinedMax)).accurateZeroToOne();
-  return a.zip(b).expectedHit();
- }
- public static double independentTwoHitExpectedDamage(int combinedMax,double accuracy){
-  return independentTwoHitDistribution(combinedMax,accuracy).expectedHit();
- }
- /**
-  * Dual macuahuitl is sequential: the second distribution exists only on an
-  * accurate first splat. This mirrors Wiki HitDist rather than reducing the
-  * mechanic algebraically to P*A + P^2*B.
-  */
- public static double dualMacuahuitlExpectedDamage(int combinedMax,double accuracy){
-  return dualMacuahuitlDistribution(combinedMax,accuracy).expectedHit();
- }
  public static int scytheHitCount(EquipmentCandidate w,MonsterDefinition m){
   if(!isScythe(w)||m==null)return 1;
   return m.getSize()>=3?3:(m.getSize()==2?2:1);

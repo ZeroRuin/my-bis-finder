@@ -59,8 +59,12 @@ public final class ItemExclusionSelfTest
         AtomicInteger added = new AtomicInteger();
         MenuEntry created = (MenuEntry) Proxy.newProxyInstance(MenuEntry.class.getClassLoader(), new Class<?>[]{MenuEntry.class},
             (o, m, a) -> m.getReturnType() == MenuEntry.class ? o : null);
-        Client client = (Client) Proxy.newProxyInstance(Client.class.getClassLoader(), new Class<?>[]{Client.class}, (o, m, a) -> {
+        net.runelite.api.Menu menu = (net.runelite.api.Menu) Proxy.newProxyInstance(net.runelite.api.Menu.class.getClassLoader(), new Class<?>[]{net.runelite.api.Menu.class}, (o, m, a) -> {
             if (m.getName().equals("createMenuEntry")) { added.incrementAndGet(); return created; }
+            throw new AssertionError(m.getName());
+        });
+        Client client = (Client) Proxy.newProxyInstance(Client.class.getClassLoader(), new Class<?>[]{Client.class}, (o, m, a) -> {
+            if (m.getName().equals("getMenu")) return menu;
             throw new AssertionError(m.getName());
         });
         Widget widget = (Widget) Proxy.newProxyInstance(Widget.class.getClassLoader(), new Class<?>[]{Widget.class}, (o, m, a) -> {

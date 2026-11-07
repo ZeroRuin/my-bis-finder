@@ -53,7 +53,7 @@ jobs:
           gradle-version: '8.10.2'
       - name: Test exact plugin commit to be submitted
         if: steps.source.outputs.eligible == 'true'
-        run: gradle --no-daemon mechanicsSelfTest
+        run: gradle --no-daemon check
       - name: Submit for Plugin Hub maintainer review
         if: steps.source.outputs.eligible == 'true'
         env:

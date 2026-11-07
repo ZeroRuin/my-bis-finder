@@ -36,13 +36,6 @@ public final class RangedAmmoRules {
   if(a==null||ammoType(a)!=need)return false;
   return tierCompatible(w,a);
  }
- public static String ammoDisplay(EquipmentCandidate w){
-  RangedAmmoType t=weaponAmmo(w);
-  if(t==RangedAmmoType.INTERNAL)return "Internal";
-  if(t==RangedAmmoType.DART)return "Loaded darts";
-  if(t==RangedAmmoType.NONE)return "None";
-  return t.toString();
- }
  private static boolean tierCompatible(EquipmentCandidate w,EquipmentCandidate a){
   String wn=name(w), an=name(a);
 

@@ -43,7 +43,7 @@ public class RangedCombatCalculator {
    roll=RangedWeaponEffects.scaleTwisted(roll,m,true);
   int def=m==null?1:Math.max(0,VardorvisRules.startingDefence(m)), bonus=RangedAmmoRules.targetDefence(m,weapon);
   int defRoll=RaidScaling.defenceRoll(m,(def+9)*(bonus+64));
-  double acc=FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,defRoll);
+  double acc=WikiPlayerVsNpcCalc.targetAccuracy(m,FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,defRoll));
   boolean strengthRanged=EquipmentSetRules.strengthRanged(weapon);
   int damageLevel=strengthRanged?Math.max(1,RaidScaling.boosted(account,Skill.STRENGTH,m)):level;
   if(strengthRanged){str=0;for(EquipmentCandidate c:gear.values())if(c!=null){
@@ -56,7 +56,10 @@ public class RangedCombatCalculator {
   max=WikiRangedEffects.postDamage(max,weapon,m,task,slayer);
   // Wiki parity: Bone shortbow receives the ratbane flat +10 max hit on rat targets.
   max += MeleeWeaponEffects.ratbaneBonusMax(weapon,m);
-  int actualSpeed=WikiAttackSpeedRules.attackTicks(Math.max(1,speed+st.getSpeedDelta()),weapon,m);
+  int baseSpeed=WikiAttackSpeedRules.attackTicks(Math.max(1,speed+st.getSpeedDelta()),weapon,m);
+  // Unshielded Tormented Demons take ticks^2-16 bonus damage from heavy ranged and are hit a tick faster.
+  boolean tdBonus=TormentedDemonRules.unshieldedBonusApplies(m,AttackStyle.RANGED,weapon,false);
+  int actualSpeed=tdBonus?baseSpeed-1:baseSpeed;
   int preSpecMax=max;
   int normalMin=0;
   if(RaidCombatRules.wardenP2(m)){int[] bounds=RaidCombatRules.wardenBounds(max,roll,defRoll);normalMin=bounds[0];max=bounds[1];acc=1.0;}
@@ -64,6 +67,7 @@ public class RangedCombatCalculator {
   HitDistribution.AttackDistribution rangedDist=WikiPlayerVsNpcCalc.finalDistribution(
       WikiPlayerVsNpcCalc.rangedAttacker(weapon,ammo,m,level,normalMin,max,acc,account.isKandarinHardCompleted(),gear.values()),
       m,AttackStyle.RANGED,weapon,null,false,gear.values());
+  if(tdBonus)rangedDist=TormentedDemonRules.withUnshieldedBonus(rangedDist,baseSpeed);
   final int normalMax=max;
   double expectedDamage=WikiPlayerVsNpcCalc.expectedDamage(rangedDist);
   double dps=WikiPlayerVsNpcCalc.dps(rangedDist,actualSpeed);
@@ -74,7 +78,8 @@ public class RangedCombatCalculator {
       m,level,normalMin,normalMax,acc,account.isKandarinHardCompleted()):null;
   double ttk=!finiteFight||VardorvisRules.supported(m)?Double.POSITIVE_INFINITY:ruby
       ?ExpectedKillTime.seconds(targetHp,actualSpeed,hp->hpDists.computeIfAbsent(EnchantedBoltEffects.rubyHpBucket(hp),key->
-          WikiPlayerVsNpcCalc.rangedRubyFinalDistributionAtHp(rubyBase,weapon,ammo,m,
+          tdBonus?TormentedDemonRules.withUnshieldedBonus(WikiPlayerVsNpcCalc.rangedRubyFinalDistributionAtHp(rubyBase,weapon,ammo,m,
+              account.isKandarinHardCompleted(),key),baseSpeed):WikiPlayerVsNpcCalc.rangedRubyFinalDistributionAtHp(rubyBase,weapon,ammo,m,
               account.isKandarinHardCompleted(),key)))
       :ExpectedKillTime.seconds(rangedDist,targetHp,actualSpeed);
   if(finiteFight&&VardorvisRules.supported(m)){

@@ -16,17 +16,21 @@ repositories {
     mavenCentral()
 }
 
-def runeLiteVersion = 'latest.release'
+// Plugin Hub builds use latest.release; pass -PruneLiteVersion=<version> to pin one locally.
+def runeLiteVersion = project.findProperty('runeLiteVersion') ?: 'latest.release'
 def pluginMainClass = 'com.personalbis.PersonalBisPluginTest'
 
 dependencies {
     compileOnly group: 'net.runelite', name: 'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name: 'client', version: runeLiteVersion
     testImplementation group: 'net.runelite', name: 'jshell', version: runeLiteVersion
+    testImplementation platform('org.junit:junit-bom:5.10.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 group = 'com.personalbis'
-version = '0.9.7.1'
+version = '0.9.7.2'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -35,6 +39,16 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.withType(JavaExec).configureEach {
     enableAssertions = true
+}
+
+// `gradle test` runs every self-test through JUnit (see SelfTestSuite), each in a fresh JVM.
+tasks.named('test', Test) {
+    useJUnitPlatform()
+    systemProperty 'selftest.classpath', sourceSets.test.runtimeClasspath.asPath
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        exceptionFormat 'full'
+    }
 }
 
 tasks.register('run', JavaExec) {

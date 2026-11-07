@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -79,16 +78,6 @@ public class WikiDataPack
     public List<WikiMonster> getMonsters() { return monsters; }
     public List<WikiSpell> getSpells() { return spells; }
 
-    public WikiMonster findMonster(String name)
-    {
-        if (name == null) return null;
-        String target = name.trim().toLowerCase(Locale.ROOT);
-        for (WikiMonster monster : monsters)
-        {
-            if (monster.name != null && monster.name.toLowerCase(Locale.ROOT).equals(target)) return monster;
-        }
-        return null;
-    }
 
     public String status()
     {

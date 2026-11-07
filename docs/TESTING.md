@@ -56,29 +56,59 @@ controls have been removed.
 
 ## Automated verification
 
-Run these Gradle tasks before releasing a code change:
+Run every self-test before releasing a code change:
 
 ```text
-compileJava compileTestJava
-defenceReductionBankItemsSelfTest
-ttkPerformanceSelfTest
-salveRoundingSelfTest
-combatStyleLabelsSelfTest
-poweredStanceSelfTest
-mechanicsSelfTest
-gimStorageSelfTest
-itemExclusionSelfTest
-loadoutStatsSizingSelfTest
-slayerTaskSelfTest
-reviewedSlayerLocationsSelfTest
-slayerGsonSelfTest
-hueycoatlSelfTest
-theatreOfBloodSelfTest
-raidOptionsSelfTest
-targetStyleImmunitySelfTest
-combatSearchSelfTest
-specialAttackSelfTest
+gradle test
 ```
+
+This compiles the plugin and runs all 31 self-tests through JUnit (`SelfTestSuite`),
+each in its own JVM. The **CI** workflow runs the same command, plus the Python
+checks, on every push to `main` and every pull request. A new self-test with a
+`main()` must be added to `SelfTestSuite.selfTests()`; the suite fails if one is missing.
+
+Each self-test also keeps its own Gradle task for running it alone. To run them
+without JUnit, pass `--continue` so one failure does not hide the rest:
+
+```text
+gradle --continue \
+  compileJava \
+  compileTestJava \
+  mechanicsSelfTest \
+  gimStorageSelfTest \
+  itemExclusionSelfTest \
+  loadoutStatsSizingSelfTest \
+  slayerTaskSelfTest \
+  reviewedSlayerLocationsSelfTest \
+  slayerGsonSelfTest \
+  hueycoatlSelfTest \
+  theatreOfBloodSelfTest \
+  raidOptionsSelfTest \
+  targetStyleImmunitySelfTest \
+  combatSearchSelfTest \
+  specialAttackSelfTest \
+  vardorvisSelfTest \
+  blowpipeAmmoPlanSelfTest \
+  hpStateTtkSelfTest \
+  defenceFillSelfTest \
+  manualDefenceReductionSelfTest \
+  ttkPerformanceSelfTest \
+  salveRoundingSelfTest \
+  combatStyleLabelsSelfTest \
+  poweredStanceSelfTest \
+  vardorvisHpSelfTest \
+  vardorvisShortlistSelfTest \
+  voidEquipmentSelfTest \
+  defenceReductionPlanSelfTest \
+  twistedBowRoundingSelfTest \
+  voidLoadoutFamiliesSelfTest \
+  defenceReductionBankItemsSelfTest \
+  bankWithdrawalSelfTest \
+  fracturedArchiveSelfTest
+```
+
+To build against a fixed RuneLite version instead of `latest.release`, add
+`-PruneLiteVersion=<version>` to any Gradle command. Plugin Hub builds use the default.
 
 Run the data-tool checks with:
 
@@ -392,3 +422,14 @@ compare charged/uncharged weapon ownership, Zeal and fragment unlocks; confirm
 The Blade shows DPS with no finite kill time. Recheck rapid bank withdrawals,
 loadout persistence and withdrawing/depositing an uncharged Ring of shadows.
 In-client testing remains necessary; offline checks do not simulate the raid.
+
+### Tormented Demon variants and Giant rat (Scurrius)
+
+Search `Tormented Demon`: one target appears with a variant dropdown (Shielded,
+Shielded (Defenceless), Unshielded), defaulting to Shielded. Changing the variant
+makes the current result stale. Compare each variant with the Wiki DPS calculator:
+Shielded reduces damage by 20% except with demonbane or abyssal weapons;
+Defenceless and Unshielded show 100% accuracy; Unshielded crush, crossbow,
+chinchompa and spell setups gain bonus damage and attack one tick faster.
+Search `Giant rat (Scurrius)`: accuracy is 100%, the max hit equals its HP, and the
+bone mace, bone shortbow and bone staff attack every tick.

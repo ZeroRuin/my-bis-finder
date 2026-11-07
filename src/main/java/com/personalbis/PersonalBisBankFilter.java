@@ -15,7 +15,6 @@ import net.runelite.api.Client;
 import net.runelite.api.FontID;
 import net.runelite.api.ItemComposition;
 import net.runelite.api.ItemContainer;
-import net.runelite.api.MenuEntry;
 import net.runelite.api.MenuAction;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.ScriptID;
@@ -24,7 +23,6 @@ import net.runelite.api.events.ScriptCallbackEvent;
 import net.runelite.api.events.ScriptPostFired;
 import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.InventoryID;
-import net.runelite.api.gameval.VarClientID;
 import net.runelite.api.widgets.ItemQuantityMode;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetType;
@@ -113,10 +111,6 @@ public class PersonalBisBankFilter
         this.config = config;
     }
 
-    public void setRecommendedItemIds(Set<Integer> ids)
-    {
-        setRecommendations(Collections.emptyMap(), Collections.emptyList(), ids);
-    }
 
     public void setRecommendations(Map<AttackStyle, List<Integer>> byStyle, List<AttackStyle> order, Set<Integer> allIds)
     {
@@ -261,7 +255,7 @@ public class PersonalBisBankFilter
         Widget widget = event.getMenuEntry().getWidget();
         if (widget == null || !generatedWidgets.contains(widget) || widget.getItemId() <= 0) return;
         int itemId = widget.getItemId();
-        client.createMenuEntry(-1)
+        client.getMenu().createMenuEntry(-1)
             .setOption(ItemExclusions.MENU_OPTION)
             .setTarget(event.getTarget())
             .setType(MenuAction.RUNELITE)
@@ -308,7 +302,7 @@ public class PersonalBisBankFilter
             return;
         }
 
-        ItemContainer bank = client.getItemContainer(group ? net.runelite.api.InventoryID.GROUP_STORAGE.getId() : InventoryID.BANK);
+        ItemContainer bank = client.getItemContainer(group ? InventoryID.INV_GROUP_TEMP : InventoryID.BANK);
         int slot = event.getParam0();
         int clickedItemId = event.getItemId();
         // Native widgets retain their real bank slot when moved. Never redirect a
@@ -366,7 +360,7 @@ public class PersonalBisBankFilter
             return;
         }
 
-        ItemContainer bank = client.getItemContainer(group ? net.runelite.api.InventoryID.GROUP_STORAGE.getId() : InventoryID.BANK);
+        ItemContainer bank = client.getItemContainer(group ? InventoryID.INV_GROUP_TEMP : InventoryID.BANK);
         if (bank == null)
         {
             return;

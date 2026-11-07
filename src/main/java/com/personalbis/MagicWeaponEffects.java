@@ -25,9 +25,6 @@ public final class MagicWeaponEffects {
   if(!isTwinflame(weapon)||spell==null)return false;
   String t=spell.tier();return "bolt".equals(t)||"blast".equals(t)||"wave".equals(t);
  }
- public static double expectedHitMultiplier(String weapon,MagicSpell spell){
-  return twinflameEcho(weapon,spell)?1.40:1.0;
- }
  public static String note(String weapon,MagicSpell spell,MonsterDefinition m){
   if(isDragonHunterWand(weapon)&&isDraconic(m))return "Dragonbane: +75% accuracy, +40% damage";
   if(isTwinflame(weapon)&&isStandardElemental(spell)){

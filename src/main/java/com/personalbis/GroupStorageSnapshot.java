@@ -8,7 +8,7 @@ import java.util.function.IntFunction;
 import java.util.function.Supplier;
 import net.runelite.api.Item;
 import net.runelite.api.ItemComposition;
-import net.runelite.api.InventoryID;
+import net.runelite.api.gameval.InventoryID;
 import net.runelite.api.events.ItemContainerChanged;
 
 /** Client-thread snapshot logic, shared by future real and synthetic storage listeners. */
@@ -17,9 +17,18 @@ public final class GroupStorageSnapshot
     private volatile List<BankItem> items = Collections.emptyList();
     private volatile Instant capturedAt;
 
+    /**
+     * Group Ironman account types from the account-type varbit: 4 Group, 5 Hardcore Group,
+     * 6 Unranked Group. These accounts have group storage.
+     */
+    static boolean isGroupIronman(int accountTypeVarbit)
+    {
+        return accountTypeVarbit >= 4 && accountTypeVarbit <= 6;
+    }
+
     public boolean capture(ItemContainerChanged event, IntFunction<ItemComposition> definitions, Supplier<Instant> clock)
     {
-        if (event.getContainerId() != InventoryID.GROUP_STORAGE.getId() || event.getItemContainer() == null) return false;
+        if (event.getContainerId() != InventoryID.INV_GROUP_TEMP || event.getItemContainer() == null) return false;
         List<BankItem> next = new ArrayList<>();
         for (Item item : event.getItemContainer().getItems())
         {

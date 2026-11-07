@@ -69,34 +69,30 @@ public final class WikiMagicAccuracy
             if (spell != null && "standard".equals(spell.spellbook)) additivePercent += 10;
         }
 
-        int roll = additivePercent == 0 ? baseRoll
-            : WikiIntegerStages.factor(baseRoll, 100 + additivePercent, 100);
-
+        int dragonNumerator = 1, dragonDenominator = 1;
         if (MagicWeaponEffects.isDraconic(monster))
         {
-            if (equals(weapon, "Dragon hunter crossbow")) roll = WikiIntegerStages.factor(roll, 13, 10);
-            else if (equals(weapon, "Dragon hunter lance")) roll = WikiIntegerStages.factor(roll, 6, 5);
-            else if (MagicWeaponEffects.isDragonHunterWand(weapon)) roll = WikiIntegerStages.factor(roll, 7, 4);
+            if (equals(weapon, "Dragon hunter crossbow")) { dragonNumerator = 13; dragonDenominator = 10; }
+            else if (equals(weapon, "Dragon hunter lance")) { dragonNumerator = 6; dragonDenominator = 5; }
+            else if (MagicWeaponEffects.isDragonHunterWand(weapon)) { dragonNumerator = 7; dragonDenominator = 4; }
         }
 
-        if (blackMask) roll = WikiIntegerStages.factor(roll, 23, 20);
-
+        int demonbanePercent = 0;
         if (spell != null && spell.name != null && spell.name.contains("Demonbane")
             && monster != null && monster.hasAttribute("demon"))
         {
-            int percent = spell.markOfDarkness ? 40 : 20;
-            if (equals(weapon, "Purging staff")) percent *= 2;
-            int scaled = percent * DemonbaneEffects.vulnerability(monster) / 100;
-            roll += WikiIntegerStages.factor(roll, scaled, 100);
+            demonbanePercent = spell.markOfDarkness ? 40 : 20;
+            if (equals(weapon, "Purging staff")) demonbanePercent *= 2;
         }
+        int vulnerability = demonbanePercent == 0 ? 0 : DemonbaneEffects.vulnerability(monster);
 
-        // Forinthry Surge is intentionally false until PBIS exposes that buff as account state.
+        boolean tomeWater = has(gear, "Tome of Water") && tomeWaterAccuracyApplies(spell);
+        int weaknessPercent = monster != null && spell != null && monster.weakTo(spell.element())
+            ? monster.getWeaknessSeverity() : 0;
 
-        if (has(gear, "Tome of Water") && tomeWaterAccuracyApplies(spell))
-            roll = WikiIntegerStages.factor(roll, 6, 5);
-
-        if (monster != null && spell != null && monster.weakTo(spell.element()))
-            roll += WikiIntegerStages.factor(baseRoll, monster.getWeaknessSeverity(), 100);
+        // Forinthry Surge (revenant) is intentionally false until PBIS exposes that buff as account state.
+        int roll = orderedRoll(baseRoll, additivePercent, dragonNumerator, dragonDenominator,
+            blackMask, demonbanePercent, vulnerability, false, tomeWater, weaknessPercent);
 
         return new Result(effective, baseRoll, roll);
     }

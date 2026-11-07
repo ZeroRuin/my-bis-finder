@@ -85,11 +85,6 @@ public final class WikiEquipmentEngine {
   if(ammoId!=null && valid.contains(ammoId)) return AmmoApplicability.INCLUDED;
   return AmmoApplicability.INVALID;
  }
- public static boolean exactAmmoCompatible(EquipmentCandidate weapon,EquipmentCandidate ammo){
-  if(weapon==null)return ammo==null;
-  AmmoApplicability a=ammoApplicability(weapon.getItem().getItemId(),ammo==null?null:ammo.getItem().getItemId());
-  return a!=AmmoApplicability.INVALID;
- }
  public static boolean isBlowpipeId(int id){return id==12926||id==28688||id==31575||id==31579||id==31583;}
  public static int transformMeleeAttack(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition monster,int attack){ return "keris partisan of amascut".equals(name(gear.get(EquipmentSlot.WEAPON)))&&!isToa(monster)?attack-50:attack; }
  public static Totals transform(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition monster,String spellbook,
@@ -122,10 +117,6 @@ public final class WikiEquipmentEngine {
   else if(castStance){if("Harmonised Nightmare staff".equals(weaponName)&&standardSpellbook&&!manualCast)speed=4;else if("Twinflame staff".equals(weaponName))speed=6;else speed=5;}
   if(monster!=null&&monster.getId()==7223&&!manualCast&&("Bone mace".equals(weaponName)||"Bone shortbow".equals(weaponName)||"Bone staff".equals(weaponName)))speed=1;
   return Math.max(speed,1);
- }
- /** Returns the Wiki offensive style name with the greatest value; ties keep stab->slash->crush->magic->ranged order. */
- public static String highestOffensiveStyle(int stab,int slash,int crush,int magic,int ranged){
-  String best="stab";int v=stab;if(slash>v){best="slash";v=slash;}if(crush>v){best="crush";v=crush;}if(magic>v){best="magic";v=magic;}if(ranged>v)best="ranged";return best;
  }
  /**
   * Full data-driven Equipment.ts aggregation. item IDs are canonicalised before stats/ammo checks.

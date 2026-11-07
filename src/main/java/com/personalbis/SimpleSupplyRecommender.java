@@ -117,12 +117,6 @@ public final class SimpleSupplyRecommender {
  static void addFullStack(List<RecommendedSupply>o,List<BankItem>b,String n,String reason){
   BankItem x=find(b,n);if(x!=null)o.add(new RecommendedSupply(x.getItemId(),x.getQuantity(),x.getName(),reason));
  }
- static void addNamed(List<RecommendedSupply>o,List<BankItem>b,String n,int q,String reason){
-  BankItem x=find(b,n);if(x!=null)o.add(new RecommendedSupply(x.getItemId(),Math.min(q,x.getQuantity()),x.getName(),reason));
- }
- static void addFirst(List<RecommendedSupply>o,List<BankItem>b,int q,String reason,String...ns){
-  for(String n:ns){BankItem x=find(b,n);if(x!=null){o.add(new RecommendedSupply(x.getItemId(),Math.min(q,x.getQuantity()),x.getName(),reason));return;}}
- }
  static boolean addBestPotion(List<RecommendedSupply>o,List<BankItem>b,int q,String reason,String[][]groups){
   for(String[] group:groups){
    for(String n:group){BankItem x=find(b,n);if(x!=null){o.add(new RecommendedSupply(x.getItemId(),Math.min(q,x.getQuantity()),x.getName(),reason));return true;}}
@@ -167,9 +161,6 @@ public final class SimpleSupplyRecommender {
   int close=name.lastIndexOf(')'),open=name.lastIndexOf('(');
   if(open>=0&&close==name.length()-1)try{return Integer.parseInt(name.substring(open+1,close));}catch(NumberFormatException ignored){}
   return 1;
- }
- static boolean addFirstFound(List<RecommendedSupply>o,List<BankItem>b,int q,String reason,String...ns){
-  for(String n:ns){BankItem x=find(b,n);if(x!=null){o.add(new RecommendedSupply(x.getItemId(),Math.min(q,x.getQuantity()),x.getName(),reason));return true;}}return false;
  }
  static boolean addBestFamily(List<RecommendedSupply> out,List<BankItem> bank,int quantity,String reason,String...families){
   if(bank==null)return false;

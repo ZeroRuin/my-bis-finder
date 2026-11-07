@@ -41,7 +41,7 @@ jobs:
           gradle-version: '8.10.2'
       - name: Compile and check mechanics against updated data
         if: steps.data.outputs.changed == 'true'
-        run: gradle --no-daemon mechanicsSelfTest slayerTaskSelfTest reviewedSlayerLocationsSelfTest
+        run: gradle --no-daemon check
       - name: Create or refresh the data update PR
         if: steps.data.outputs.changed == 'true'
         shell: bash

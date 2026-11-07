@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -54,11 +53,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.basic.BasicComboBoxUI;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Skill;
-import net.runelite.api.SpriteID;
+import net.runelite.api.gameval.SpriteID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SpriteManager;
@@ -137,6 +136,8 @@ public class PersonalBisPanel extends PluginPanel
     private final JPanel groupStorageOptions = new JPanel();
     private final JComboBox<FracturedArchiveRules.BorkPhase> borkPhase =
         new JComboBox<>(FracturedArchiveRules.BorkPhase.values());
+    private final JComboBox<TormentedDemonRules.Phase> tormentedDemonPhase =
+        new JComboBox<>(TormentedDemonRules.Phase.values());
     private final RaidOptionsPanel raidOptions = new RaidOptionsPanel(this::raidOptionsChanged);
     private final VardorvisHpOptions vardorvisHpOptions=new VardorvisHpOptions(this::vardorvisHpChanged);
     private boolean advancedExpanded;
@@ -171,7 +172,6 @@ public class PersonalBisPanel extends PluginPanel
     private String lastSlayerLocation = "";
     private final JTextArea slayerAssignmentNote = new AutoSizingTextArea();
     private Set<String> unverifiedTaskTargets = Collections.emptySet();
-    private volatile boolean slayerMode;
     private volatile boolean slayerTargetMode;
     private volatile boolean includeRubyBoltsEnabled=true;
     private AttackStyle selectedStyle = AttackStyle.MELEE_SLASH;
@@ -427,7 +427,6 @@ public class PersonalBisPanel extends PluginPanel
         slayerTask.addActionListener(e ->
         {
             slayerTargetMode = slayerTask.isSelected();
-            slayerMode = slayerTargetMode;
             invalidateOptimizerCache();
             updateSlayerUiState();
             if (!slayerTargetMode)
@@ -450,6 +449,14 @@ public class PersonalBisPanel extends PluginPanel
         borkPhase.setVisible(false);
         borkPhase.addActionListener(e->invalidateRaidOptions());
         content.add(borkPhase);
+        styleCombo(tormentedDemonPhase);
+        tormentedDemonPhase.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tormentedDemonPhase.setMaximumSize(new Dimension(Integer.MAX_VALUE,tormentedDemonPhase.getPreferredSize().height));
+        tormentedDemonPhase.setToolTipText("Tormented Demon variant: Shielded, Shielded (Defenceless) or Unshielded");
+        tormentedDemonPhase.getAccessibleContext().setAccessibleName("Tormented Demon variant");
+        tormentedDemonPhase.setVisible(false);
+        tormentedDemonPhase.addActionListener(e->invalidateRaidOptions());
+        content.add(tormentedDemonPhase);
         content.add(vardorvisHpOptions);
         content.add(raidOptions);
         content.add(Box.createVerticalStrut(4));
@@ -747,7 +754,7 @@ content.add(Box.createVerticalStrut(5));
         gearSection.add(Box.createVerticalStrut(4));
         gearSection.add(actionRow);
         gearSection.add(Box.createVerticalStrut(5));
-        spriteManager.getSpriteAsync(SpriteID.COMBAT_STYLE_BUTTON_SELECTED,0,image ->
+        spriteManager.getSpriteAsync(SpriteID.CombatboxesLarge.SELECTED,0,image ->
             SwingUtilities.invokeLater(() -> actionRow.setButton(image)));
 
         content.add(gearSection);
@@ -913,20 +920,19 @@ content.add(Box.createVerticalStrut(5));
         return button;
     }
 
-    @SuppressWarnings("deprecation")
     private int prayerSpriteId(String prayer)
     {
         if (prayer == null) return -1;
         String p = prayer.toLowerCase();
-        if (p.contains("zeal")) return net.runelite.api.gameval.SpriteID.Prayeron.ZEAL;
-        if (p.contains("piety")) return SpriteID.PRAYER_PIETY;
-        if (p.contains("chivalry")) return SpriteID.PRAYER_CHIVALRY;
-        if (p.contains("rigour")) return SpriteID.PRAYER_RIGOUR;
-        if (p.contains("augury")) return SpriteID.PRAYER_AUGURY;
-        if (p.contains("eagle eye")) return SpriteID.PRAYER_EAGLE_EYE;
-        if (p.contains("mystic might")) return SpriteID.PRAYER_MYSTIC_MIGHT;
-        if (p.contains("ultimate strength")) return SpriteID.PRAYER_ULTIMATE_STRENGTH;
-        if (p.contains("incredible reflexes")) return SpriteID.PRAYER_INCREDIBLE_REFLEXES;
+        if (p.contains("zeal")) return SpriteID.Prayeron.ZEAL;
+        if (p.contains("piety")) return SpriteID.Prayeron.PIETY;
+        if (p.contains("chivalry")) return SpriteID.Prayeron.CHIVALRY;
+        if (p.contains("rigour")) return SpriteID.Prayeron.RIGOUR;
+        if (p.contains("augury")) return SpriteID.Prayeron.AUGURY;
+        if (p.contains("eagle eye")) return SpriteID.Prayeron.EAGLE_EYE;
+        if (p.contains("mystic might")) return SpriteID.Prayeron.MYSTIC_MIGHT;
+        if (p.contains("ultimate strength")) return SpriteID.Prayeron.ULTIMATE_STRENGTH;
+        if (p.contains("incredible reflexes")) return SpriteID.Prayeron.INCREDIBLE_REFLEXES;
         return -1;
     }
 
@@ -1032,6 +1038,7 @@ content.add(Box.createVerticalStrut(5));
         boolean stylesReady=RecommendationReadiness.stylesVisible(targetReady);
         MonsterDefinition currentTarget=targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null;
         borkPhase.setVisible(FracturedArchiveRules.isBork(currentTarget));
+        tormentedDemonPhase.setVisible(TormentedDemonRules.isTormentedDemon(currentTarget));
         boolean immune=TargetStyleImmunity.immune(currentTarget,selectedStyle);
         boolean showImmunity=targetReady&&loadoutsGenerated&&styleExplicitlySelected&&immune;
         immunityNotice.setText(showImmunity?TargetStyleImmunity.message(currentTarget,selectedStyle):"");
@@ -1442,7 +1449,7 @@ content.add(Box.createVerticalStrut(5));
 
     public void updatePlayerStats()
     {
-        groupStorageAvailable = client.getAccountType() != null && client.getAccountType().isGroupIronman();
+        groupStorageAvailable = GroupStorageSnapshot.isGroupIronman(client.getVarbitValue(VarbitID.IRONMAN));
         account.refresh();
         // Stat/XP events may fire repeatedly during ordinary combat. Refresh the
         // account snapshot for the next manual run without invalidating the five
@@ -1673,10 +1680,12 @@ content.add(Box.createVerticalStrut(5));
         final VardorvisHpSettings requestedVardHp=vardorvisHpOptions.settings();
         final FracturedArchiveRules.BorkPhase requestedBorkPhase =
             (FracturedArchiveRules.BorkPhase)borkPhase.getSelectedItem();
-        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid,requestedVardHp,requestedBorkPhase));
+        final TormentedDemonRules.Phase requestedTdPhase =
+            (TormentedDemonRules.Phase)tormentedDemonPhase.getSelectedItem();
+        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid,requestedVardHp,requestedBorkPhase,requestedTdPhase));
     }
 
-    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid,VardorvisHpSettings requestedVardHp,FracturedArchiveRules.BorkPhase requestedBorkPhase)
+    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid,VardorvisHpSettings requestedVardHp,FracturedArchiveRules.BorkPhase requestedBorkPhase,TormentedDemonRules.Phase requestedTdPhase)
     {
         if (client.getGameState() != GameState.LOGGED_IN) return;
         if (!targetExplicitlySelected || (!bankChecked) || (!calculateAllStyles && !styleExplicitlySelected))
@@ -1711,12 +1720,12 @@ content.add(Box.createVerticalStrut(5));
         // generation, even while the user batches changes in the settings list.
         final List<BankItem> bankSnapshot = new ArrayList<>(generationBank);
         final List<BankItem> ownedGearSnapshot = new ArrayList<>(generationOwned);
-        final MonsterDefinition scaledMonster=RaidScaling.withOwnedBoosts(RaidScaling.apply(FracturedArchiveRules.withBorkPhase(requestedVardHp.apply(unscaledMonster),requestedBorkPhase),requestedRaid),account,ownedGearSnapshot);
+        final MonsterDefinition scaledMonster=RaidScaling.withOwnedBoosts(RaidScaling.apply(TormentedDemonRules.withPhase(FracturedArchiveRules.withBorkPhase(requestedVardHp.apply(unscaledMonster),requestedBorkPhase),requestedTdPhase),requestedRaid),account,ownedGearSnapshot);
         final DefenceReductionPlan selectedReduction=manualDefenceReduction.revalidate(
             DefenceReductionPlan.available(ownedGearSnapshot,account.real(Skill.MAGIC)));
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
         final AttackStyle requestedStyle=selectedStyle;
-        final boolean requestedSlayerMode=slayerMode;
+        final boolean requestedSlayerMode=slayerTargetMode;
         final Map<BlowpipeAmmoPlan.Pipe,BlowpipeAmmoPlan.Dart> assumptions=new EnumMap<>(BlowpipeAmmoPlan.Pipe.class);
         assumptions.putAll(blowpipeAmmoSelections);
         assumptions.entrySet().removeIf(entry->generationExclusions.excludes(entry.getValue().label,entry.getValue().label));
@@ -2181,10 +2190,6 @@ content.add(Box.createVerticalStrut(5));
         return null;
     }
 
-    public void showBankView()
-    {
-        bankFilter.toggle();
-    }
 
     private class MonsterRenderer extends DefaultListCellRenderer
     {

@@ -34,6 +34,7 @@ public final class WikiNpcTransforms {
   if(ICE_DEMON.contains(id)&&!"fire".equalsIgnoreCase(spellElement)&&!usingDemonbane) d=d.transform(HitDistribution.divide(3,0));
   if("Slagilith".equalsIgnoreCase(n) && !isPickaxe(weaponName,weaponCategory)) d=d.transform(HitDistribution.divide(3,0));
   if(NIGHTMARE_TOTEM.contains(id)&&style==AttackStyle.MAGIC) d=d.transform(HitDistribution.multiply(2,1,0));
+  if(TormentedDemonRules.damageReduced(m,style,weaponName,demonbane)) d=d.transform(HitDistribution.multiply(4,5,1));
   if(m.getFlatArmour()!=0 && style!=AttackStyle.MAGIC) d=d.transform(HitDistribution.flatAdd(-m.getFlatArmour(),0),false);
   return FracturedArchiveRules.transform(d,m,style).flatten();
  }

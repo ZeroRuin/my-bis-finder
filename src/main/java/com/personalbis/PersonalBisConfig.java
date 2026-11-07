@@ -20,15 +20,7 @@ public interface PersonalBisConfig extends Config
         return "";
     }
 
-    @ConfigItem(
-        keyName = "showSidebar",
-        name = "Show sidebar",
-        description = "Show the My BiS Finder sidebar."
-    )
-    default boolean showSidebar()
-    {
-        return true;
-    }
+
     @ConfigItem(keyName = "hideOtherBankItems", name = "Hide Other items",
         description = "Hide the Other items section in the My BiS Finder bank view. The normal bank is unaffected.", position = 2)
     default boolean hideOtherBankItems() { return true; }

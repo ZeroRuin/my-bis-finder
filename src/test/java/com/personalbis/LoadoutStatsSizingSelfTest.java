@@ -1,6 +1,5 @@
 package com.personalbis;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.awt.geom.Rectangle2D;

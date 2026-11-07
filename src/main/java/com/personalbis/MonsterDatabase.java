@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import net.runelite.api.Client;
-import net.runelite.api.NPCComposition;
 import com.personalbis.wiki.WikiDataPack;
 import com.personalbis.wiki.WikiMonster;
 
@@ -120,10 +119,6 @@ public class MonsterDatabase
             m.getSize(), m.getWeaknessElement(), m.getWeaknessSeverity(), m.getMagicAttack());
     }
 
-    static String wikiKey(WikiMonster wiki)
-    {
-        return "wiki|" + wiki.id + "|" + (wiki.version == null ? "" : wiki.version.trim().toLowerCase(Locale.ROOT));
-    }
 
     static MonsterDefinition fromWiki(WikiMonster wiki)
     {
