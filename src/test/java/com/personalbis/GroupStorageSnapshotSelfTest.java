@@ -31,6 +31,10 @@ public final class GroupStorageSnapshotSelfTest
         require(snapshot.hasSnapshot() && snapshot.getItems().isEmpty(), "empty storage differs from unscanned");
         snapshot.clear();
         require(!snapshot.hasSnapshot() && snapshot.getItems().isEmpty(), "logout reset clears data and timestamp");
+        require(!GroupStorageSnapshot.isGroupIronman(0) && !GroupStorageSnapshot.isGroupIronman(1) && !GroupStorageSnapshot.isGroupIronman(3),
+            "normal and solo Ironman accounts have no group storage");
+        require(GroupStorageSnapshot.isGroupIronman(4) && GroupStorageSnapshot.isGroupIronman(5) && GroupStorageSnapshot.isGroupIronman(6),
+            "Group, Hardcore Group and Unranked Group Ironman have group storage");
         System.out.println("ALL GROUP STORAGE SNAPSHOT SELF-TESTS PASSED");
     }
     private static ItemContainerChanged event(int id, Item[] items)

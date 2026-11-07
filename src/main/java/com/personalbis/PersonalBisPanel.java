@@ -56,7 +56,8 @@ import javax.swing.border.LineBorder;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.Skill;
-import net.runelite.api.SpriteID;
+import net.runelite.api.gameval.SpriteID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.game.SpriteManager;
@@ -753,7 +754,7 @@ content.add(Box.createVerticalStrut(5));
         gearSection.add(Box.createVerticalStrut(4));
         gearSection.add(actionRow);
         gearSection.add(Box.createVerticalStrut(5));
-        spriteManager.getSpriteAsync(SpriteID.COMBAT_STYLE_BUTTON_SELECTED,0,image ->
+        spriteManager.getSpriteAsync(SpriteID.CombatboxesLarge.SELECTED,0,image ->
             SwingUtilities.invokeLater(() -> actionRow.setButton(image)));
 
         content.add(gearSection);
@@ -919,20 +920,19 @@ content.add(Box.createVerticalStrut(5));
         return button;
     }
 
-    @SuppressWarnings("deprecation")
     private int prayerSpriteId(String prayer)
     {
         if (prayer == null) return -1;
         String p = prayer.toLowerCase();
-        if (p.contains("zeal")) return net.runelite.api.gameval.SpriteID.Prayeron.ZEAL;
-        if (p.contains("piety")) return SpriteID.PRAYER_PIETY;
-        if (p.contains("chivalry")) return SpriteID.PRAYER_CHIVALRY;
-        if (p.contains("rigour")) return SpriteID.PRAYER_RIGOUR;
-        if (p.contains("augury")) return SpriteID.PRAYER_AUGURY;
-        if (p.contains("eagle eye")) return SpriteID.PRAYER_EAGLE_EYE;
-        if (p.contains("mystic might")) return SpriteID.PRAYER_MYSTIC_MIGHT;
-        if (p.contains("ultimate strength")) return SpriteID.PRAYER_ULTIMATE_STRENGTH;
-        if (p.contains("incredible reflexes")) return SpriteID.PRAYER_INCREDIBLE_REFLEXES;
+        if (p.contains("zeal")) return SpriteID.Prayeron.ZEAL;
+        if (p.contains("piety")) return SpriteID.Prayeron.PIETY;
+        if (p.contains("chivalry")) return SpriteID.Prayeron.CHIVALRY;
+        if (p.contains("rigour")) return SpriteID.Prayeron.RIGOUR;
+        if (p.contains("augury")) return SpriteID.Prayeron.AUGURY;
+        if (p.contains("eagle eye")) return SpriteID.Prayeron.EAGLE_EYE;
+        if (p.contains("mystic might")) return SpriteID.Prayeron.MYSTIC_MIGHT;
+        if (p.contains("ultimate strength")) return SpriteID.Prayeron.ULTIMATE_STRENGTH;
+        if (p.contains("incredible reflexes")) return SpriteID.Prayeron.INCREDIBLE_REFLEXES;
         return -1;
     }
 
@@ -1449,7 +1449,7 @@ content.add(Box.createVerticalStrut(5));
 
     public void updatePlayerStats()
     {
-        groupStorageAvailable = client.getAccountType() != null && client.getAccountType().isGroupIronman();
+        groupStorageAvailable = GroupStorageSnapshot.isGroupIronman(client.getVarbitValue(VarbitID.IRONMAN));
         account.refresh();
         // Stat/XP events may fire repeatedly during ordinary combat. Refresh the
         // account snapshot for the next manual run without invalidating the five

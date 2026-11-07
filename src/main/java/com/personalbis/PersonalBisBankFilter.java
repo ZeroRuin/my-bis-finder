@@ -255,7 +255,7 @@ public class PersonalBisBankFilter
         Widget widget = event.getMenuEntry().getWidget();
         if (widget == null || !generatedWidgets.contains(widget) || widget.getItemId() <= 0) return;
         int itemId = widget.getItemId();
-        client.createMenuEntry(-1)
+        client.getMenu().createMenuEntry(-1)
             .setOption(ItemExclusions.MENU_OPTION)
             .setTarget(event.getTarget())
             .setType(MenuAction.RUNELITE)
@@ -302,7 +302,7 @@ public class PersonalBisBankFilter
             return;
         }
 
-        ItemContainer bank = client.getItemContainer(group ? net.runelite.api.InventoryID.GROUP_STORAGE.getId() : InventoryID.BANK);
+        ItemContainer bank = client.getItemContainer(group ? InventoryID.INV_GROUP_TEMP : InventoryID.BANK);
         int slot = event.getParam0();
         int clickedItemId = event.getItemId();
         // Native widgets retain their real bank slot when moved. Never redirect a
@@ -360,7 +360,7 @@ public class PersonalBisBankFilter
             return;
         }
 
-        ItemContainer bank = client.getItemContainer(group ? net.runelite.api.InventoryID.GROUP_STORAGE.getId() : InventoryID.BANK);
+        ItemContainer bank = client.getItemContainer(group ? InventoryID.INV_GROUP_TEMP : InventoryID.BANK);
         if (bank == null)
         {
             return;
