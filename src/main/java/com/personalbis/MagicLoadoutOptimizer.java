@@ -1,7 +1,7 @@
 package com.personalbis;
 import java.util.*; import javax.inject.Inject; import net.runelite.api.Skill;
 public class MagicLoadoutOptimizer {
- private static final int BEAM_WIDTH=32;
+ private static final int BEAM_WIDTH=32, EFFECT_RESERVE=8;
  private final EquipmentIntelligence intel; private final MagicCombatCalculator calc; private final AccountSnapshot account;
  @Inject public MagicLoadoutOptimizer(EquipmentIntelligence i,MagicCombatCalculator c,AccountSnapshot a){intel=i;calc=c;account=a;}
 
@@ -62,6 +62,7 @@ public class MagicLoadoutOptimizer {
      }
      next.sort((a,b)->Double.compare(gearPotential(b),gearPotential(a)));
      beam=new ArrayList<>(next.subList(0,Math.min(BEAM_WIDTH,next.size())));
+     reserveEffectLines(beam,next,m,task);
     }
 
     OptimizedMagicLoadout familyBest=evaluateFamily(beam,bank,m,task,weapon,attackCandidates);
@@ -242,6 +243,27 @@ public class MagicLoadoutOptimizer {
    for(MagicSpell sp:attacks)if(MagicSpellCompatibility.canAutocast(n,sp)){r.add(c);break;}
   }
   return r;
+ }
+ /**
+  * The beam is cut on raw magic stats, which can't see target effects: a Salve
+  * amulet (ei) against undead, or an imbued Slayer helm on task, has low raw stats
+  * but a large multiplier. Keep the best few lines for each active effect past the
+  * cut, so their real damage is still calculated.
+  */
+ private static void reserveEffectLines(List<Map<EquipmentSlot,EquipmentCandidate>> beam,
+   List<Map<EquipmentSlot,EquipmentCandidate>> sorted,MonsterDefinition m,boolean task){
+  if(sorted.size()<=beam.size())return;
+  Map<String,Integer> kept=new HashMap<>();
+  for(Map<EquipmentSlot,EquipmentCandidate> g:beam){
+   String note=MagicLoadoutEffects.evaluate(g.values(),m,task).note;
+   if(!note.isEmpty())kept.merge(note,1,Integer::sum);
+  }
+  for(Map<EquipmentSlot,EquipmentCandidate> g:sorted.subList(beam.size(),sorted.size())){
+   String note=MagicLoadoutEffects.evaluate(g.values(),m,task).note;
+   if(note.isEmpty()||kept.getOrDefault(note,0)>=EFFECT_RESERVE)continue;
+   kept.merge(note,1,Integer::sum);
+   beam.add(g);
+  }
  }
  private double gearPotential(Map<EquipmentSlot,EquipmentCandidate> g){
   int atk=0,prayer=0;double dmg=0;for(EquipmentCandidate c:g.values()){if(c!=null){atk+=c.getMagicAttack();dmg+=c.getMagicDamage();prayer+=c.getPrayer();}}

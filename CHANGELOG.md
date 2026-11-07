@@ -5,6 +5,8 @@
 - Sync bundled equipment and monster records with the supplied OSRS DPS Calculator snapshot.
 - Offer one Bork target with a phase dropdown; stunned Bork reduces melee defence bonuses by 100 and rolls normal accuracy.
 - Validate Slayer mappings when importing new monster data.
+- Fix melee recommendations on undead Slayer tasks: the search also tries setups without a Slayer helm or black mask, so a faster Salve amulet setup is no longer missed and on-task results are never slower than off-task ones.
+- Fix magic recommendations missing Salve amulets against undead and imbued Slayer helms on task: the gear search keeps setups with these effects until their real damage is calculated.
 
 ## 0.9.7 — Advanced Options, Bank Layout and The Fractured Archive
 
