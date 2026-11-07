@@ -422,3 +422,14 @@ compare charged/uncharged weapon ownership, Zeal and fragment unlocks; confirm
 The Blade shows DPS with no finite kill time. Recheck rapid bank withdrawals,
 loadout persistence and withdrawing/depositing an uncharged Ring of shadows.
 In-client testing remains necessary; offline checks do not simulate the raid.
+
+### Tormented Demon variants and Giant rat (Scurrius)
+
+Search `Tormented Demon`: one target appears with a variant dropdown (Shielded,
+Shielded (Defenceless), Unshielded), defaulting to Shielded. Changing the variant
+makes the current result stale. Compare each variant with the Wiki DPS calculator:
+Shielded reduces damage by 20% except with demonbane or abyssal weapons;
+Defenceless and Unshielded show 100% accuracy; Unshielded crush, crossbow,
+chinchompa and spell setups gain bonus damage and attack one tick faster.
+Search `Giant rat (Scurrius)`: accuracy is 100%, the max hit equals its HP, and the
+bone mace, bone shortbow and bone staff attack every tick.

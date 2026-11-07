@@ -26,6 +26,7 @@ public final class WikiPlayerVsNpcCalc {
     {
         if (attacker == null || monster == null) return attacker;
         if(FracturedArchiveRules.imp(monster))return SpecialAttackRules.single(HitDistribution.single(attacker.max(),true));
+        if (WikiAttackSpeedRules.isScurriusGiantRat(monster)) return oneHitKill(monster);
         java.util.List<HitDistribution> out = new java.util.ArrayList<>();
         boolean tailCrush = monster.getId() == 14014 && HueycoatlRules.qualifyingCrush(style, gear);
         for (HitDistribution d : attacker.dists())
@@ -41,6 +42,7 @@ public final class WikiPlayerVsNpcCalc {
     {
         if (attacker == null || monster == null) return attacker;
         if(FracturedArchiveRules.imp(monster))return SpecialAttackRules.single(HitDistribution.single(attacker.max(),true));
+        if (WikiAttackSpeedRules.isScurriusGiantRat(monster)) return oneHitKill(monster);
         java.util.List<HitDistribution> out = new java.util.ArrayList<>();
         for (HitDistribution d : attacker.dists())
             out.add(HueycoatlRules.tail(WikiNpcTransforms.applyByWeaponName(d, monster, style, weaponName, spellElement, demonbane),
@@ -342,22 +344,19 @@ public final class WikiPlayerVsNpcCalc {
             ? attacker.transform(HitDistribution.divide(2, 0), true).flatten() : attacker;
     }
 
-    /** Wiki Tormented Demon accuracy override. Phase is explicit until PBIS exposes encounter inputs in the UI. */
-    public static double tormentedDemonAccuracy(String monsterName, String phase, double ordinaryAccuracy) {
-        if (monsterName != null && monsterName.equalsIgnoreCase("Tormented Demon") && !"Shielded".equalsIgnoreCase(phase)) return 1.0;
-        return ordinaryAccuracy;
-    }
-
-    /** Wiki Tormented Demon shield transform: 20% reduction unless unshielded, demonbane, or abyssal. */
-    public static HitDistribution tormentedDemonDamage(HitDistribution d, String monsterName, String phase, boolean demonbane, boolean abyssal) {
-        if (d == null || monsterName == null || !monsterName.equalsIgnoreCase("Tormented Demon")) return d;
-        if (!"Unshielded".equalsIgnoreCase(phase) && !demonbane && !abyssal)
-            return d.transform(HitDistribution.multiply(4,5,1)).flatten();
-        return d;
-    }
-
     /** Giant rat (Scurrius) is guaranteed accuracy except Manual Cast in the Wiki pipeline. */
     public static double giantRatAccuracy(MonsterDefinition monster, boolean manualCast, double ordinaryAccuracy) {
-        return monster != null && monster.getId() == 7223 && !manualCast ? 1.0 : ordinaryAccuracy;
+        return WikiAttackSpeedRules.isScurriusGiantRat(monster) && !manualCast ? 1.0 : ordinaryAccuracy;
+    }
+
+    /** Target accuracy overrides from the Wiki pipeline. PBIS always autocasts, never Manual Cast. */
+    public static double targetAccuracy(MonsterDefinition monster, double ordinaryAccuracy) {
+        return TormentedDemonRules.accuracy(monster, giantRatAccuracy(monster, false, ordinaryAccuracy));
+    }
+
+    /** Giant rat (Scurrius) always dies to one hit, whatever its damage. */
+    private static HitDistribution.AttackDistribution oneHitKill(MonsterDefinition monster) {
+        return new HitDistribution.AttackDistribution(java.util.Collections.singletonList(
+            HitDistribution.single(Math.max(1, monster.getHitpoints()), true)));
     }
 }

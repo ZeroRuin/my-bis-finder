@@ -2,6 +2,8 @@
 
 ## 0.9.7.2 — Remove Unused Code and Tidy Tests
 
+- Add a Tormented Demon variant dropdown: Shielded, Shielded (Defenceless) and Unshielded. Shielded variants take 20% less damage unless using demonbane or abyssal weapons; Defenceless and Unshielded are always hit; Unshielded takes ticks² − 16 bonus damage from spells, crossbows, chinchompas and crush attacks, which also attack one tick faster.
+- Giant rat (Scurrius) is always hit and dies to one hit, as in the Wiki DPS calculator; rat bone weapons still attack it every tick.
 - Remove 12 unused classes, 32 unused or test-only methods, a duplicate Slayer flag and unused imports; no change to recommendations.
 - Magic accuracy uses one shared roll-ordering step instead of a second copy of the same logic.
 - Remove the unused Show sidebar setting.

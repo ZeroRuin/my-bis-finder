@@ -85,6 +85,7 @@ final class SpecWeaponRecommender
             if(n.equals("Osmumten's fang")&&style==AttackStyle.MELEE_STAB)
                 accuracy=RaidScaling.isToa(m)?1-Math.pow(1-accuracy,2):WikiAccuracyRoll.fang(roll,base.getDefenceRoll());
             if(RaidCombatRules.core(m))accuracy=1;
+            accuracy=WikiPlayerVsNpcCalc.targetAccuracy(m,accuracy);
             int max=(int)Math.floor(base.getPreWeaponMaxHit()*MeleeLoadoutEffects.inquisitorMultiplier(gear,style));
             HitDistribution.AttackDistribution d=SpecialAttackRules.melee(n,max,accuracy,
                 WikiAccuracyRoll.normal(roll*3/4,base.getDefenceRoll()),m==null?1:m.getSize());
@@ -115,7 +116,7 @@ final class SpecWeaponRecommender
         int defence=RaidScaling.defenceRoll(m,m==null?640:(Math.max(0,m.getMagicLevel())+9)*(m.getMagicDefence()+64));
         int max=WikiMagicDamage.powered(base,totals.magicDamage,prayer.damage,gear.values(),m,task).maxHit;
         if(n.equals("Zorya's tome"))max=max*160/100;
-        double accuracy=WikiAccuracyRoll.normal(roll,defence);int min=0;
+        double accuracy=WikiPlayerVsNpcCalc.targetAccuracy(m,WikiAccuracyRoll.normal(roll,defence));int min=0;
         if(RaidCombatRules.wardenP2(m)){int[] bounds=RaidCombatRules.wardenBounds(max,roll,defence);min=bounds[0];max=bounds[1];accuracy=1;}
         Double brimstone=null;
         if(!RaidCombatRules.wardenP2(m))for(EquipmentCandidate c:gear.values())if(name(c).equals("Brimstone ring"))brimstone=WikiAccuracyRoll.normal(roll,defence*9/10);
@@ -133,7 +134,7 @@ final class SpecWeaponRecommender
             if(n.startsWith("Magic shortbow"))roll=roll*10/7;
             else if(n.contains("ballista"))roll=roll*5/4;
             else if(n.equals("Toxic blowpipe")||n.equals("Webweaver bow")||n.equals("Zaryte crossbow"))roll*=2;
-            double accuracy=WikiAccuracyRoll.normal(roll,base.getDefenceRoll());int max=base.getPreTransformMax(),min=0,hits=1;
+            double accuracy=WikiPlayerVsNpcCalc.targetAccuracy(m,WikiAccuracyRoll.normal(roll,base.getDefenceRoll()));int max=base.getPreTransformMax(),min=0,hits=1;
             if(n.startsWith("Magic shortbow")){
                 if(a==null)continue;
                 max=WikiIntegerStages.maxHitFromEffective(RaidScaling.boosted(account,Skill.RANGED,m)+10,a.getRangedStrength()+64);hits=2;

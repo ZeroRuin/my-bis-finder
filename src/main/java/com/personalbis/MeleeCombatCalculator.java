@@ -135,6 +135,7 @@ public class MeleeCombatCalculator
                 : WikiAccuracyRoll.fang(attackRoll,defenceRoll);
 
         if(RaidCombatRules.core(monster)||FracturedArchiveRules.imp(monster))accuracy=1.0;
+        accuracy=WikiPlayerVsNpcCalc.targetAccuracy(monster,accuracy);
 
         int maxHit=WikiIntegerStages.maxHitFromEffective(effStr,strBonus+64);
         maxHit=WikiMeleeEffects.maxAfterCrystalBlessing(maxHit,gear.values());
@@ -156,6 +157,8 @@ public class MeleeCombatCalculator
         }
         int preWeaponMaxHit=maxHit;
         speed=WikiAttackSpeedRules.attackTicks(speed,weapon,monster);
+        final boolean tdBonus=TormentedDemonRules.unshieldedBonusApplies(monster,style,weapon,false);
+        final int bonusTicks=speed;
         double seconds=Math.max(1,speed)*0.6;
         int scytheHits=MeleeWeaponEffects.scytheHitCount(weapon,monster);
 
@@ -263,10 +266,11 @@ public class MeleeCombatCalculator
             java.util.Collections.singletonList(HitDistribution.single(attackDist.max(),true)));
         attackDist=WikiPlayerVsNpcCalc.applyCorp(attackDist,monster,weapon,style);
         attackDist=WikiPlayerVsNpcCalc.finalDistribution(attackDist,monster,style,weapon,null,false,gear.values());
+        if(tdBonus)attackDist=TormentedDemonRules.withUnshieldedBonus(attackDist,bonusTicks);
             return attackDist;
         };
         HitDistribution.AttackDistribution attackDist=distributionForAccuracy.apply(accuracy);
-        double expectedTicks=speed;
+        double expectedTicks=tdBonus?speed-1:speed;
         seconds=expectedTicks*0.6;
         double dps=WikiPlayerVsNpcCalc.expectedDamage(attackDist)/seconds;
         int targetHp=monster==null?1:Math.max(1,monster.getHitpoints());
@@ -290,7 +294,7 @@ public class MeleeCombatCalculator
         // Soulreaper is stateful: production ranking starts at zero stacks, then
         // scores the actual 0/1/2/3/4 -> 5-stack ramp over this target's HP.
         // Accuracy does not change with stacks; only Strength/max hit does.
-        if(finiteFight&&SoulreaperAxeEffects.isSoulreaper(weapon)&&!RaidCombatRules.core(monster))
+        if(finiteFight&&SoulreaperAxeEffects.isSoulreaper(weapon)&&!RaidCombatRules.core(monster)&&!WikiAttackSpeedRules.isScurriusGiantRat(monster))
         {
             double[] stackEv=new double[6];
             int potentialMax=displayedMaxHit;
@@ -349,7 +353,7 @@ public class MeleeCombatCalculator
 
         if(FracturedArchiveRules.blade(monster))ttk=Double.POSITIVE_INFINITY;
         return new CombatResult(dps,ttk,accuracy,displayedMaxHit,attackRoll,defenceRoll,
-            attackBonus,strBonus,speed,effAtk,effStr,stance,prayer,preWeaponAttackRoll,preWeaponMaxHit);
+            attackBonus,strBonus,tdBonus?speed-1:speed,effAtk,effStr,stance,prayer,preWeaponAttackRoll,preWeaponMaxHit);
     }
 
 

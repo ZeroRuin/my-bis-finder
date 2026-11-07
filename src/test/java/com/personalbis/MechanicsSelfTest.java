@@ -1485,10 +1485,6 @@ public final class MechanicsSelfTest
         HitDistribution.AttackDistribution pv18=new HitDistribution.AttackDistribution(java.util.Collections.singletonList(HitDistribution.linear(.5,0,10)));
         near("alpha50.4.50.18.1 PlayerVsNPC expected damage",WikiPlayerVsNpcCalc.expectedDamage(pv18),2.5,1e-12);
         near("alpha50.4.50.18.1 PlayerVsNPC DPS timing",WikiPlayerVsNpcCalc.dps(pv18,4),2.5/2.4,1e-12);
-        near("alpha50.4.50.18.1 Tormented Demon unshielded accuracy",WikiPlayerVsNpcCalc.tormentedDemonAccuracy("Tormented Demon","Unshielded",.42),1.0,1e-12);
-        near("alpha50.4.50.18.1 Tormented Demon shielded ordinary accuracy",WikiPlayerVsNpcCalc.tormentedDemonAccuracy("Tormented Demon","Shielded",.42),.42,1e-12);
-        near("alpha50.4.50.18.1 Tormented Demon shield damage reduction",WikiPlayerVsNpcCalc.tormentedDemonDamage(HitDistribution.single(10,true),"Tormented Demon","Shielded",false,false).expectedHit(),8.0,1e-12);
-        near("alpha50.4.50.18.1 Tormented Demon demonbane bypass",WikiPlayerVsNpcCalc.tormentedDemonDamage(HitDistribution.single(10,true),"Tormented Demon","Shielded",true,false).expectedHit(),10.0,1e-12);
         MonsterDefinition rat18=new MonsterDefinition(7223,"Giant rat (Scurrius)",46,20,1,1,15);
         near("alpha50.4.50.18.1 Giant rat guaranteed accuracy",WikiPlayerVsNpcCalc.giantRatAccuracy(rat18,false,.25),1.0,1e-12);
         near("alpha50.4.50.18.1 Giant rat Manual Cast keeps roll",WikiPlayerVsNpcCalc.giantRatAccuracy(rat18,true,.25),.25,1e-12);

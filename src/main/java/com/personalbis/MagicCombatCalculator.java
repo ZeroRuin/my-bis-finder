@@ -18,7 +18,7 @@ public class MagicCombatCalculator {
   double weakness=ElementalWeaknessEffects.multiplier(m,spell);
   boolean demonbane=spell.isDemonbane()&&m!=null&&m.hasAttribute("demon");
   MagicTomeEffects.Effect tome=MagicTomeEffects.evaluate(gear.values(),spell);
-  double acc=FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,dr);
+  double acc=WikiPlayerVsNpcCalc.targetAccuracy(m,FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,dr));
   ElementalAmuletEffects.Effect amulet=ElementalAmuletEffects.evaluate(gear.values(),spell);
   WikiMagicDamage.Result magicDamage=WikiMagicDamage.standard(lvl,md,mp.damage,gear.values(),m,spell,task,account.elementalFragmentBonus(spell));
   int max=magicDamage.maxHit;
@@ -28,6 +28,8 @@ public class MagicCombatCalculator {
   if(RaidCombatRules.wardenP2(m)){int[] bounds=RaidCombatRules.wardenBounds(max,roll,dr);min=bounds[0];max=bounds[1];acc=1.0;}
   Double brimstoneAccuracy=hasItem(gear,"Brimstone ring")?WikiAccuracyRoll.normal(roll,WikiIntegerStages.factor(dr,9,10)):null;
   HitDistribution.AttackDistribution magicAttack=WikiPlayerVsNpcCalc.magicFinalDistribution(min,max,acc,RaidCombatRules.wardenP2(m)?null:brimstoneAccuracy,m,gear.values(),spell);
+  // Unshielded Tormented Demons take ticks^2-16 bonus damage from spells and are hit a tick faster.
+  if(TormentedDemonRules.unshieldedBonusApplies(m,AttackStyle.MAGIC,null,true)){magicAttack=TormentedDemonRules.withUnshieldedBonus(magicAttack,ticks);ticks=ticks-1;}
   double expectedHit=WikiPlayerVsNpcCalc.expectedDamage(magicAttack);
   double dps=expectedHit/(ticks*.6);
   double ttk=ExpectedKillTime.seconds(magicAttack,m==null?1:Math.max(1,m.getHitpoints()),ticks);
@@ -54,7 +56,7 @@ public class MagicCombatCalculator {
   int roll=magicAccuracy.attackRoll;
   int ml=m==null?1:Math.max(0,m.getMagicLevel());
   int deff=ml+9, dr=RaidScaling.defenceRoll(m,deff*(m==null?64:m.getMagicDefence()+64));
-  double acc=FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,dr);
+  double acc=WikiPlayerVsNpcCalc.targetAccuracy(m,FracturedArchiveRules.imp(m)?1.0:WikiAccuracyRoll.normal(roll,dr));
   int base=staff.baseMaxHit(lvl);
   WikiMagicDamage.Result magicDamage=WikiMagicDamage.powered(base,md,mp.damage,gear.values(),m,task);
   int max=magicDamage.maxHit;

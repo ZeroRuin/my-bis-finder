@@ -143,6 +143,83 @@ public final class CombatSearchSelfTest
         WikiEquipmentEngine.EquipmentBonuses charged=WikiEquipmentEngine.calculateEquipmentBonuses(quiver,vorkath,null,false,false,false,null);
         check(charged.rangedAttack==uncharged.rangedAttack+10&&charged.rangedStr==uncharged.rangedStr+1,"Locked charged quiver keeps Sunfire bonuses");
         dh.remove(EquipmentSlot.HEAD);check(!EquipmentSetRules.dharok(dh),"Incomplete Dharok no effect");
+        targetPhaseChecks(all);
         System.out.println("ALL COMBAT AND SEARCH SELF-TESTS PASSED");
+    }
+
+    /** Giant rat (Scurrius) and Tormented Demon phase rules, through the production calculators. */
+    private static void targetPhaseChecks(List<MonsterDefinition> all){
+        AccountSnapshot maxed=new AccountSnapshot(null){
+            @Override public int real(Skill s){return 99;}
+            @Override public int boosted(Skill s){return 99;}
+        };
+        MeleeCombatCalculator melee=new MeleeCombatCalculator(maxed);
+        RangedCombatCalculator ranged=new RangedCombatCalculator(maxed);
+        MagicCombatCalculator magic=new MagicCombatCalculator(maxed);
+
+        MonsterDefinition rat=find(all,"Giant rat (Scurrius)","");
+        int ratHp=rat.getHitpoints();
+        CombatResult whipRat=melee.calculateForStance(gear(AttackStyle.MELEE_SLASH,4151),AttackStyle.MELEE_SLASH,rat,false,MeleeStance.ACCURATE,MeleePrayer.NONE);
+        close(whipRat.getAccuracy(),1,"Scurrius rat always hit");
+        check(whipRat.getMaxHit()==ratHp,"Scurrius rat dies to one hit");
+        close(whipRat.getDps(),ratHp/(whipRat.getAttackSpeed()*.6),"Scurrius rat one hit per attack");
+        CombatResult maceRat=melee.calculateForStance(gear(AttackStyle.MELEE_CRUSH,28792),AttackStyle.MELEE_CRUSH,rat,false,MeleeStance.ACCURATE,MeleePrayer.NONE);
+        check(maceRat.getAttackSpeed()==1,"Bone mace attacks the Scurrius rat every tick");
+        close(maceRat.getDps(),ratHp/.6,"Bone mace kills a Scurrius rat every tick");
+        RangedCombatResult bowRat=ranged.calculate(gear(AttackStyle.RANGED,28794),rat,false,RangedStance.RAPID,RangedPrayer.NONE);
+        check(bowRat.getAttackSpeed()==1,"Bone shortbow attacks the Scurrius rat every tick");
+        close(bowRat.getAccuracy(),1,"Bone shortbow always hits the Scurrius rat");
+        MagicCombatResult staffRat=magic.calculatePowered(gear(AttackStyle.MAGIC,28796),rat,PoweredStaff.forWeapon("Bone staff"),false);
+        check(staffRat.getAttackSpeed()==1,"Bone staff attacks the Scurrius rat every tick");
+        close(staffRat.getAccuracy(),1,"Bone staff always hits the Scurrius rat");
+        MonsterDefinition ordinaryRat=find(all,"Giant rat","Level 26");
+        check(melee.calculateForStance(gear(AttackStyle.MELEE_CRUSH,28792),AttackStyle.MELEE_CRUSH,ordinaryRat,false,MeleeStance.ACCURATE,MeleePrayer.NONE).getAttackSpeed()==4,
+            "Bone mace keeps its normal speed on other rats");
+
+        MonsterDefinition demon=find(all,"Tormented Demon","");
+        check(TormentedDemonRules.phase(demon)==TormentedDemonRules.Phase.SHIELDED,"Tormented Demon defaults to Shielded");
+        MonsterDefinition shielded=TormentedDemonRules.withPhase(demon,TormentedDemonRules.Phase.SHIELDED);
+        MonsterDefinition defenceless=TormentedDemonRules.withPhase(demon,TormentedDemonRules.Phase.DEFENCELESS);
+        MonsterDefinition unshielded=TormentedDemonRules.withPhase(demon,TormentedDemonRules.Phase.UNSHIELDED);
+        check("Shielded (Defenceless)".equals(defenceless.getVersion()),"Tormented Demon phase label");
+
+        CombatResult whipShielded=melee.calculateForStance(gear(AttackStyle.MELEE_SLASH,4151),AttackStyle.MELEE_SLASH,shielded,false,MeleeStance.ACCURATE,MeleePrayer.NONE);
+        CombatResult whipDefenceless=melee.calculateForStance(gear(AttackStyle.MELEE_SLASH,4151),AttackStyle.MELEE_SLASH,defenceless,false,MeleeStance.ACCURATE,MeleePrayer.NONE);
+        CombatResult whipUnshielded=melee.calculateForStance(gear(AttackStyle.MELEE_SLASH,4151),AttackStyle.MELEE_SLASH,unshielded,false,MeleeStance.ACCURATE,MeleePrayer.NONE);
+        check(whipShielded.getAccuracy()<1,"Shielded demon uses the normal accuracy roll");
+        close(whipDefenceless.getAccuracy(),1,"Defenceless demon is always hit");
+        close(whipUnshielded.getAccuracy(),1,"Unshielded demon is always hit");
+        check(whipUnshielded.getMaxHit()>0,"Whip damages the demon");
+        // The whip is abyssal, so the shield does not reduce its damage.
+        check(whipShielded.getMaxHit()==whipUnshielded.getMaxHit(),"Abyssal weapons bypass the shield");
+        check(whipUnshielded.getAttackSpeed()==4,"No Unshielded speed bonus for slash");
+
+        CombatResult maulShielded=melee.calculateForStance(gear(AttackStyle.MELEE_CRUSH,21003),AttackStyle.MELEE_CRUSH,shielded,false,MeleeStance.AGGRESSIVE,MeleePrayer.NONE);
+        CombatResult maulDefenceless=melee.calculateForStance(gear(AttackStyle.MELEE_CRUSH,21003),AttackStyle.MELEE_CRUSH,defenceless,false,MeleeStance.AGGRESSIVE,MeleePrayer.NONE);
+        CombatResult maulUnshielded=melee.calculateForStance(gear(AttackStyle.MELEE_CRUSH,21003),AttackStyle.MELEE_CRUSH,unshielded,false,MeleeStance.AGGRESSIVE,MeleePrayer.NONE);
+        int maulBase=maulUnshielded.getMaxHit()-20;
+        check(maulUnshielded.getAttackSpeed()==5,"Unshielded crush attacks one tick faster");
+        check(maulBase>0&&maulShielded.getMaxHit()==maulBase*4/5,"Shield reduces damage by 20%: "+maulShielded.getMaxHit()+" vs base "+maulBase);
+        check(maulDefenceless.getMaxHit()==maulBase*4/5,"Defenceless keeps the 20% reduction");
+        check(maulShielded.getAttackSpeed()==6,"Shielded keeps normal speed");
+
+        CombatResult arclight=melee.calculateForStance(gear(AttackStyle.MELEE_SLASH,19675),AttackStyle.MELEE_SLASH,shielded,false,MeleeStance.AGGRESSIVE,MeleePrayer.NONE);
+        CombatResult arclightOpen=melee.calculateForStance(gear(AttackStyle.MELEE_SLASH,19675),AttackStyle.MELEE_SLASH,unshielded,false,MeleeStance.AGGRESSIVE,MeleePrayer.NONE);
+        check(arclight.getMaxHit()==arclightOpen.getMaxHit(),"Demonbane bypasses the shield");
+
+        RangedCombatResult rcbShielded=ranged.calculate(gear(AttackStyle.RANGED,9185,9144),shielded,false,RangedStance.RAPID,RangedPrayer.NONE);
+        RangedCombatResult rcbUnshielded=ranged.calculate(gear(AttackStyle.RANGED,9185,9144),unshielded,false,RangedStance.RAPID,RangedPrayer.NONE);
+        check(rcbShielded.getAttackSpeed()==5&&rcbUnshielded.getAttackSpeed()==4,"Unshielded heavy ranged attacks one tick faster");
+        check(rcbUnshielded.getMaxHit()>rcbShielded.getMaxHit(),"Unshielded crossbow gains 5^2-16 bonus damage");
+
+        MagicSpell surge=MagicSpell.standard().stream().filter(sp->sp.name.equals("Fire Surge")).findFirst().get();
+        MagicCombatResult surgeShielded=magic.calculate(gear(AttackStyle.MAGIC,21006),shielded,surge,false);
+        MagicCombatResult surgeUnshielded=magic.calculate(gear(AttackStyle.MAGIC,21006),unshielded,surge,false);
+        check(surgeUnshielded.getAttackSpeed()==surgeShielded.getAttackSpeed()-1,"Unshielded spells attack one tick faster");
+        int surgeTicks=surgeShielded.getAttackSpeed();
+        check(surgeUnshielded.getMaxHit()==surgeShielded.getPreTransformMax()+Math.max(0,surgeTicks*surgeTicks-16),"Unshielded spell bonus damage");
+        check(surgeShielded.getMaxHit()==surgeShielded.getPreTransformMax()*4/5,"Shield reduces spell damage");
+        close(surgeUnshielded.getAccuracy(),1,"Unshielded spells always hit");
+        System.out.println("PASS  Giant rat (Scurrius) and Tormented Demon phase rules");
     }
 }

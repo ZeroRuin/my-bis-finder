@@ -135,6 +135,8 @@ public class PersonalBisPanel extends PluginPanel
     private final JPanel groupStorageOptions = new JPanel();
     private final JComboBox<FracturedArchiveRules.BorkPhase> borkPhase =
         new JComboBox<>(FracturedArchiveRules.BorkPhase.values());
+    private final JComboBox<TormentedDemonRules.Phase> tormentedDemonPhase =
+        new JComboBox<>(TormentedDemonRules.Phase.values());
     private final RaidOptionsPanel raidOptions = new RaidOptionsPanel(this::raidOptionsChanged);
     private final VardorvisHpOptions vardorvisHpOptions=new VardorvisHpOptions(this::vardorvisHpChanged);
     private boolean advancedExpanded;
@@ -446,6 +448,14 @@ public class PersonalBisPanel extends PluginPanel
         borkPhase.setVisible(false);
         borkPhase.addActionListener(e->invalidateRaidOptions());
         content.add(borkPhase);
+        styleCombo(tormentedDemonPhase);
+        tormentedDemonPhase.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tormentedDemonPhase.setMaximumSize(new Dimension(Integer.MAX_VALUE,tormentedDemonPhase.getPreferredSize().height));
+        tormentedDemonPhase.setToolTipText("Tormented Demon variant: Shielded, Shielded (Defenceless) or Unshielded");
+        tormentedDemonPhase.getAccessibleContext().setAccessibleName("Tormented Demon variant");
+        tormentedDemonPhase.setVisible(false);
+        tormentedDemonPhase.addActionListener(e->invalidateRaidOptions());
+        content.add(tormentedDemonPhase);
         content.add(vardorvisHpOptions);
         content.add(raidOptions);
         content.add(Box.createVerticalStrut(4));
@@ -1028,6 +1038,7 @@ content.add(Box.createVerticalStrut(5));
         boolean stylesReady=RecommendationReadiness.stylesVisible(targetReady);
         MonsterDefinition currentTarget=targetReady?(MonsterDefinition)monsterBox.getSelectedItem():null;
         borkPhase.setVisible(FracturedArchiveRules.isBork(currentTarget));
+        tormentedDemonPhase.setVisible(TormentedDemonRules.isTormentedDemon(currentTarget));
         boolean immune=TargetStyleImmunity.immune(currentTarget,selectedStyle);
         boolean showImmunity=targetReady&&loadoutsGenerated&&styleExplicitlySelected&&immune;
         immunityNotice.setText(showImmunity?TargetStyleImmunity.message(currentTarget,selectedStyle):"");
@@ -1669,10 +1680,12 @@ content.add(Box.createVerticalStrut(5));
         final VardorvisHpSettings requestedVardHp=vardorvisHpOptions.settings();
         final FracturedArchiveRules.BorkPhase requestedBorkPhase =
             (FracturedArchiveRules.BorkPhase)borkPhase.getSelectedItem();
-        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid,requestedVardHp,requestedBorkPhase));
+        final TormentedDemonRules.Phase requestedTdPhase =
+            (TormentedDemonRules.Phase)tormentedDemonPhase.getSelectedItem();
+        clientThread.invokeLater(() -> captureAndCalculate(generation, calculateAllStyles, requestedRaid,requestedVardHp,requestedBorkPhase,requestedTdPhase));
     }
 
-    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid,VardorvisHpSettings requestedVardHp,FracturedArchiveRules.BorkPhase requestedBorkPhase)
+    private void captureAndCalculate(long generation, boolean calculateAllStyles, RaidSettings requestedRaid,VardorvisHpSettings requestedVardHp,FracturedArchiveRules.BorkPhase requestedBorkPhase,TormentedDemonRules.Phase requestedTdPhase)
     {
         if (client.getGameState() != GameState.LOGGED_IN) return;
         if (!targetExplicitlySelected || (!bankChecked) || (!calculateAllStyles && !styleExplicitlySelected))
@@ -1707,7 +1720,7 @@ content.add(Box.createVerticalStrut(5));
         // generation, even while the user batches changes in the settings list.
         final List<BankItem> bankSnapshot = new ArrayList<>(generationBank);
         final List<BankItem> ownedGearSnapshot = new ArrayList<>(generationOwned);
-        final MonsterDefinition scaledMonster=RaidScaling.withOwnedBoosts(RaidScaling.apply(FracturedArchiveRules.withBorkPhase(requestedVardHp.apply(unscaledMonster),requestedBorkPhase),requestedRaid),account,ownedGearSnapshot);
+        final MonsterDefinition scaledMonster=RaidScaling.withOwnedBoosts(RaidScaling.apply(TormentedDemonRules.withPhase(FracturedArchiveRules.withBorkPhase(requestedVardHp.apply(unscaledMonster),requestedBorkPhase),requestedTdPhase),requestedRaid),account,ownedGearSnapshot);
         final DefenceReductionPlan selectedReduction=manualDefenceReduction.revalidate(
             DefenceReductionPlan.available(ownedGearSnapshot,account.real(Skill.MAGIC)));
         final boolean includeRuby=includeRubyBoltsEnabled&&hasRubyBolts(ownedGearSnapshot);
