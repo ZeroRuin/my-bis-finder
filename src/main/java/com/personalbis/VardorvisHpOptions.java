@@ -17,9 +17,9 @@ final class VardorvisHpOptions extends JPanel
         this.changed=changed;
         setLayout(new FlowLayout(FlowLayout.LEFT,4,3));setOpaque(false);setAlignmentX(LEFT_ALIGNMENT);
         setMaximumSize(new Dimension(Integer.MAX_VALUE,33));
-        JLabel label=new JLabel("Starting HP");label.setFont(FontManager.getRunescapeFont());label.setForeground(new Color(238,220,172));
-        maximum.setFont(FontManager.getRunescapeFont());maximum.setForeground(new Color(238,220,172));
-        SidebarInputStyle.spinner(startingHp);
+        JLabel label=new JLabel("Starting HP");label.setFont(FontManager.getRunescapeFont());label.setForeground(SidebarStyle.TEXT);
+        maximum.setFont(FontManager.getRunescapeFont());maximum.setForeground(SidebarStyle.TEXT);
+        SidebarStyle.spinner(startingHp);
         startingHp.setPreferredSize(new Dimension(65,25));
         startingHp.setToolTipText("Manual starting HP. Accuracy/DPS use this snapshot; TTK scales Defence as remaining HP falls. Regenerate to apply.");
         add(label);add(startingHp);add(maximum);setVisible(false);
@@ -43,7 +43,7 @@ final class VardorvisHpOptions extends JPanel
         try{
             int max=VardorvisRules.maximumHp(target);
             startingHp.setModel(new SpinnerNumberModel(settings.hp(target),1,max,1));
-            SidebarInputStyle.spinner(startingHp);
+            SidebarStyle.spinner(startingHp);
             maximum.setText("/ "+max);
         }finally{restoring=false;}
     }

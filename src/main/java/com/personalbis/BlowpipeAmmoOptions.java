@@ -52,7 +52,7 @@ final class BlowpipeAmmoOptions extends JPanel
             JLabel label=new JLabel(pipe.label+" Ammo");label.setForeground(new Color(255,215,0));label.setFont(net.runelite.client.ui.FontManager.getRunescapeFont());
             label.setAlignmentX(Component.LEFT_ALIGNMENT);add(label);
             JComboBox<BlowpipeAmmoPlan.Dart> box=new JComboBox<>(BlowpipeAmmoPlan.options(pipe).toArray(new BlowpipeAmmoPlan.Dart[0]));
-            SidebarInputStyle.combo(box);
+            SidebarStyle.combo(box);
             box.setToolTipText("<html><body style='width:200px'>Manual ammo assumption; loaded contents and quantity are unknown. Select darts, then regenerate.</body></html>");
             box.setSelectedItem(selections.getOrDefault(pipe,BlowpipeAmmoPlan.Dart.UNKNOWN));
             box.setAlignmentX(Component.LEFT_ALIGNMENT);box.setMaximumSize(new Dimension(Integer.MAX_VALUE,28));

@@ -68,13 +68,6 @@ import net.runelite.client.ui.PluginPanel;
 
 public class PersonalBisPanel extends PluginPanel
 {
-    private static final Color OSRS_PANEL = ColorScheme.DARKER_GRAY_COLOR;
-    private static final Color OSRS_PANEL_DARK = ColorScheme.DARKER_GRAY_COLOR;
-    private static final Color OSRS_SLOT = new Color(58, 51, 40);
-    private static final Color OSRS_BORDER = new Color(103, 90, 67);
-    private static final Color OSRS_GOLD = new Color(255, 184, 38);
-    private static final Color OSRS_CREAM = new Color(238, 220, 172);
-    private static final Color OSRS_GREEN = new Color(82, 255, 92);
 
     private final Client client;
     private final ClientThread clientThread;
@@ -125,10 +118,10 @@ public class PersonalBisPanel extends PluginPanel
     private JPanel chooseStylePanel;
     private JLabel monsterCountLabel;
     private JPanel validationSection;
-    private final JButton generateLoadoutButton = osrsButton("Generate Loadout");
-    private final JButton cancelCalculationButton = osrsButton("Cancel calculation");
+    private final JButton generateLoadoutButton = SidebarStyle.panelButton("Generate Loadout");
+    private final JButton cancelCalculationButton = SidebarStyle.panelButton("Cancel calculation");
     private final JLabel generateMessage = new JLabel(" ", SwingConstants.CENTER);
-    private final JButton advancedToggle = osrsButton("Advanced ▸");
+    private final JButton advancedToggle = SidebarStyle.panelButton("Advanced ▸");
     private final JPanel advancedOptions = new JPanel();
     private final JPanel advancedHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
     private final JLabel advancedAlert = new JLabel(" !");
@@ -259,10 +252,10 @@ public class PersonalBisPanel extends PluginPanel
         this.bankFilter = bankFilter;
 
         setLayout(new BorderLayout());
-        setBackground(OSRS_PANEL);
+        setBackground(SidebarStyle.PANEL);
         setBorder(null);
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.setBackground(OSRS_PANEL);
+        content.setBackground(SidebarStyle.PANEL);
         content.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
 
         content.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH, Integer.MAX_VALUE));
@@ -281,11 +274,11 @@ public class PersonalBisPanel extends PluginPanel
         // Use the unwrapped panel and provide our own borderless scroll pane instead.
         content.setAlignmentX(Component.LEFT_ALIGNMENT);
         JPanel northPanel = new SidebarViewportPanel();
-        northPanel.setBackground(OSRS_PANEL);
+        northPanel.setBackground(SidebarStyle.PANEL);
         northPanel.add(content, BorderLayout.NORTH);
         JScrollPane panelScroll = new JScrollPane(northPanel);
-        panelScroll.setBackground(OSRS_PANEL);
-        panelScroll.getViewport().setBackground(OSRS_PANEL);
+        panelScroll.setBackground(SidebarStyle.PANEL);
+        panelScroll.getViewport().setBackground(SidebarStyle.PANEL);
         panelScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         panelScroll.setBorder(null);
         panelScroll.setViewportBorder(null);
@@ -305,24 +298,24 @@ public class PersonalBisPanel extends PluginPanel
     private void buildUi()
     {
         JLabel title = new JLabel("My BiS Finder", SwingConstants.LEFT);
-        title.setFont(headerFont());
-        title.setForeground(OSRS_GOLD);
+        title.setFont(SidebarStyle.headerFont());
+        title.setForeground(SidebarStyle.GOLD);
         title.setOpaque(true);
-        title.setBackground(OSRS_PANEL);
+        title.setBackground(SidebarStyle.PANEL);
         title.setBorder(new EmptyBorder(4, 4, 4, 4));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
         content.add(title);
         content.add(Box.createVerticalStrut(4));
 
         targetCard = new JPanel(new GridBagLayout());
-        targetCard.setBackground(OSRS_PANEL);
+        targetCard.setBackground(SidebarStyle.PANEL);
         targetCard.setBorder(BorderFactory.createEmptyBorder(4, 0, 4, 0));
         targetCard.setAlignmentX(Component.LEFT_ALIGNMENT);
         targetCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 126));
 
         monsterCountLabel = new JLabel("Monsters loading...");
         monsterCountLabel.setFont(FontManager.getRunescapeFont());
-        monsterCountLabel.setForeground(OSRS_CREAM);
+        monsterCountLabel.setForeground(SidebarStyle.TEXT);
         monsterCountLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         content.add(monsterCountLabel);
         content.add(Box.createVerticalStrut(8));
@@ -334,12 +327,12 @@ public class PersonalBisPanel extends PluginPanel
         targetGbc.anchor = GridBagConstraints.WEST;
         targetGbc.insets = new Insets(0, 0, 0, 0);
 
-        JLabel targetHeading = sectionLabel("Target");
+        JLabel targetHeading = SidebarStyle.sectionLabel("Target");
         targetHeading.setHorizontalAlignment(SwingConstants.LEFT);
         JPanel targetHeadingRow=new JPanel(new FlowLayout(FlowLayout.LEFT,4,0));
         targetHeadingRow.setOpaque(false);
         targetHeadingRow.add(targetHeading);
-        styleCheck(slayerTask);
+        SidebarStyle.panelCheck(slayerTask);
         slayerTask.setText("Load Slayer Task");
         slayerTask.setOpaque(false);
         slayerTask.setBorder(BorderFactory.createEmptyBorder(0,4,0,0));
@@ -347,7 +340,7 @@ public class PersonalBisPanel extends PluginPanel
         targetGbc.gridy = 0;
         targetCard.add(targetHeadingRow, targetGbc);
 
-        styleCombo(monsterBox);
+        SidebarStyle.combo(monsterBox);
         monsterBox.setEditable(true);
         monsterBox.setMaximumRowCount(20);
         monsterBox.setRenderer(new MonsterRenderer());
@@ -355,7 +348,7 @@ public class PersonalBisPanel extends PluginPanel
         if (editorComponent instanceof JTextField)
         {
             JTextField editor = (JTextField) editorComponent;
-            styleTextField(editor);
+            SidebarStyle.text(editor);
             editor.setToolTipText("Search names or shortcuts (KBD, Cerb). Use ToA, CoX or ToB to filter a raid.");
             editor.addKeyListener(new KeyAdapter()
             {
@@ -398,7 +391,7 @@ public class PersonalBisPanel extends PluginPanel
         slayerAssignmentNote.setLineWrap(true);
         slayerAssignmentNote.setWrapStyleWord(true);
         slayerAssignmentNote.setFont(FontManager.getRunescapeFont());
-        slayerAssignmentNote.setForeground(OSRS_CREAM);
+        slayerAssignmentNote.setForeground(SidebarStyle.TEXT);
         slayerAssignmentNote.setVisible(false);
         targetGbc.gridy = 2;
         targetCard.add(slayerAssignmentNote, targetGbc);
@@ -441,7 +434,7 @@ public class PersonalBisPanel extends PluginPanel
             });
         });
         content.add(targetCard);
-        styleCombo(borkPhase);
+        SidebarStyle.combo(borkPhase);
         borkPhase.setAlignmentX(Component.LEFT_ALIGNMENT);
         borkPhase.setMaximumSize(new Dimension(Integer.MAX_VALUE,borkPhase.getPreferredSize().height));
         borkPhase.setToolTipText("Bork phase: Smork HP or stunned");
@@ -449,7 +442,7 @@ public class PersonalBisPanel extends PluginPanel
         borkPhase.setVisible(false);
         borkPhase.addActionListener(e->invalidateRaidOptions());
         content.add(borkPhase);
-        styleCombo(tormentedDemonPhase);
+        SidebarStyle.combo(tormentedDemonPhase);
         tormentedDemonPhase.setAlignmentX(Component.LEFT_ALIGNMENT);
         tormentedDemonPhase.setMaximumSize(new Dimension(Integer.MAX_VALUE,tormentedDemonPhase.getPreferredSize().height));
         tormentedDemonPhase.setToolTipText("Tormented Demon variant: Shielded, Shielded (Defenceless) or Unshielded");
@@ -465,16 +458,16 @@ public class PersonalBisPanel extends PluginPanel
 
         // Prayer and boost controls are intentionally hidden; recommendations are automatic.
 
-        resultTitle.setFont(headerFont());
-        resultTitle.setForeground(OSRS_GREEN);
+        resultTitle.setFont(SidebarStyle.headerFont());
+        resultTitle.setForeground(SidebarStyle.GREEN);
         resultTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
 monsterInfo.setFont(FontManager.getRunescapeFont());
-        monsterInfo.setForeground(OSRS_CREAM);
+        monsterInfo.setForeground(SidebarStyle.TEXT);
         monsterInfo.setAlignmentX(Component.CENTER_ALIGNMENT);
 content.add(Box.createVerticalStrut(5));
 
-        advancedToggle.setFont(headerFont());
-        advancedToggle.setForeground(OSRS_GOLD);
+        advancedToggle.setFont(SidebarStyle.headerFont());
+        advancedToggle.setForeground(SidebarStyle.GOLD);
         advancedToggle.setHorizontalAlignment(SwingConstants.LEFT);
         advancedToggle.setBorder(BorderFactory.createEmptyBorder(0, 0, 4, 0));
         advancedToggle.setBorderPainted(false);
@@ -499,13 +492,13 @@ content.add(Box.createVerticalStrut(5));
         JTextArea advancedNote = new JTextArea("Options will increase calculation time.");
         advancedNote.setEditable(false); advancedNote.setFocusable(false);
         advancedNote.setOpaque(false); advancedNote.setLineWrap(true); advancedNote.setWrapStyleWord(true);
-        advancedNote.setFont(FontManager.getRunescapeFont()); advancedNote.setForeground(OSRS_CREAM);
+        advancedNote.setFont(FontManager.getRunescapeFont()); advancedNote.setForeground(SidebarStyle.TEXT);
         advancedNote.setAlignmentX(Component.LEFT_ALIGNMENT); advancedNote.setRows(1);
         advancedNote.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
         advancedOptions.add(advancedNote);
-        JLabel fillLabel=new JLabel("Tied-result gear preference");fillLabel.setForeground(OSRS_GOLD);
+        JLabel fillLabel=new JLabel("Tied-result gear preference");fillLabel.setForeground(SidebarStyle.GOLD);
         fillLabel.setAlignmentX(Component.LEFT_ALIGNMENT);advancedOptions.add(fillLabel);
-        styleCombo(fillPreferenceBox);
+        SidebarStyle.combo(fillPreferenceBox);
         fillPreferenceBox.setAlignmentX(Component.LEFT_ALIGNMENT);
         fillPreferenceBox.setMaximumSize(new Dimension(Integer.MAX_VALUE,28));
         fillPreferenceBox.setToolTipText("Defence fill preserves accuracy, max hit, speed, DPS and TTK. Compares defensive bonuses; no survival guarantee.");
@@ -523,9 +516,9 @@ content.add(Box.createVerticalStrut(5));
         advancedHeader.setAlignmentX(Component.LEFT_ALIGNMENT);
         advancedHeader.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
         advancedAlert.setForeground(new Color(220, 60, 60));
-        advancedAlert.setFont(headerFont()); advancedAlert.setVisible(false);
+        advancedAlert.setFont(SidebarStyle.headerFont()); advancedAlert.setVisible(false);
         advancedHeader.add(advancedToggle); advancedHeader.add(advancedAlert);
-        activeReductions.setForeground(OSRS_CREAM);
+        activeReductions.setForeground(SidebarStyle.TEXT);
         activeReductions.setFont(FontManager.getRunescapeFont());
         activeReductions.setAlignmentX(Component.LEFT_ALIGNMENT); activeReductions.setVisible(false);
         content.add(advancedHeader); content.add(activeReductions); content.add(advancedOptions);
@@ -535,15 +528,15 @@ content.add(Box.createVerticalStrut(5));
         groupStorageOptions.setOpaque(false);
         groupStorageOptions.setAlignmentX(Component.LEFT_ALIGNMENT);
         advancedOptions.add(groupStorageOptions);
-        styleCheck(includeGroupStorage);
-        includeGroupStorage.setForeground(includeGroupStorageEnabled ? OSRS_GREEN : OSRS_CREAM);
+        SidebarStyle.panelCheck(includeGroupStorage);
+        includeGroupStorage.setForeground(includeGroupStorageEnabled ? SidebarStyle.GREEN : SidebarStyle.TEXT);
         includeGroupStorage.setFont(FontManager.getRunescapeBoldFont());
         includeGroupStorage.setOpaque(false);
         includeGroupStorage.setBorderPainted(false);
         includeGroupStorage.setAlignmentX(Component.LEFT_ALIGNMENT);
         includeGroupStorage.addActionListener(e -> {
             includeGroupStorageEnabled = includeGroupStorage.isSelected();
-            includeGroupStorage.setForeground(includeGroupStorageEnabled ? OSRS_GREEN : OSRS_CREAM);
+            includeGroupStorage.setForeground(includeGroupStorageEnabled ? SidebarStyle.GREEN : SidebarStyle.TEXT);
             preferenceConfig.setConfiguration("personalbis", "includeGroupStorage", includeGroupStorageEnabled);
             invalidateOptimizerCache();
             if (loadoutsGenerated) markLoadoutStale("Group storage setting changed — regenerate.");
@@ -555,7 +548,7 @@ content.add(Box.createVerticalStrut(5));
         groupStorageNote.setLineWrap(true);
         groupStorageNote.setWrapStyleWord(true);
         groupStorageNote.setFont(FontManager.getRunescapeFont());
-        groupStorageNote.setForeground(OSRS_CREAM);
+        groupStorageNote.setForeground(SidebarStyle.TEXT);
         groupStorageNote.setAlignmentX(Component.LEFT_ALIGNMENT);
         groupStorageNote.setRows(4);
         groupStorageNote.setColumns(18);
@@ -569,7 +562,7 @@ content.add(Box.createVerticalStrut(5));
         groupStorageOptions.add(Box.createVerticalStrut(5));
         updateGroupStorageNote();
 
-        styleCheck(includeRubyBolts);
+        SidebarStyle.panelCheck(includeRubyBolts);
         includeRubyBolts.setFont(FontManager.getRunescapeBoldFont());
         includeRubyBolts.setOpaque(false);
         includeRubyBolts.setBorderPainted(false);
@@ -592,7 +585,7 @@ content.add(Box.createVerticalStrut(5));
         rubyBoltNote.setWrapStyleWord(true);
         rubyBoltNote.setRows(2);
         rubyBoltNote.setFont(FontManager.getRunescapeFont());
-        rubyBoltNote.setForeground(OSRS_CREAM); rubyBoltNote.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rubyBoltNote.setForeground(SidebarStyle.TEXT); rubyBoltNote.setAlignmentX(Component.LEFT_ALIGNMENT);
         rubyBoltNote.setBorder(BorderFactory.createEmptyBorder(0,0,2,0));
         rubyBoltNote.setMaximumSize(new Dimension(Integer.MAX_VALUE,rubyBoltNote.getPreferredSize().height));
         advancedOptions.add(includeRubyBolts); advancedOptions.add(Box.createVerticalStrut(5));
@@ -612,19 +605,19 @@ content.add(Box.createVerticalStrut(5));
         });
         content.add(cancelCalculationButton);
         generateMessage.setFont(FontManager.getRunescapeFont());
-        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setForeground(SidebarStyle.TEXT);
         generateMessage.setAlignmentX(Component.LEFT_ALIGNMENT);
         generateMessage.setMaximumSize(new Dimension(Integer.MAX_VALUE, 54));
         content.add(generateMessage);
         exclusionWarning.setFont(FontManager.getRunescapeFont());
-        exclusionWarning.setForeground(OSRS_GOLD);
+        exclusionWarning.setForeground(SidebarStyle.GOLD);
         exclusionWarning.setAlignmentX(Component.LEFT_ALIGNMENT);
         exclusionWarning.setMaximumSize(new Dimension(Integer.MAX_VALUE, 64));
         exclusionWarning.setVisible(false);
         content.add(exclusionWarning);
         content.add(Box.createVerticalStrut(8));
 
-        attackStyleHeading = sectionLabel("Attack style");
+        attackStyleHeading = SidebarStyle.sectionLabel("Attack style");
         attackStyleHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
         content.add(attackStyleHeading);
                 JPanel styles = new JPanel(new GridLayout(1, 5, 3, 0));
@@ -638,11 +631,11 @@ content.add(Box.createVerticalStrut(5));
         group.add(crush);
         group.add(ranged);
         group.add(magic);
-        styleRadio(slash);
-        styleRadio(stab);
-        styleRadio(crush);
-        styleRadio(ranged);
-        styleRadio(magic);
+        SidebarStyle.styleRadio(slash);
+        SidebarStyle.styleRadio(stab);
+        SidebarStyle.styleRadio(crush);
+        SidebarStyle.styleRadio(ranged);
+        SidebarStyle.styleRadio(magic);
         updateStyleHighlight();
         slash.addActionListener(e -> selectStyle(AttackStyle.MELEE_SLASH));
         stab.addActionListener(e -> selectStyle(AttackStyle.MELEE_STAB));
@@ -660,13 +653,13 @@ content.add(Box.createVerticalStrut(5));
         content.add(Box.createVerticalStrut(8));
         immunityNotice.setEditable(false);immunityNotice.setFocusable(false);immunityNotice.setOpaque(false);
         immunityNotice.setLineWrap(true);immunityNotice.setWrapStyleWord(true);
-        immunityNotice.setFont(FontManager.getRunescapeFont());immunityNotice.setForeground(OSRS_CREAM);
+        immunityNotice.setFont(FontManager.getRunescapeFont());immunityNotice.setForeground(SidebarStyle.TEXT);
         immunityNotice.setAlignmentX(Component.LEFT_ALIGNMENT);
-        immunityNotice.setBorder(new CompoundBorder(new LineBorder(OSRS_BORDER),new EmptyBorder(8,6,8,6)));
+        immunityNotice.setBorder(new CompoundBorder(new LineBorder(SidebarStyle.BORDER),new EmptyBorder(8,6,8,6)));
         immunityNotice.setVisible(false);content.add(immunityNotice);
 
         JSeparator sep = new JSeparator();
-        sep.setForeground(OSRS_BORDER);
+        sep.setForeground(SidebarStyle.BORDER);
         gearSection = new JPanel();
         gearSection.setLayout(new BoxLayout(gearSection, BoxLayout.Y_AXIS));
         gearSection.setOpaque(false);
@@ -677,8 +670,8 @@ content.add(Box.createVerticalStrut(5));
 
         loadoutHeading.setHorizontalAlignment(SwingConstants.LEFT);
         loadoutHeading.setAlignmentX(Component.LEFT_ALIGNMENT);
-        loadoutHeading.setFont(headerFont());
-        loadoutHeading.setForeground(OSRS_GOLD);
+        loadoutHeading.setFont(SidebarStyle.headerFont());
+        loadoutHeading.setForeground(SidebarStyle.GOLD);
         loadoutHeading.setBorder(new EmptyBorder(0,0,4,0));
         gearSection.add(loadoutHeading);
         JPanel gearGrid = new JPanel(new GridLayout(3, 4, 4, 4));
@@ -692,7 +685,7 @@ content.add(Box.createVerticalStrut(5));
         {
             JLabel label = new JLabel("—", JLabel.CENTER);
             label.setFont(FontManager.getRunescapeFont());
-            label.setForeground(OSRS_CREAM);
+            label.setForeground(SidebarStyle.TEXT);
             label.setOpaque(true);
             label.setBackground(new Color(38, 38, 38));
             label.setPreferredSize(new Dimension(48, 50));
@@ -759,11 +752,11 @@ content.add(Box.createVerticalStrut(5));
 
         content.add(gearSection);
 
-        JPanel validationCard = osrsCard();
+        JPanel validationCard = SidebarStyle.card();
         validationCard.setLayout(new BoxLayout(validationCard, BoxLayout.Y_AXIS));
-        validationCard.setBackground(OSRS_PANEL);
+        validationCard.setBackground(SidebarStyle.PANEL);
         validationCard.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-        validationCard.add(sectionLabel("Loadout stats"));
+        validationCard.add(SidebarStyle.sectionLabel("Loadout stats"));
         slayerItemWarning.setForeground(Color.RED);
         slayerItemWarning.setFont(FontManager.getRunescapeFont());
         slayerItemWarning.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -774,8 +767,8 @@ content.add(Box.createVerticalStrut(5));
         meleeValidation.setLineWrap(true);
         meleeValidation.setWrapStyleWord(true);
         meleeValidation.setFont(FontManager.getRunescapeFont());
-        meleeValidation.setForeground(OSRS_CREAM);
-        meleeValidation.setBackground(OSRS_PANEL);
+        meleeValidation.setForeground(SidebarStyle.TEXT);
+        meleeValidation.setBackground(SidebarStyle.PANEL);
         meleeValidation.setBorder(new EmptyBorder(3, 3, 3, 3));
         meleeValidation.setText("Select an attack style.");
         meleeValidation.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
@@ -787,58 +780,15 @@ content.add(Box.createVerticalStrut(5));
         updateProgressiveVisibility();
 
         status.setFont(FontManager.getRunescapeFont());
-        status.setForeground(OSRS_CREAM);
+        status.setForeground(SidebarStyle.TEXT);
         status.setBorder(new EmptyBorder(8, 2, 4, 2));
         status.setAlignmentX(Component.CENTER_ALIGNMENT);
         // Developer status text hidden from the normal sidebar.
     }
 
-    private JPanel osrsCard()
-    {
-        JPanel p = new JPanel();
-        p.setBackground(OSRS_PANEL);
-        p.setBorder(new EmptyBorder(4, 4, 4, 4));
-        p.setAlignmentX(Component.LEFT_ALIGNMENT);
-        return p;
-    }
-
-    private java.awt.Font headerFont()
-    {
-        return FontManager.getRunescapeBoldFont().deriveFont(FontManager.getRunescapeFont().getSize2D());
-    }
-
-    private JLabel sectionLabel(String text)
-    {
-        JLabel label = new JLabel(text);
-        label.setFont(headerFont());
-        label.setForeground(OSRS_GOLD);
-        label.setBorder(new EmptyBorder(0, 0, 4, 0));
-        return label;
-    }
-
-    private void styleTextField(JTextField field)
-    {
-        SidebarInputStyle.text(field);
-    }
-
-    private void styleCombo(JComboBox<?> combo)
-    {
-        SidebarInputStyle.combo(combo);
-    }
-
-    private void styleCheck(JCheckBox check)
-    {
-        check.setFont(FontManager.getRunescapeFont());
-        check.setForeground(OSRS_CREAM);
-        check.setBackground(ColorScheme.DARK_GRAY_COLOR);
-        check.setFocusPainted(false);
-        check.setOpaque(true);
-        check.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
-    }
-
     private void updateRubyBoltUi()
     {
-        includeRubyBolts.setForeground(includeRubyBolts.isSelected() ? OSRS_GREEN : OSRS_CREAM);
+        includeRubyBolts.setForeground(includeRubyBolts.isSelected() ? SidebarStyle.GREEN : SidebarStyle.TEXT);
     }
 
     private void updateSlayerUiState()
@@ -846,7 +796,7 @@ content.add(Box.createVerticalStrut(5));
         boolean selected = slayerTargetMode;
         slayerTask.setSelected(selected);
         slayerTask.setText("Load Slayer Task");
-        slayerTask.setForeground(selected ? OSRS_GREEN : OSRS_CREAM);
+        slayerTask.setForeground(selected ? SidebarStyle.GREEN : SidebarStyle.TEXT);
         slayerTask.setOpaque(false);
         slayerTask.setBorder(BorderFactory.createEmptyBorder(3, 0, 3, 0));
         monsterBox.setEnabled(true);
@@ -861,36 +811,6 @@ content.add(Box.createVerticalStrut(5));
             : "Choose a monster target.");
     }
 
-    private ImageIcon attackStyleIcon(String label)
-    {
-        String name=label==null?"":label.toLowerCase();
-        try (InputStream in=PersonalBisPanel.class.getResourceAsStream("/attack-styles/"+name+".png"))
-        {
-            return in==null?null:new ImageIcon(ImageIO.read(in));
-        }
-        catch (IOException ex)
-        {
-            return null;
-        }
-    }
-
-    private void styleRadio(JRadioButton radio)
-    {
-        radio.setFont(FontManager.getRunescapeFont());
-        radio.setForeground(OSRS_CREAM);
-        radio.setBackground(new Color(38, 38, 38));
-        radio.setOpaque(true);
-        radio.setFocusPainted(false);
-        radio.setHorizontalAlignment(SwingConstants.CENTER);
-        radio.setBorderPainted(false);
-        radio.setBorder(BorderFactory.createEmptyBorder(3,1,3,1));
-        radio.setVerticalTextPosition(SwingConstants.BOTTOM);
-        radio.setHorizontalTextPosition(SwingConstants.CENTER);
-        radio.setIcon(attackStyleIcon(radio.getText()));
-        radio.setPreferredSize(new Dimension(38, 58));
-        radio.setMinimumSize(new Dimension(34, 54));
-    }
-
     private JPanel styleTile(JRadioButton radio,int index)
     {
         JPanel tile=new JPanel(new BorderLayout(0,0));
@@ -898,26 +818,13 @@ content.add(Box.createVerticalStrut(5));
         tile.setBackground(new Color(38,38,38));
         JLabel badge=new JLabel(" ",SwingConstants.CENTER);
         badge.setFont(FontManager.getRunescapeBoldFont());
-        badge.setForeground(OSRS_GOLD);
+        badge.setForeground(SidebarStyle.GOLD);
         badge.setPreferredSize(new Dimension(38,16));
         bestStyleBadges[index]=badge;
         tile.add(badge,BorderLayout.NORTH);
         tile.add(radio,BorderLayout.CENTER);
         tile.setBorder(new LineBorder(new Color(0,0,0,0),1));
         return tile;
-    }
-
-    private JButton osrsButton(String text)
-    {
-        JButton button = new JButton(text);
-        button.setFont(FontManager.getRunescapeBoldFont());
-        button.setForeground(OSRS_CREAM);
-        button.setBackground(OSRS_SLOT);
-        button.setBorder(new CompoundBorder(new LineBorder(OSRS_BORDER), new EmptyBorder(4, 6, 4, 6)));
-        button.setFocusPainted(false);
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button.setMaximumSize(new Dimension(200, 28));
-        return button;
     }
 
     private int prayerSpriteId(String prayer)
@@ -965,16 +872,16 @@ content.add(Box.createVerticalStrut(5));
 
     private JPanel messagePanel(String heading, String body)
     {
-        JPanel panel=osrsCard();
+        JPanel panel=SidebarStyle.card();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
         panel.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH - 8,180));
         JLabel h=new JLabel(heading,SwingConstants.CENTER);
-        h.setFont(headerFont());
-        h.setForeground(OSRS_GOLD); h.setAlignmentX(Component.CENTER_ALIGNMENT);
+        h.setFont(SidebarStyle.headerFont());
+        h.setForeground(SidebarStyle.GOLD); h.setAlignmentX(Component.CENTER_ALIGNMENT);
         JTextArea b = new JTextArea(body);
         b.setEditable(false); b.setFocusable(false); b.setOpaque(false);
         b.setLineWrap(true); b.setWrapStyleWord(true);
-        b.setFont(FontManager.getRunescapeFont()); b.setForeground(OSRS_CREAM);
+        b.setFont(FontManager.getRunescapeFont()); b.setForeground(SidebarStyle.TEXT);
         b.setAlignmentX(Component.CENTER_ALIGNMENT);
         b.setRows(4); b.setColumns(16);
         b.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH - 24, 85));
@@ -984,12 +891,12 @@ content.add(Box.createVerticalStrut(5));
 
     private JPanel onboardingPanel()
     {
-        JPanel panel=osrsCard();
+        JPanel panel=SidebarStyle.card();
         panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
         panel.setMaximumSize(new Dimension(PluginPanel.PANEL_WIDTH - 8,180));
         JLabel heading=new JLabel("How to use",SwingConstants.CENTER);
-        heading.setFont(headerFont());
-        heading.setForeground(OSRS_GOLD); heading.setAlignmentX(Component.CENTER_ALIGNMENT);
+        heading.setFont(SidebarStyle.headerFont());
+        heading.setForeground(SidebarStyle.GOLD); heading.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.add(Box.createVerticalStrut(20)); panel.add(heading); panel.add(Box.createVerticalStrut(8));
         panel.add(onboardingLine("1. Select a target"));
         panel.add(onboardingLine("2. Generate the loadout"));
@@ -1010,7 +917,7 @@ content.add(Box.createVerticalStrut(5));
     private JLabel onboardingLine(String text)
     {
         JLabel line=new JLabel(text,SwingConstants.CENTER);
-        line.setFont(FontManager.getRunescapeFont()); line.setForeground(OSRS_CREAM);
+        line.setFont(FontManager.getRunescapeFont()); line.setForeground(SidebarStyle.TEXT);
         line.setAlignmentX(Component.CENTER_ALIGNMENT);
         return line;
     }
@@ -1109,7 +1016,7 @@ content.add(Box.createVerticalStrut(5));
             return;
         }
         loadoutReady = false;
-        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setForeground(SidebarStyle.TEXT);
         generateMessage.setText("Loading " + displayAttackStyle(style) + " loadout...");
         updateProgressiveVisibility();
         refreshRecommendationsAsync(false);
@@ -1149,7 +1056,7 @@ content.add(Box.createVerticalStrut(5));
         loadoutReady = false;
         generateLoadoutButton.setEnabled(false);
         setStyleControlsEnabled(false);
-        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setForeground(SidebarStyle.TEXT);
         generateMessage.setText("Generating all attack styles...");
         updateProgressiveVisibility();
         refreshRecommendationsAsync(true);
@@ -1316,7 +1223,7 @@ content.add(Box.createVerticalStrut(5));
         loadoutReady = false;
         generateLoadoutButton.setEnabled(true);
         setStyleControlsEnabled(false);
-        generateMessage.setForeground(OSRS_CREAM);
+        generateMessage.setForeground(SidebarStyle.TEXT);
         generateMessage.setText(message == null || message.isEmpty() ? " " : message);
         SwingUtilities.invokeLater(this::updateProgressiveVisibility);
     }
@@ -1342,14 +1249,14 @@ content.add(Box.createVerticalStrut(5));
             boolean immune=TargetStyleImmunity.immune(target,styles[i]);
             boolean best=!immune&&calculatedBestStyle==styles[i];
             TargetStyleImmunity.icon(button,immune);
-            button.setForeground(immune ? TargetStyleImmunity.MUTED : best ? OSRS_GREEN : (selected ? OSRS_GOLD : OSRS_CREAM));
+            button.setForeground(immune ? TargetStyleImmunity.MUTED : best ? SidebarStyle.GREEN : (selected ? SidebarStyle.GOLD : SidebarStyle.TEXT));
             button.setFont((selected||best) ? FontManager.getRunescapeBoldFont() : FontManager.getRunescapeFont());
             button.setBackground(immune ? new Color(31,31,31) : selected ? new Color(67, 58, 38) : (best ? new Color(39, 58, 39) : new Color(38, 38, 38)));
             if(bestStyleBadges[i]!=null)bestStyleBadges[i].setText(best?"BEST":" ");
             Container tile=button.getParent();
             if(tile instanceof JPanel)
             {
-                ((JPanel)tile).setBorder(new LineBorder(best?OSRS_GOLD:new Color(0,0,0,0),best?2:1));
+                ((JPanel)tile).setBorder(new LineBorder(best?SidebarStyle.GOLD:new Color(0,0,0,0),best?2:1));
                 ((JPanel)tile).setBackground(immune?new Color(31,31,31):best?new Color(39,58,39):new Color(38,38,38));
             }
             button.setToolTipText(immune ? TargetStyleImmunity.message(target,styles[i]) : best ? "Best style for this target with your owned gear" : null);
@@ -1659,7 +1566,7 @@ content.add(Box.createVerticalStrut(5));
                 ? " No matching targets available in the bundled catalogue."
                 : " No confirmed targets available for this assigned location.";
         slayerAssignmentNote.setText(text);
-        slayerAssignmentNote.setForeground(unverifiedTaskTargets.isEmpty() ? OSRS_CREAM : OSRS_GOLD);
+        slayerAssignmentNote.setForeground(unverifiedTaskTargets.isEmpty() ? SidebarStyle.TEXT : SidebarStyle.GOLD);
         content.revalidate();
     }
 
@@ -1837,48 +1744,30 @@ content.add(Box.createVerticalStrut(5));
             final Map<EquipmentSlot,List<EquipmentCandidate>> ranked = rankedSnapshot.get(style);
             if (style == requestedStyle) selectedRanked = ranked;
 
-            if (style == AttackStyle.MELEE_STAB || style == AttackStyle.MELEE_SLASH || style == AttackStyle.MELEE_CRUSH)
+            // The cache was cleared above unless the key matches, so cached reports are current.
+            List<Integer> ids;
+            if (isMelee(style))
             {
-                MeleeOptimizationReport report = optimizerCacheHit ? cachedMeleeReports.get(style) : null;
-                if (report == null)
-                {
-                    report = TargetStyleImmunity.calculate(monster,style,()->meleeOptimizer.optimizeWithReportRanked(ranked, style, monster, requestedSlayerMode),()->new MeleeOptimizationReport(null));
-                    cachedMeleeReports.put(style, report);
-                }
-                OptimizedLoadout load = report == null ? null : report.getBest();
+                OptimizedLoadout load = meleeReport(style, ranked, monster, requestedSlayerMode).getBest();
                 if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.melee(load,ranked,monster,requestedSlayerMode,account);
                 meleeLoads.put(style, load);
-                List<Integer> ids = load == null ? new ArrayList<>() : load.itemIds();
-                styleRecommendations.put(style, ids);
+                ids = load == null ? new ArrayList<>() : load.itemIds();
             }
             else if (style == AttackStyle.RANGED)
             {
-                RangedOptimizationReport report = optimizerCacheHit ? cachedRangedReports.get(style) : null;
-                if (report == null)
-                {
-                    report = TargetStyleImmunity.calculate(monster,style,()->rangedOptimizer.optimizeWithReportRanked(ranked, monster, requestedSlayerMode),()->new RangedOptimizationReport(null));
-                    cachedRangedReports.put(style, report);
-                }
-                OptimizedRangedLoadout load = report == null ? null : report.getBest();
+                OptimizedRangedLoadout load = rangedReport(ranked, monster, requestedSlayerMode).getBest();
                 if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.ranged(load,ranked,monster,requestedSlayerMode,account);
                 rangedLoads.put(style, load);
-                List<Integer> ids = load == null ? new ArrayList<>() : load.itemIds();
-                styleRecommendations.put(style, ids);
+                ids = load == null ? new ArrayList<>() : load.itemIds();
             }
-            else if (style == AttackStyle.MAGIC)
+            else
             {
-                MagicOptimizationReport mr = optimizerCacheHit ? cachedMagicReports.get(style) : null;
-                if (mr == null)
-                {
-                    mr = TargetStyleImmunity.calculate(monster,style,()->magicOptimizer.optimizeWithReportRanked(ownedGearSnapshot, ranked, monster, requestedSlayerMode),()->new MagicOptimizationReport(null));
-                    cachedMagicReports.put(style, mr);
-                }
-                OptimizedMagicLoadout load = mr == null ? null : mr.getBest();
+                OptimizedMagicLoadout load = magicReport(ownedGearSnapshot, ranked, monster, requestedSlayerMode).getBest();
                 if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.magic(load,ranked,monster,requestedSlayerMode,account,ownedGearSnapshot);
                 magicLoads.put(style, load);
-                List<Integer> ids = load == null ? new ArrayList<>() : load.itemIds();
-                styleRecommendations.put(style, ids);
+                ids = load == null ? new ArrayList<>() : load.itemIds();
             }
+            styleRecommendations.put(style, ids);
         }
         if(generation!=calculationGeneration.get())return;
         optimizerCacheKey = cacheKey;
@@ -1972,7 +1861,7 @@ content.add(Box.createVerticalStrut(5));
                 String warning = !SlayerTargetRequirements.allowed(monster, account.real(Skill.SLAYER))
                     ? "  •  Slayer level too low (requires " + SlayerTargetRequirements.requiredLevel(monster) + ")" : "";
                 monsterInfo.setText(monster.getName()+(monster.getVersion().isEmpty()?"":" ["+monster.getVersion()+"]")+"  •  lvl "+monster.getCombatLevel()+"  •  def "+VardorvisRules.startingDefence(monster)+" / "+monster.defenceFor(requestedStyle)+(requirement.isEmpty()?"":"  •  Requires "+requirement)+warning);
-                monsterInfo.setForeground(warning.isEmpty() ? OSRS_CREAM : Color.RED);
+                monsterInfo.setForeground(warning.isEmpty() ? SidebarStyle.TEXT : Color.RED);
             }
             for (int i=0; i<EquipmentSlot.values().length; i++)
             {
@@ -2068,7 +1957,7 @@ content.add(Box.createVerticalStrut(5));
             loadoutReady=styleExplicitlySelected;
             generateLoadoutButton.setEnabled(true);
             setStyleControlsEnabled(true);
-            generateMessage.setForeground(OSRS_CREAM);
+            generateMessage.setForeground(SidebarStyle.TEXT);
             generateMessage.setText(TargetStyleImmunity.immune(monster,requestedStyle) ? "Choose an available combat style." : selectedCombat == null && uiRanged == null && uiMagic == null
                 ? "<html>No usable setup.<br>Check ownership and exclusions.</html>"
                 : (calculateAllStyles ? "Loadouts ready." : " "));
@@ -2119,7 +2008,7 @@ content.add(Box.createVerticalStrut(5));
         for(AttackStyle style:AttackStyle.values())
         {
             double ttk=Double.POSITIVE_INFINITY,dps=0;
-            if(style==AttackStyle.MELEE_STAB||style==AttackStyle.MELEE_SLASH||style==AttackStyle.MELEE_CRUSH)
+            if(isMelee(style))
             {
                 MeleeOptimizationReport report=cachedMeleeReports.get(style);
                 if(report==null)return null;
@@ -2142,6 +2031,35 @@ content.add(Box.createVerticalStrut(5));
         return BestStyleSelection.best(scores);
     }
 
+    private static boolean isMelee(AttackStyle style)
+    {
+        return style == AttackStyle.MELEE_STAB || style == AttackStyle.MELEE_SLASH || style == AttackStyle.MELEE_CRUSH;
+    }
+
+    /** A style's cached optimiser report, calculated on first use. */
+    private static <R> R cachedReport(Map<AttackStyle,R> cache, AttackStyle style, MonsterDefinition monster,
+        java.util.function.Supplier<R> search, java.util.function.Supplier<R> immune)
+    {
+        R report = cache.get(style);
+        if (report == null) cache.put(style, report = TargetStyleImmunity.calculate(monster, style, search, immune));
+        return report;
+    }
+
+    private MeleeOptimizationReport meleeReport(AttackStyle style, Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
+    {
+        return cachedReport(cachedMeleeReports, style, monster, () -> meleeOptimizer.optimizeWithReportRanked(ranked, style, monster, slayer), () -> new MeleeOptimizationReport(null));
+    }
+
+    private RangedOptimizationReport rangedReport(Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
+    {
+        return cachedReport(cachedRangedReports, AttackStyle.RANGED, monster, () -> rangedOptimizer.optimizeWithReportRanked(ranked, monster, slayer), () -> new RangedOptimizationReport(null));
+    }
+
+    private MagicOptimizationReport magicReport(List<BankItem> owned, Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
+    {
+        return cachedReport(cachedMagicReports, AttackStyle.MAGIC, monster, () -> magicOptimizer.optimizeWithReportRanked(owned, ranked, monster, slayer), () -> new MagicOptimizationReport(null));
+    }
+
     private void calculateMissingBestStyles(long generation,String cacheKey,List<BankItem> bankSnapshot,
         Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> rankedSnapshot,
         MonsterDefinition monster,boolean requestedSlayerMode)
@@ -2150,18 +2068,9 @@ content.add(Box.createVerticalStrut(5));
         {
             if(generation!=calculationGeneration.get()||!cacheKey.equals(optimizerCacheKey))return;
             Map<EquipmentSlot,List<EquipmentCandidate>> ranked=rankedSnapshot.get(style);
-            if(style==AttackStyle.MELEE_STAB||style==AttackStyle.MELEE_SLASH||style==AttackStyle.MELEE_CRUSH)
-            {
-                if(!cachedMeleeReports.containsKey(style))
-                    cachedMeleeReports.put(style,TargetStyleImmunity.calculate(monster,style,()->meleeOptimizer.optimizeWithReportRanked(ranked,style,monster,requestedSlayerMode),()->new MeleeOptimizationReport(null)));
-            }
-            else if(style==AttackStyle.RANGED)
-            {
-                if(!cachedRangedReports.containsKey(style))
-                    cachedRangedReports.put(style,TargetStyleImmunity.calculate(monster,style,()->rangedOptimizer.optimizeWithReportRanked(ranked,monster,requestedSlayerMode),()->new RangedOptimizationReport(null)));
-            }
-            else if(!cachedMagicReports.containsKey(style))
-                cachedMagicReports.put(style,TargetStyleImmunity.calculate(monster,style,()->magicOptimizer.optimizeWithReportRanked(bankSnapshot,ranked,monster,requestedSlayerMode),()->new MagicOptimizationReport(null)));
+            if(isMelee(style))meleeReport(style,ranked,monster,requestedSlayerMode);
+            else if(style==AttackStyle.RANGED)rangedReport(ranked,monster,requestedSlayerMode);
+            else magicReport(bankSnapshot,ranked,monster,requestedSlayerMode);
         }
         AttackStyle best=cachedBestStyleIfComplete();
         if(best==null||generation!=calculationGeneration.get()||!cacheKey.equals(optimizerCacheKey))return;
@@ -2202,13 +2111,13 @@ content.add(Box.createVerticalStrut(5));
             label.setBorder(new EmptyBorder(4, 5, 4, 5));
             if (isSelected)
             {
-                label.setBackground(OSRS_BORDER);
+                label.setBackground(SidebarStyle.BORDER);
                 label.setForeground(Color.WHITE);
             }
             else
             {
                 label.setBackground(ColorScheme.DARK_GRAY_COLOR);
-                label.setForeground(OSRS_CREAM);
+                label.setForeground(SidebarStyle.TEXT);
             }
             return label;
         }

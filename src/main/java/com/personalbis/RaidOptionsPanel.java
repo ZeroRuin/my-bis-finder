@@ -2,7 +2,6 @@ package com.personalbis;
 
 import java.awt.*;
 import javax.swing.*;
-import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 
 /** Conditional controls; only immutable snapshots leave Swing's event thread. */
@@ -76,46 +75,36 @@ final class RaidOptionsPanel extends JPanel
     }
     private void updateColors()
     {
-        challenge.setForeground(challenge.isSelected()?new Color(82,255,92):new Color(238,220,172));
-        excludeSalts.setForeground(excludeSalts.isSelected()?new Color(82,255,92):new Color(238,220,172));
+        challenge.setForeground(challenge.isSelected()?SidebarStyle.GREEN:SidebarStyle.TEXT);
+        excludeSalts.setForeground(excludeSalts.isSelected()?SidebarStyle.GREEN:SidebarStyle.TEXT);
     }
     private static int number(JSpinner s){return ((Number)s.getValue()).intValue();}
     private static JSpinner spinner(int value,int min,int max)
     {
         JSpinner s=new JSpinner(new SpinnerNumberModel(value,min,max,1));s.setEditor(new JSpinner.NumberEditor(s,"0"));
         JFormattedTextField text=((JSpinner.DefaultEditor)s.getEditor()).getTextField();text.setColumns(3);
-        text.setBackground(ColorScheme.DARKER_GRAY_COLOR);text.setForeground(new Color(238,220,172));
-        Color gold=new Color(255,184,38);
-        s.setBorder(BorderFactory.createLineBorder(gold));
+        // SidebarStyle.spinner() sets the colours, borders and arrow buttons.
         ((JSpinner.DefaultEditor)s.getEditor()).setBorder(BorderFactory.createEmptyBorder());
-        text.setBorder(BorderFactory.createEmptyBorder(1,3,1,3));
-        for(Component c:s.getComponents())if(c instanceof AbstractButton)
-        {
-            AbstractButton arrow=(AbstractButton)c;
-            arrow.setBorder(BorderFactory.createLineBorder(new Color(103,90,67)));
-            arrow.setBackground(new Color(58,51,40));arrow.setForeground(gold);
-            arrow.setBorderPainted(true);arrow.setOpaque(true);
-        }
         ((javax.swing.text.DefaultFormatter)text.getFormatter()).setCommitsOnValidEdit(true);
-        SidebarInputStyle.spinner(s);s.setPreferredSize(new Dimension(62,26));return s;
+        SidebarStyle.spinner(s);s.setPreferredSize(new Dimension(62,26));return s;
     }
     private void card(JPanel p,String title)
     {
         p.setOpaque(false);p.setLayout(new BoxLayout(p,BoxLayout.Y_AXIS));p.setAlignmentX(LEFT_ALIGNMENT);
         p.setBorder(BorderFactory.createEmptyBorder(5,4,8,4));
-        JLabel h=new JLabel(title);h.setForeground(new Color(255,184,38));h.setFont(boldFont);p.add(h);
+        JLabel h=new JLabel(title);h.setForeground(SidebarStyle.GOLD);h.setFont(boldFont);p.add(h);
     }
     private void row(JPanel p,String title,JSpinner s)
     {
         JPanel row=new JPanel(new BorderLayout(4,0));row.setOpaque(false);row.setAlignmentX(LEFT_ALIGNMENT);
-        JLabel label=new JLabel(title);label.setFont(normalFont);label.setForeground(new Color(238,220,172));
+        JLabel label=new JLabel(title);label.setFont(normalFont);label.setForeground(SidebarStyle.TEXT);
         ((JSpinner.DefaultEditor)s.getEditor()).getTextField().setFont(normalFont);
         row.add(label,BorderLayout.CENTER);row.add(s,BorderLayout.EAST);row.setBorder(BorderFactory.createEmptyBorder(3,0,3,0));
         row.setMaximumSize(new Dimension(Integer.MAX_VALUE,32));p.add(row);
     }
     private void check(JPanel p,JCheckBox c)
     {
-        c.setOpaque(false);c.setFont(normalFont);c.setForeground(new Color(238,220,172));
+        c.setOpaque(false);c.setFont(normalFont);c.setForeground(SidebarStyle.TEXT);
         c.setAlignmentX(LEFT_ALIGNMENT);c.setFocusPainted(false);p.add(c);
     }
 }
