@@ -149,7 +149,7 @@ public final class WikiPlayerVsNpcCalc {
     private static String equipmentName(java.util.Collection<EquipmentCandidate> gear,EquipmentSlot slot,String exact)
     {
         if(gear!=null)for(EquipmentCandidate c:gear)if(c!=null&&c.getItem()!=null
-            && (slot==null||c.getSlot()==slot)&&(exact==null||c.getItem().getName().equalsIgnoreCase(exact)))return c.getItem().getName();
+            && (slot==null||c.getSlot()==slot)&&(exact==null||ItemNames.is(c,exact)))return c.getItem().getName();
         return "";
     }
 
@@ -298,7 +298,7 @@ public final class WikiPlayerVsNpcCalc {
         EquipmentCandidate weapon, EquipmentCandidate ammo, MonsterDefinition monster, int rangedLevel,
         int normalMax, double accuracy, boolean kandarinHard,
         java.util.Collection<EquipmentCandidate> gear, int currentHp) {
-        if(ammo!=null&&ammo.getItem()!=null&&ammo.getItem().getName().toLowerCase().contains("ruby")) {
+        if(ammo!=null&&ammo.getItem()!=null&&ItemNames.lower(ammo).contains("ruby")) {
             return rangedRubyFinalDistributionAtHp(rangedRubyBaseDistribution(monster,rangedLevel,normalMax,accuracy,kandarinHard),
                 weapon,ammo,monster,kandarinHard,currentHp);
         }

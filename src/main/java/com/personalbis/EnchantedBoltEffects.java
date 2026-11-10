@@ -7,7 +7,7 @@ package com.personalbis;
  */
 public final class EnchantedBoltEffects {
  private EnchantedBoltEffects(){}
- public static boolean enchanted(EquipmentCandidate a){return a!=null&&a.getItem().getName().toLowerCase().contains("(e)");}
+ public static boolean enchanted(EquipmentCandidate a){return a!=null&&ItemNames.lower(a).contains("(e)");}
  private static double proc(double base,boolean kandarinHard){return base*(kandarinHard?1.10:1.0);}
 
  /** Backwards-compatible entry point for tests/callers without weapon context. */
@@ -40,7 +40,7 @@ public final class EnchantedBoltEffects {
  }
  public static HitDistribution preAccurateZeroDistribution(EquipmentCandidate ammo, MonsterDefinition m, int rangedLevel, int normalMin, int normalMax, double accuracy, boolean kandarinHard){
   HitDistribution dist=HitDistribution.linear(Math.max(0.0,Math.min(1.0,accuracy)),normalMin,Math.max(normalMin,normalMax));
-  String n=enchanted(ammo)&&m!=null?ammo.getItem().getName().toLowerCase():"";
+  String n=enchanted(ammo)&&m!=null?ItemNames.lower(ammo):"";
   double ascension=n.contains("ascension")?.5:1.0;
   if(!n.isEmpty()&&!n.contains("ruby")){
    if(n.contains("opal")) dist=bonusDamage(dist,proc(.05,kandarinHard),(int)Math.floor(rangedLevel/10.0),false);
@@ -58,7 +58,7 @@ public final class EnchantedBoltEffects {
  }
  public static HitDistribution applyRubyAfterCorp(HitDistribution dist, EquipmentCandidate ammo, MonsterDefinition m, boolean kandarinHard, int currentHp){
   if(dist==null||m==null||!enchanted(ammo)) return dist;
-  String n=ammo.getItem().getName().toLowerCase();
+  String n=ItemNames.lower(ammo);
   if(!n.contains("ruby")) return dist;
   double p=proc(.06,kandarinHard);
   int effect=(int)Math.min(100.0,Math.floor(Math.max(0,currentHp)*.20));
@@ -114,7 +114,7 @@ public final class EnchantedBoltEffects {
   */
  public static int validatedProcMaxHit(EquipmentCandidate ammo, MonsterDefinition m, int rangedLevel, int normalMax){
   if(!enchanted(ammo)||m==null)return normalMax;
-  String n=ammo.getItem().getName().toLowerCase();
+  String n=ItemNames.lower(ammo);
   if(n.contains("diamond"))return (int)Math.floor(normalMax*1.15);
   if(n.contains("ruby"))return (int)Math.min(100.0,Math.floor(m.getHitpoints()*.20));
   if(n.contains("opal"))return normalMax+(int)Math.floor(rangedLevel/10.0);
@@ -126,13 +126,13 @@ public final class EnchantedBoltEffects {
 
  public static boolean damageEffectModelled(EquipmentCandidate ammo){
   if(!enchanted(ammo))return false;
-  String n=ammo.getItem().getName().toLowerCase();
+  String n=ItemNames.lower(ammo);
   return n.contains("opal")||n.contains("pearl")||n.contains("ruby")||n.contains("diamond")||n.contains("dragonstone")||n.contains("onyx");
  }
  /** Target-aware diagnostic label used by the DEV bolt harness. */
  public static String validationLabel(EquipmentCandidate ammo, MonsterDefinition m, int rangedLevel, boolean kandarinHard){
   if(!enchanted(ammo))return "";
-  String n=ammo.getItem().getName().toLowerCase();
+  String n=ItemNames.lower(ammo);
   if(n.contains("opal"))return String.format("Lucky Lightning | proc %.2f%% independent accuracy | +%d damage",proc(.05,kandarinHard)*100.0,(int)Math.floor(rangedLevel/10.0));
   if(n.contains("jade"))return String.format("Earth's Fury | proc %.2f%% | utility, +0 direct DPS",proc(.05,kandarinHard)*100.0);
   if(n.contains("pearl"))return String.format("Sea Curse%s | proc %.2f%% independent accuracy | +%d damage",m!=null&&m.hasAttribute("fiery")?" (fiery)":"",proc(.06,kandarinHard)*100.0,(int)Math.floor(rangedLevel/(m!=null&&m.hasAttribute("fiery")?15.0:20.0)));
@@ -160,7 +160,7 @@ public final class EnchantedBoltEffects {
 
  public static String effectLabel(EquipmentCandidate ammo){
   if(!enchanted(ammo))return "";
-  String n=ammo.getItem().getName().toLowerCase();
+  String n=ItemNames.lower(ammo);
   if(n.contains("opal"))return "Lucky Lightning EV";
   if(n.contains("pearl"))return "Sea Curse EV";
   if(n.contains("ruby"))return "Blood Forfeit EV";

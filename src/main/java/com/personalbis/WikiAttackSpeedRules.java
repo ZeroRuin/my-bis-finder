@@ -13,7 +13,7 @@ public final class WikiAttackSpeedRules
     public static boolean isRatBoneWeapon(String weaponName)
     {
         if (weaponName == null) return false;
-        String n = weaponName.trim().toLowerCase();
+        String n = weaponName.trim().toLowerCase(java.util.Locale.ROOT);
         return n.equals("bone mace") || n.equals("bone shortbow") || n.equals("bone staff");
     }
 

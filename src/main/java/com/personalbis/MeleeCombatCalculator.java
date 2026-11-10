@@ -74,7 +74,7 @@ public class MeleeCombatCalculator
             attackBonus += c.getAttackBonus();
             strBonus += c.getStrengthBonus();
             if (c.getSlot()==EquipmentSlot.WEAPON && c.getAttackSpeed()>0) speed=c.getAttackSpeed();
-            String n=c.getItem().getName().toLowerCase();
+            String n=ItemNames.lower(c);
             if (c.getSlot()==EquipmentSlot.HEAD &&
                 (n.contains("slayer helmet") || n.contains("slayer helm") || n.contains("black mask")))
             {
@@ -364,7 +364,7 @@ public class MeleeCombatCalculator
     }
 
     private boolean named(EquipmentCandidate c,String name)
-    { return c!=null&&c.getItem()!=null&&c.getItem().getName().equalsIgnoreCase(name); }
+    { return ItemNames.is(c,name); }
 
     private MeleePrayer[] availablePrayers()
     {

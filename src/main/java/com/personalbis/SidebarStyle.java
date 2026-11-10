@@ -45,7 +45,7 @@ final class SidebarStyle {
   radio.setPreferredSize(new Dimension(38,58));radio.setMinimumSize(new Dimension(34,54));
  }
  static ImageIcon attackStyleIcon(String label){
-  String name=label==null?"":label.toLowerCase();
+  String name=label==null?"":label.toLowerCase(java.util.Locale.ROOT);
   try(InputStream in=SidebarStyle.class.getResourceAsStream("/attack-styles/"+name+".png")){return in==null?null:new ImageIcon(ImageIO.read(in));}
   catch(IOException ex){return null;}
  }

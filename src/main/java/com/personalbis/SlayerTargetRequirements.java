@@ -69,7 +69,7 @@ public final class SlayerTargetRequirements {
         EquipmentSlot slot = requiredEquipmentSlot(monster);
         if (slot == null) return true;
         if (candidate == null || candidate.getSlot() != slot || candidate.getItem() == null) return false;
-        String n = candidate.getItem().getName().toLowerCase(Locale.ROOT);
+        String n = ItemNames.lower(candidate);
         String target = monster.getName().toLowerCase(Locale.ROOT);
         if (target.contains("basilisk") || target.contains("cockatrice"))
             return n.contains("mirror shield") || n.equals("v's shield");

@@ -23,7 +23,7 @@ public final class WikiTargetEligibility {
   7851,7854,7855,7882,7883,7886,7887,7888,7889,
   2463,2465,2467,2464,2466,2468,2137,2138,2139,2140,2141,2142);
 
- private static String cat(EquipmentCandidate w){ return w==null?"":w.getWeaponCategory().trim().toLowerCase(); }
+ private static String cat(EquipmentCandidate w){ return w==null?"":w.getWeaponCategory().trim().toLowerCase(java.util.Locale.ROOT); }
  public static boolean polearm(EquipmentCandidate w){ return cat(w).equals("polearm"); }
  public static boolean salamander(EquipmentCandidate w){ return cat(w).equals("salamander"); }
  public static boolean pickaxe(EquipmentCandidate w){ return cat(w).equals("pickaxe"); }

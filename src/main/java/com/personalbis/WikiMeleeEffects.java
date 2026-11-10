@@ -10,7 +10,7 @@ public final class WikiMeleeEffects
 
     public static boolean avariceRevenant(Collection<EquipmentCandidate> gear, MonsterDefinition monster)
     {
-        return monster != null && monster.getName().toLowerCase().startsWith("revenant")
+        return monster != null && monster.getName().toLowerCase(java.util.Locale.ROOT).startsWith("revenant")
             && has(gear, "Amulet of avarice");
     }
 

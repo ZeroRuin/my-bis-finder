@@ -102,7 +102,7 @@ final class SpecWeaponRecommender
     }
     private SpecWeaponRecommendation magic(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,boolean task){
         EquipmentCandidate w=gear.get(EquipmentSlot.WEAPON);String n=name(w);
-        if(w.getItem().getItemId()==34727||!MAGIC.contains(n)||!WikiTargetEligibility.magicCanDamage(m)||!LeafyTargetRules.poweredMagicCanDamage(m))return null;
+        if(w.getItem().getItemId()==ItemIds.ZORYAS_TOME_UNCHARGED||!MAGIC.contains(n)||!WikiTargetEligibility.magicCanDamage(m)||!LeafyTargetRules.poweredMagicCanDamage(m))return null;
         int level=Math.max(1,RaidScaling.boosted(account,Skill.MAGIC,m));
         int base=n.equals("Zorya's tome")?Math.max(1,level/3-10):n.equals("Eye of Ayak")?Math.max(1,level/3-6)*13/10
             :n.startsWith("Volatile")?Math.max(1,Math.min(58,(99+58*level)/99)):Math.max(1,Math.min(44,(99+44*level)/99));
@@ -142,7 +142,7 @@ final class SpecWeaponRecommender
             else if(n.contains("ballista"))max=max*5/4;
             else if(n.equals("Webweaver bow")){max-=max*6/10;hits=4;}
             else if(n.equals("Dragon knife"))hits=2;
-            else if(n.equals("Dark bow")){boolean dragon=a!=null&&a.getItem().getName().toLowerCase().contains("dragon arrow");min=dragon?8:5;max=Math.min(48,max*(dragon?15:13)/10);hits=2;}
+            else if(n.equals("Dark bow")){boolean dragon=a!=null&&ItemNames.lower(a).contains("dragon arrow");min=dragon?8:5;max=Math.min(48,max*(dragon?15:13)/10);hits=2;}
             if(RaidCombatRules.wardenP2(m)){int[] bounds=RaidCombatRules.wardenBounds(max,roll,base.getDefenceRoll());min=bounds[0];max=bounds[1];accuracy=1;}
             HitDistribution hit=n.equals("Zaryte crossbow")
                 ?SpecialBoltRules.distribution(a,m,RaidScaling.boosted(account,Skill.RANGED,m),min,max,accuracy,account.isKandarinHardCompleted(),CorporealBeastRules.isCorp(m))

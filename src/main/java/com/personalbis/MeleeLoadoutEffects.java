@@ -115,5 +115,5 @@ public final class MeleeLoadoutEffects
     }
 
     private static boolean named(EquipmentCandidate c,String text){return c!=null&&name(c).contains(text);}
-    private static String name(EquipmentCandidate c){return c.getItem().getName().toLowerCase();}
+    private static String name(EquipmentCandidate c){return ItemNames.lower(c);}
 }

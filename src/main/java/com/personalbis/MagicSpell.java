@@ -17,10 +17,10 @@ public final class MagicSpell {
   return x;
  }
  public boolean isDemonbane(){return name.contains("Demonbane");}
- public String element(){String x=name.toLowerCase();if(x.startsWith("wind"))return "air";if(x.startsWith("water"))return "water";if(x.startsWith("earth"))return "earth";if(x.startsWith("fire"))return "fire";return "";}
+ public String element(){String x=name.toLowerCase(java.util.Locale.ROOT);if(x.startsWith("wind"))return "air";if(x.startsWith("water"))return "water";if(x.startsWith("earth"))return "earth";if(x.startsWith("fire"))return "fire";return "";}
  public String tier(){
   if(element().isEmpty())return "";
-  String x=name.toLowerCase();
+  String x=name.toLowerCase(java.util.Locale.ROOT);
   if(x.endsWith(" strike"))return "strike";
   if(x.endsWith(" bolt"))return "bolt";
   if(x.endsWith(" blast"))return "blast";

@@ -11,8 +11,8 @@ public final class VampyreTargetRules {
  private VampyreTargetRules(){}
  public static boolean isVampyre(MonsterDefinition m){return m!=null&&(m.hasAttribute("vampyre1")||m.hasAttribute("vampyre2")||m.hasAttribute("vampyre3"));}
  public static int tier(MonsterDefinition m){if(m==null)return 0;if(m.hasAttribute("vampyre3"))return 3;if(m.hasAttribute("vampyre2"))return 2;if(m.hasAttribute("vampyre1"))return 1;return 0;}
- private static String n(EquipmentCandidate c){return c==null||c.getItem()==null?"":c.getItem().getName().toLowerCase();}
- public static boolean has(Map<EquipmentSlot,EquipmentCandidate> gear,String needle){if(gear==null)return false;for(EquipmentCandidate c:gear.values())if(n(c).contains(needle.toLowerCase()))return true;return false;}
+ private static String n(EquipmentCandidate c){return c==null||c.getItem()==null?"":ItemNames.lower(c);}
+ public static boolean has(Map<EquipmentSlot,EquipmentCandidate> gear,String needle){if(gear==null)return false;for(EquipmentCandidate c:gear.values())if(n(c).contains(needle.toLowerCase(java.util.Locale.ROOT)))return true;return false;}
  public static boolean isSilverWeapon(EquipmentCandidate w){String x=n(w);return x.contains("blessed axe")||x.contains("ivandis flail")||x.contains("blisterwood flail")||x.contains("hallowed flail")||x.contains("silver sickle")||x.contains("emerald sickle")||x.contains("ruby sickle")||x.contains("blisterwood sickle")||x.contains("silverlight")||x.contains("darklight")||x.contains("arclight")||x.contains("rod of ivandis")||x.contains("wolfbane");}
  public static boolean isRangedSilver(EquipmentCandidate w,EquipmentCandidate ammo){String wn=n(w),an=n(ammo);return wn.contains("blisterwood stake")||an.contains("silver bolts");}
  public static boolean fullVampyrebane(EquipmentCandidate w,MonsterDefinition m){String x=n(w);int t=tier(m);if(t==0)return false;if(x.contains("blisterwood stake"))return true;if(t==2&&x.contains("rod of ivandis"))return true;return x.contains("ivandis flail")||x.contains("blisterwood sickle")||x.contains("blisterwood flail")||x.contains("hallowed flail")||x.contains("sunspear");}

@@ -1,6 +1,6 @@
 package com.personalbis;
 import java.util.*;
-public final class OptimizedLoadout {
+public final class OptimizedLoadout implements StyleLoadout {
  private final AttackStyle style; private final Map<EquipmentSlot,EquipmentCandidate> items; private final CombatResult result;
  public OptimizedLoadout(AttackStyle style,Map<EquipmentSlot,EquipmentCandidate> items,CombatResult result){this.style=style;this.items=Collections.unmodifiableMap(new EnumMap<>(items));this.result=result;}
  public AttackStyle getStyle(){return style;} public Map<EquipmentSlot,EquipmentCandidate> getItems(){return items;} public CombatResult getResult(){return result;}

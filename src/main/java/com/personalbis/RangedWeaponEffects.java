@@ -38,5 +38,5 @@ public final class RangedWeaponEffects {
   int cap=m.hasAttribute("xerician")?350:250;
   return Math.min(cap,Math.max(m.getMagicLevel(),m.getMagicAttack()));
  }
- private static String name(EquipmentCandidate w){return w.getItem().getName().toLowerCase();}
+ private static String name(EquipmentCandidate w){return ItemNames.lower(w);}
 }

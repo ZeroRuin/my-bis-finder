@@ -1,6 +1,6 @@
 package com.personalbis;
 import java.util.*;
-public final class OptimizedMagicLoadout {
+public final class OptimizedMagicLoadout implements StyleLoadout {
  private final Map<EquipmentSlot,EquipmentCandidate> items; private final MagicCombatResult result; private final MagicSpell spell;
  public OptimizedMagicLoadout(Map<EquipmentSlot,EquipmentCandidate> i,MagicCombatResult r,MagicSpell s){items=new EnumMap<>(i);result=r;spell=s;}
  public Map<EquipmentSlot,EquipmentCandidate> getItems(){return Collections.unmodifiableMap(items);} public MagicCombatResult getResult(){return result;} public MagicSpell getSpell(){return spell;}

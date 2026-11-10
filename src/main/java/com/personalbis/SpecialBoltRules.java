@@ -9,7 +9,7 @@ final class SpecialBoltRules
     private SpecialBoltRules(){}
     static HitDistribution distribution(EquipmentCandidate ammo,MonsterDefinition m,int level,int min,int max,
         double accuracy,boolean diary,boolean corp){
-        String n=m!=null&&EnchantedBoltEffects.enchanted(ammo)?ammo.getItem().getName().toLowerCase(Locale.ROOT):"";
+        String n=m!=null&&EnchantedBoltEffects.enchanted(ammo)?ItemNames.lower(ammo):"";
         HitDistribution d=HitDistribution.linear(accuracy,min,max);
         boolean dragonBlocked=m!=null&&(m.hasAttribute("dragon")||m.hasAttribute("fiery")||m.hasAttribute("dragonfire immune"));
         if(n.contains("diamond"))d=replacement(d,HitDistribution.linear(1,0,max*126/100),.10*(diary?1.1:1),false);

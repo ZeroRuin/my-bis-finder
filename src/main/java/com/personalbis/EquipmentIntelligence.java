@@ -42,9 +42,11 @@ public class EquipmentIntelligence
 
         for (BankItem bankItem : bank)
         {
-            int canonicalId = itemManager.canonicalize(bankItem.getItemId());
-            if (canonicalId == 34607 || bankItem.getItemId() == 34607) continue;
-            ItemStats itemStats = itemManager.getItemStats(canonicalId);
+            int canonicalId = canonicalize(bankItem.getItemId());
+            if (canonicalId == ItemIds.DEADMAN_CAPE || bankItem.getItemId() == ItemIds.DEADMAN_CAPE) continue;
+            // A Barrows piece at 0 charge has no stats or set effect until it is repaired.
+            if (ItemNames.fullyDegraded(bankItem.getName())) continue;
+            ItemStats itemStats = itemStats(canonicalId);
             if (itemStats == null || !itemStats.isEquipable() || itemStats.getEquipment() == null)
             {
                 continue;
@@ -82,6 +84,17 @@ public class EquipmentIntelligence
 
         sortRanked(ranked);
         return ranked;
+    }
+
+    /** Item lookups go through these two methods so tests can supply item data without a game client. */
+    int canonicalize(int itemId)
+    {
+        return itemManager.canonicalize(itemId);
+    }
+
+    ItemStats itemStats(int canonicalId)
+    {
+        return itemManager.getItemStats(canonicalId);
     }
 
     static void sortRanked(Map<EquipmentSlot,List<EquipmentCandidate>> ranked)
@@ -170,7 +183,7 @@ public class EquipmentIntelligence
             return 0;
         }
 
-        String name = itemName.toLowerCase();
+        String name = itemName.toLowerCase(java.util.Locale.ROOT);
 
         // Slayer helmets and black masks are deliberately given a large selection
         // bonus while on-task so the owned-gear planner accounts for their task

@@ -33,5 +33,5 @@ public final class MagicWeaponEffects {
   if(isSmokeStaff(weapon)&&isStandardElemental(spell))return "Smoke staff: +10% accuracy/damage";
   return "";
  }
- private static String norm(String x){return x==null?"":x.toLowerCase().trim();}
+ private static String norm(String x){return x==null?"":x.toLowerCase(java.util.Locale.ROOT).trim();}
 }

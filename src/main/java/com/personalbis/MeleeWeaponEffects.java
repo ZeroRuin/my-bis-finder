@@ -196,5 +196,5 @@ public final class MeleeWeaponEffects {
   // Wiki monster data is authoritative; do not infer target families from names.
   return m!=null&&(m.hasAttribute("kalphite")||m.hasAttribute("scabarite")||m.hasAttribute("scarab"));
  }
- private static String name(EquipmentCandidate w){return w.getItem().getName().toLowerCase();}
+ private static String name(EquipmentCandidate w){return ItemNames.lower(w);}
 }

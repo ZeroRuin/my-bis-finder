@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.9.7.4 — Barrows Charge States, Melee Search Fix and Search Clean-up
+
+- Barrows pieces at 0 charge are never recommended; they have no stats or set effect until repaired.
+- Barrows pieces at 100, 75, 50 and 25 charge keep their set effects in every style. Karil's, Ahrim's and Verac's sets previously only counted when undamaged.
+- Ahrim's staff at any working charge can autocast its spells.
+- Fix melee recommendations missing a faster setup when many owned items had no effect on damage: equal lines no longer crowd better ones out of the search.
+- Fix magic recommendations leaving out spells tied to one weapon: a Slayer's staff (e) with Magic Dart on task, and a Void knight mace with Claws of Guthix, are now considered.
+- Empty slots are filled from every owned item in all styles; melee previously checked only the first eight.
+- Item names match the same way in every search and effect, and no longer depend on the computer's language setting.
+- The melee, ranged and magic searches share one copy of their common steps instead of three.
+- Move the sidebar's results cache, stats text and target list rendering out of the main sidebar class.
+- Replace tests that looked for exact lines of source code with tests of what the searches recommend.
+- Add a test that compares all three searches with an exhaustive search on small fixed banks, and a tool that compares recommendations before and after a change.
+
 ## 0.9.7.3 — Sidebar Code Clean-up
 
 - Move the sidebar's colours and styling into one shared class; the sidebar looks the same.

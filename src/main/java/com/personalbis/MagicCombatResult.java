@@ -1,5 +1,5 @@
 package com.personalbis;
-public final class MagicCombatResult {
+public final class MagicCombatResult implements CombatOutcome {
  private final double dps,expectedTtkSeconds,accuracy,magicDamageBonus; private final int maxHit,attackRoll,defenceRoll,magicAttack,effectiveMagic,attackSpeed,preTransformMax;
  private final String prayer,spell,mechanicNote;
  public MagicCombatResult(double d,double a,int m,int ar,int dr,int ma,double mb,String p,String s){this(d,a,m,ar,dr,ma,mb,p,s,"",0,0,m);}

@@ -116,7 +116,7 @@ public final class WikiMagicAccuracy
     {
         if (spell == null) return false;
         if ("water".equals(spell.element())) return true;
-        String n = spell.name == null ? "" : spell.name.toLowerCase();
+        String n = spell.name == null ? "" : spell.name.toLowerCase(java.util.Locale.ROOT);
         return n.contains("bind") || n.contains("snare") || n.contains("entangle");
     }
 

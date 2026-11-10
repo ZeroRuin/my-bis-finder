@@ -21,7 +21,7 @@ public final class LeafyTargetRules
     {
         if (!restricted(monster)) return true;
         if (weapon == null || weapon.getItem() == null || weapon.getItem().getName() == null) return false;
-        String n=weapon.getItem().getName().toLowerCase();
+        String n=ItemNames.lower(weapon);
         return n.contains("leaf-bladed spear") || n.contains("leaf-bladed sword") || n.contains("leaf-bladed battleaxe");
     }
 
@@ -29,7 +29,7 @@ public final class LeafyTargetRules
     {
         if (!restricted(monster)) return true;
         if (ammo == null || ammo.getItem() == null || ammo.getItem().getName() == null) return false;
-        String n=ammo.getItem().getName().toLowerCase();
+        String n=ItemNames.lower(ammo);
         return n.contains("broad") && (n.contains("bolt") || n.contains("arrow"));
     }
 
