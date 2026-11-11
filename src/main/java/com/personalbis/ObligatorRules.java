@@ -2,8 +2,8 @@ package com.personalbis;
 import java.util.*;
 final class ObligatorRules {
     private ObligatorRules(){}
-    static boolean weapon(EquipmentCandidate w){return w!=null&&(w.getItem().getItemId()==34715||w.getItem().getItemId()==34717);}
-    static boolean thrust(EquipmentCandidate w,MeleeStance stance){return w!=null&&w.getItem().getItemId()==34715&&stance!=MeleeStance.SMASH;}
+    static boolean weapon(EquipmentCandidate w){return w!=null&&(w.getItem().getItemId()==ItemIds.OBLIGATOR_CHARGED||w.getItem().getItemId()==ItemIds.OBLIGATOR_UNCHARGED);}
+    static boolean thrust(EquipmentCandidate w,MeleeStance stance){return w!=null&&w.getItem().getItemId()==ItemIds.OBLIGATOR_CHARGED&&stance!=MeleeStance.SMASH;}
     static int max(int max,MonsterDefinition m){return m==null||m.getSize()<2?max:max*(m.getSize()==2?120:140)/100;}
     static HitDistribution.AttackDistribution distribution(int max,double accuracy,MonsterDefinition m){
         int rolls=2+(m!=null&&m.getStabDefence()>m.getCrushDefence()?1:0)+(m!=null&&m.getSlashDefence()>m.getCrushDefence()?1:0);

@@ -39,7 +39,7 @@ public final class ItemExclusionSelfTest
 
         MagicSpell spell = new MagicSpell("Fixture spell", 1, 1);
         spell.runes.put("Blood rune", 1);
-        MagicLoadoutOptimizer optimizer = new MagicLoadoutOptimizer(null, null, null);
+        MagicLoadoutOptimizer optimizer = new MagicLoadoutOptimizer(null, null);
         Method available = MagicLoadoutOptimizer.class.getDeclaredMethod("runesAvailable", MagicSpell.class, List.class, EquipmentCandidate.class, java.util.Collection.class);
         available.setAccessible(true);
         require((Boolean) available.invoke(optimizer, spell, stores, null, Collections.emptyList()), "owned rune permits spell before exclusion");

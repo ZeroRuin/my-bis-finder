@@ -1,5 +1,5 @@
 package com.personalbis;
-public final class RangedCombatResult {
+public final class RangedCombatResult implements CombatOutcome {
  private final double dps,expectedTtkSeconds,accuracy; private final int maxHit,attackRoll,defenceRoll,rangedAttack,rangedStrength,speed,effectiveRanged,effectiveDamage;
  private final int preTransformMax;
  private final RangedStance stance; private final RangedPrayer prayer;

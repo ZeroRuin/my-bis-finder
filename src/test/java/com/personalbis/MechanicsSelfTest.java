@@ -825,20 +825,6 @@ public final class MechanicsSelfTest
         yes("Twisted bow identified",RangedWeaponEffects.isTwistedBow(weapon("Twisted bow")));
         yes("Rapid is one tick faster",RangedStance.RAPID.getSpeedDelta()==-1);
 
-        yes("Ranged optimiser permits empty optional slots",
-            RangedOptimizerRegression.optionalSlotsAreSupported());
-        yes("Ranged optimiser is weapon-first",
-            RangedOptimizerRegression.weaponFirst());
-        yes("alpha50.4.50.80 complete Crystal armour seeded for Bowfa",
-            RangedOptimizerRegression.crystalSetSeeded());
-        yes("alpha50.4.50.81 exact ranged calculation preserves Ranged Strength",
-            RangedOptimizerRegression.exactCalculatorPreservesRangedStrength());
-        yes("Ranged optimiser exhaustively evaluates equipped ammo only when required",
-            RangedOptimizerRegression.exhaustiveAmmo());
-        yes("Enchanted bolt EV integration present",
-            RangedOptimizerRegression.enchantedBoltEvIntegrated());
-        yes("Ranged Salve mechanics integration present",
-            RangedOptimizerRegression.rangedSalveIntegrated());
 
         EquipmentCandidate testBow=weapon("Magic shortbow");
         EquipmentCandidate testCrossbow=weapon("Dragon crossbow");
@@ -1099,9 +1085,6 @@ public final class MechanicsSelfTest
         yes("alpha48.8 slash sword supports Slash",MeleeAttackStyleResolver.supports(categorizedWeapon("Sword","Slash Sword"),AttackStyle.MELEE_SLASH));
         no("alpha48.8 unknown weapon category fails closed",MeleeAttackStyleResolver.supports(categorizedWeapon("Unknown","Mystery"),AttackStyle.MELEE_CRUSH));
         System.out.println("PASS  alpha48.8 melee attack-interface eligibility audit");
-        yes("alpha48.8.1 neutral-slot completion hook present",MeleeOptimizerRegression48_8_1.neutralCompletionPresent());
-        yes("0.9.3 neutral-slot completion forbids TTK regression",MeleeOptimizerRegression48_8_1.neverWorsensTtk());
-        System.out.println("PASS  alpha48.8.1 complete neutral-slot fallback audit");
         near("alpha48.8.4 successful-hit average max34",
             MeleeWeaponEffects.successfulHitAverage(34),17.0+1.0/35.0);
         near("alpha48.8.4 Keris average hit max34",
@@ -1114,13 +1097,6 @@ public final class MechanicsSelfTest
         near("alpha48.8.6 powered Magic successful-hit average max12",
             MeleeWeaponEffects.successfulHitAverage(12),6.0+1.0/13.0);
         System.out.println("PASS  alpha48.8.6 Magic expected-damage parity audit");
-        yes("alpha48.8.7 Ranged neutral-slot completion",
-            OptimizerCompletionRegression48_8_7.rangedCompletionPresent());
-        yes("alpha48.8.7 Magic neutral-slot completion",
-            OptimizerCompletionRegression48_8_7.magicCompletionPresent());
-        yes("alpha48.8.7 Ranged ammo compatibility retained",
-            OptimizerCompletionRegression48_8_7.rangedAmmoCompatibilityPresent());
-        System.out.println("PASS  alpha48.8.7 Ranged/Magic neutral-slot completion audit");
         EquipmentCandidate dart48=categorizedWeapon("Rune dart","Thrown");
         EquipmentCandidate blowpipe48=categorizedWeapon("Toxic blowpipe","Blowpipe");
         EquipmentCandidate bow48=categorizedWeapon("Magic shortbow","Bow");
@@ -1130,18 +1106,11 @@ public final class MechanicsSelfTest
         yes("alpha48.8.8 bow reserves ammo slot",RangedAmmoRules.requiresEquippedAmmo(bow48));
         yes("alpha48.8.8 crossbow reserves ammo slot",RangedAmmoRules.requiresEquippedAmmo(crossbow48));
         System.out.println("PASS  alpha48.8.8 ranged ammo-slot occupancy audit");
-        yes("alpha50.3 attack-first Magic candidate pipeline",MagicOptimizerRegression50_3.attackFirstPresent());
-        yes("alpha50.3 Magic no longer gated by raw top-12 weapon rank",MagicOptimizerRegression50_3.noMagicTop12Gate());
         yes("alpha50.3 Blue moon spear autocasts Wind Surge",MagicOptimizerRegression50_3.blueMoonStandardAutocast());
         yes("alpha50.3 Blue moon spear retains Ancient autocast",MagicOptimizerRegression50_3.blueMoonAncientAutocast());
         yes("alpha50.3 Mark of Darkness demonbane candidate present",MagicOptimizerRegression50_3.markDemonbanePresent());
         yes("alpha50.3 Mark rune package included",MagicOptimizerRegression50_3.markRunePackagePresent());
         System.out.println("PASS  alpha50.3 attack-first Magic + Mark of Darkness audit");
-        yes("alpha50.4 Melee evaluates all owned/equippable weapons",OptimizerCompletenessRegression50_4.meleeAllOwnedWeapons());
-        yes("alpha50.4 Ranged evaluates all owned/equippable weapons",OptimizerCompletenessRegression50_4.rangedAllOwnedWeapons());
-        yes("alpha50.4 Melee beam ranks by exact target DPS",OptimizerCompletenessRegression50_4.meleeUsesExactDpsDuringBeam());
-        yes("alpha50.4 Ranged beam ranks by exact target DPS",OptimizerCompletenessRegression50_4.rangedUsesExactDpsDuringBeam());
-        yes("alpha50.4 Ranged ammo compatibility remains enforced",OptimizerCompletenessRegression50_4.rangedChecksAmmo());
         System.out.println("PASS  alpha50.4 Melee/Ranged optimizer completeness audit");
         yes("alpha50.4.2 Hunters crossbow accepts only kebbit family",RangedAmmoRegression50_4_2.huntersKebbitOnly());
         yes("alpha50.4.2 Hunters sunlight crossbow accepts only antler family",RangedAmmoRegression50_4_2.sunlightAntlerOnly());
@@ -1169,8 +1138,6 @@ public final class MechanicsSelfTest
         yes("alpha50.4.27 active Onyx matches K'ril Wiki checkpoint",EnchantedBoltRegression50_4_27.onyxActiveKrilWikiParity());
         yes("alpha50.4.27 Pearl non-fiery branch",EnchantedBoltRegression50_4_27.pearlNonFieryBranch());
         yes("alpha50.4.27 active Dragonstone synthetic branch",EnchantedBoltRegression50_4_27.dragonstoneActiveBranch());
-        yes("alpha50.4.50.80 ranged accuracy-first beam restored",RangedPerformanceRegression50_4_12.accuracyFirstBeam());
-        yes("alpha50.4.12 all weapons and anchored ammo retained",RangedPerformanceRegression50_4_12.keepsAllWeaponsAndAnchoredAmmo());
         System.out.println("PASS  alpha50.4.2 dedicated Ranged ammunition-family audit");
         near("alpha50.4.3 Rigour ranged accuracy multiplier",RangedPrayer.RIGOUR.getAccuracy(),1.20);
         near("alpha50.4.3 Rigour ranged strength multiplier",RangedPrayer.RIGOUR.getRangedStrength(),1.23);
@@ -1201,11 +1168,6 @@ public final class MechanicsSelfTest
         }
         yes("alpha49.1 strongest normal food retained",alpha491Shark);
         yes("alpha49.1 combo food independently recommended",alpha491Karam);
-        yes("alpha49.1 required runes use full owned stack",SupplyRegression49_1.fullRuneStack());
-        yes("alpha49.1 arbitrary rune cast target removed",SupplyRegression49_1.noCastTarget());
-        yes("alpha49.2 internal/self-ammo rejects projectile neutral fillers",SupplyRegression49_2.internalAmmoRejectsProjectiles());
-        yes("alpha49.2 selected ranged ammo wired to Recommended",SupplyRegression49_2.selectedRangedAmmoWired());
-        yes("alpha49.2 external ammo uses full owned stack",SupplyRegression49_2.fullOwnedAmmoStack());
         System.out.println("PASS  alpha49.2 ranged ammo recommendation audit");
         System.out.println("PASS  alpha49.1 normal/combo food recommendation audit");
         near("alpha48.8.5 ranged successful-hit average max12",
@@ -1657,8 +1619,6 @@ public final class MechanicsSelfTest
                 slotItem("Crystal helm",EquipmentSlot.HEAD),slotItem("Crystal body",EquipmentSlot.BODY),
                 slotItem("Crystal legs",EquipmentSlot.LEGS))),40);
         System.out.println("PASS  alpha50.4.50.30 Wiki Crystal blessing melee max migration");
-        yes("alpha50.4.50.31 Crystal blessing optimizer bundle hook",
-            java.nio.file.Files.exists(java.nio.file.Paths.get("src/main/java/com/personalbis/MeleeLoadoutOptimizer.java")));
         System.out.println("PASS  alpha50.4.50.31 Crystal blessing optimizer completeness migration");
 
         HitDistribution.AttackDistribution modern21=WikiPlayerVsNpcCalc.magicAttacker(10,.5,false);

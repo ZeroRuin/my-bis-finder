@@ -5,7 +5,7 @@ public class MagicCombatCalculator {
  @Inject public MagicCombatCalculator(AccountSnapshot a){account=a;}
  public MagicCombatResult calculate(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,MagicSpell spell,boolean task){
   int bonus=0; double md=0; boolean slayer=false; String weaponName="";
-  for(EquipmentCandidate c:gear.values()){if(c==null)continue;bonus+=c.getMagicAttack();md+=c.getMagicDamage();String n=c.getItem().getName().toLowerCase();if(c.getSlot()==EquipmentSlot.WEAPON)weaponName=c.getItem().getName();if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
+  for(EquipmentCandidate c:gear.values()){if(c==null)continue;bonus+=c.getMagicAttack();md+=c.getMagicDamage();String n=ItemNames.lower(c);if(c.getSlot()==EquipmentSlot.WEAPON)weaponName=c.getItem().getName();if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
   WikiEquipmentEngine.Totals wikiEq=WikiEquipmentEngine.transform(gear,m,spell.spellbook,0,0,bonus,md,0); bonus=wikiEq.magicAttack; md=wikiEq.magicDamage;
   int lvl=Math.max(1,RaidScaling.boosted(account,Skill.MAGIC,m)); MagicPrayer mp=MagicPrayer.best(account); String pn=mp.name;
   int eff;
@@ -45,7 +45,7 @@ public class MagicCombatCalculator {
  }
  public MagicCombatResult calculatePowered(Map<EquipmentSlot,EquipmentCandidate> gear,MonsterDefinition m,PoweredStaff staff,boolean task){
   int bonus=0; double md=0; boolean slayer=false;
-  for(EquipmentCandidate c:gear.values()){if(c==null)continue;bonus+=c.getMagicAttack();md+=c.getMagicDamage();String n=c.getItem().getName().toLowerCase();if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
+  for(EquipmentCandidate c:gear.values()){if(c==null)continue;bonus+=c.getMagicAttack();md+=c.getMagicDamage();String n=ItemNames.lower(c);if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
   boolean shadow="Tumeken's shadow".equals(staff.label);
   WikiEquipmentEngine.Totals wikiEq=WikiEquipmentEngine.transform(gear,m,null,0,0,bonus,md,0); bonus=wikiEq.magicAttack; md=wikiEq.magicDamage;
   int lvl=Math.max(1,RaidScaling.boosted(account,Skill.MAGIC,m)); MagicPrayer mp=MagicPrayer.best(account); String pn=mp.name;

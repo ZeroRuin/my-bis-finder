@@ -61,7 +61,7 @@ public final class WikiEquipmentEngine {
    for(Map.Entry<String,List<Integer>> e:ammo.entrySet())AMMO.put(Integer.parseInt(e.getKey()),e.getValue());
    Type et=new TypeToken<List<WikiEquipment>>(){}.getType();
    List<WikiEquipment> eq=g.fromJson(new InputStreamReader(WikiEquipmentEngine.class.getResourceAsStream("/wiki-data/equipment.json"),StandardCharsets.UTF_8),et);
-   for(WikiEquipment w:eq) if(w.id!=34607&&(!EQUIPMENT.containsKey(w.id)||empty(EQUIPMENT.get(w.id).version))) EQUIPMENT.put(w.id,w);
+   for(WikiEquipment w:eq) if(w.id!=ItemIds.DEADMAN_CAPE&&(!EQUIPMENT.containsKey(w.id)||empty(EQUIPMENT.get(w.id).version))) EQUIPMENT.put(w.id,w);
    // RuneLite gameval ItemID: preserve the charge state of locked quivers.
    CANONICAL.put(28949,28947); CANONICAL.put(28953,28951);
    // Ordinary ancient MA2/max capes have the same equipment stats as other MA2 capes.
@@ -147,5 +147,5 @@ public final class WikiEquipmentEngine {
  private static boolean isEliteVoidMage(Map<EquipmentSlot,EquipmentCandidate> g){return VoidEquipment.matches(name(g.get(EquipmentSlot.HEAD)),"Void mage helm")&&VoidEquipment.matches(name(g.get(EquipmentSlot.BODY)),"Elite void top")&&VoidEquipment.matches(name(g.get(EquipmentSlot.LEGS)),"Elite void robe")&&VoidEquipment.matches(name(g.get(EquipmentSlot.HANDS)),"Void knight gloves");}
  private static boolean isToa(MonsterDefinition m){return m!=null&&TOA.contains(m.getId());}
  private static WikiEquipment item(EquipmentCandidate c){return c==null?null:canonicalItem(c.getItem().getItemId());}
- private static String name(EquipmentCandidate c){return c==null||c.getItem()==null||c.getItem().getName()==null?"":c.getItem().getName().toLowerCase();}
+ private static String name(EquipmentCandidate c){return c==null||c.getItem()==null||c.getItem().getName()==null?"":ItemNames.lower(c);}
 }

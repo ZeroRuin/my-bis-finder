@@ -44,10 +44,10 @@ public final class SimpleSupplyRecommender {
  public static List<RecommendedSupply> recommend(AttackStyle style,OptimizedMagicLoadout magic,OptimizedRangedLoadout ranged,List<BankItem> bank){
   List<RecommendedSupply> out=new ArrayList<>();
   if(style==AttackStyle.MAGIC&&magic!=null&&magic.getSpell()!=null){
-   String weapon="";EquipmentCandidate w=magic.getItems().get(EquipmentSlot.WEAPON);if(w!=null)weapon=w.getItem().getName().toLowerCase();
+   String weapon="";EquipmentCandidate w=magic.getItems().get(EquipmentSlot.WEAPON);if(w!=null)weapon=ItemNames.lower(w);
    if(PoweredStaff.forWeapon(weapon)==null){
     for(Map.Entry<String,Integer>e:magic.getSpell().runes.entrySet()){
-     String rune=e.getKey().toLowerCase();
+     String rune=e.getKey().toLowerCase(java.util.Locale.ROOT);
      if(provides(weapon,rune)||MagicTomeEffects.providesRune(magic.getItems().values(),rune))continue;
      addFullStack(out,bank,e.getKey(),"Full owned stack required by "+magic.getSpell().name);
     }

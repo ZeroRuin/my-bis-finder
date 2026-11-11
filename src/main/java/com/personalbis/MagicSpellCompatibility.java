@@ -3,7 +3,7 @@ import java.util.*;
 public final class MagicSpellCompatibility {
  private MagicSpellCompatibility(){}
  public static boolean canAutocast(String rawWeapon,MagicSpell spell){
-  if(rawWeapon==null||spell==null)return false;String w=rawWeapon.toLowerCase();String n=spell.name;
+  if(rawWeapon==null||spell==null)return false;String w=ItemNames.withoutCharge(rawWeapon).toLowerCase(java.util.Locale.ROOT);String n=spell.name;
   if(PoweredStaff.forWeapon(w)!=null||PoweredStaff.requiresContext(w))return false;
   if("ancient".equals(spell.spellbook))return canAutocastAncient(w);
   if("arceuus".equals(spell.spellbook))return canAutocastArceuus(w);
@@ -17,7 +17,7 @@ public final class MagicSpellCompatibility {
   return false;
  }
  public static int attackTicks(String rawWeapon,MagicSpell spell){
-  String w=rawWeapon==null?"":rawWeapon.toLowerCase();
+  String w=rawWeapon==null?"":rawWeapon.toLowerCase(java.util.Locale.ROOT);
   // Wiki Equipment.calculateAttackSpeed(): cast stances are normally 5t.
   // Harmonised is 4t only for STANDARD spellbook autocasts; Twinflame is 6t.
   if(w.equals("harmonised nightmare staff") && spell!=null && "standard".equals(spell.spellbook)) return 4;
@@ -34,13 +34,15 @@ public final class MagicSpellCompatibility {
   if(spell.name.equals("Saradomin Strike")||spell.name.equals("Claws of Guthix")||spell.name.equals("Flames of Zamorak"))return "God spell: weapon-restricted; Charge not assumed";
   return "";
  }
- public static boolean canAutocastArceuus(String w){
+ public static boolean canAutocastArceuus(String raw){
+  String w=ItemNames.withoutCharge(raw);
   return w.equals("skull sceptre (i)")||w.equals("slayer's staff")||w.equals("slayer's staff (e)")
     ||w.equals("ahrim's staff")||w.equals("blue moon spear")||w.equals("staff of the dead")
     ||w.equals("toxic staff of the dead")||w.equals("purging staff")||w.equals("master wand")
     ||w.equals("kodai wand");
  }
- public static boolean canAutocastAncient(String w){
+ public static boolean canAutocastAncient(String raw){
+  String w=ItemNames.withoutCharge(raw);
   return w.equals("ancient staff")||w.contains("ancient sceptre")||w.equals("master wand")||w.equals("kodai wand")
     ||w.equals("nightmare staff")||w.equals("eldritch nightmare staff")||w.equals("volatile nightmare staff")
     ||w.equals("harmonised nightmare staff")||w.equals("thammaron's sceptre (a)")||w.equals("accursed sceptre (a)")

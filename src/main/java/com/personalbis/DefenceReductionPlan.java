@@ -56,6 +56,34 @@ final class DefenceReductionPlan
             if(attribute.startsWith("manual_defence_applied:"))return decode(attribute.substring("manual_defence_applied:".length()));
         return OFF;
     }
+    /** Applies each planned reduction the player owns a usable weapon for and that can land on the target. */
+    MonsterDefinition applyWhereUsable(MonsterDefinition target,Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> ranked)
+    {
+        Set<Type> eligible=EnumSet.noneOf(Type.class);
+        for(Type type:Type.values()){
+            if(amount(type)==0)continue;
+            if(type==Type.VULNERABILITY){eligible.add(type);continue;}
+            AttackStyle style=type==Type.ACCURSED||type==Type.AYAK?AttackStyle.MAGIC
+                :type==Type.SEERCULL||type==Type.TONALZTICS?AttackStyle.RANGED
+                :type==Type.MAUL||type==Type.DWH?AttackStyle.MELEE_CRUSH:AttackStyle.MELEE_SLASH;
+            Map<EquipmentSlot,List<EquipmentCandidate>> gear=ranked.getOrDefault(style,Collections.emptyMap());
+            for(EquipmentCandidate weapon:gear.getOrDefault(EquipmentSlot.WEAPON,Collections.emptyList())){
+                if(!type.matches(weapon.getItem().getItemId())||weapon.getRequirementResult().isBlocked())continue;
+                boolean shieldRequired=SlayerTargetRequirements.requiredEquipmentSlot(target)==EquipmentSlot.SHIELD;
+                if(shieldRequired&&(RangedAmmoRules.occupiesBothHands(weapon)||SlayerTargetRequirements.firstRequiredEquipment(target,gear.get(EquipmentSlot.SHIELD))==null))continue;
+                boolean canLand;
+                if(style==AttackStyle.MAGIC)canLand=WikiTargetEligibility.magicCanDamage(target)&&LeafyTargetRules.poweredMagicCanDamage(target);
+                else if(style==AttackStyle.RANGED)canLand=WikiTargetEligibility.rangedCanDamage(target)&&!LeafyTargetRules.restricted(target)&&!target.hasAttribute("vampyre3");
+                else {
+                    Map<EquipmentSlot,EquipmentCandidate> weaponOnly=new EnumMap<>(EquipmentSlot.class);weaponOnly.put(EquipmentSlot.WEAPON,weapon);
+                    canLand=WikiTargetEligibility.meleeCanDamage(target,weapon)&&LeafyTargetRules.meleeCanDamage(target,weapon)&&VampyreTargetRules.canDamageMelee(weaponOnly,weapon,target);
+                }
+                if(canLand&&!WikiTargetEligibility.styleImmune(target,style)){eligible.add(type);break;}
+            }
+        }
+        return apply(target,eligible);
+    }
+
     MonsterDefinition apply(MonsterDefinition m,Set<Type> eligible){
         if(m==null||amounts.isEmpty())return m;
         DefenceReductionPlan plan=revalidate(eligible);

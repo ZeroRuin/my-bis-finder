@@ -39,7 +39,7 @@ public final class WikiMagicDamage
             boolean enhanced = equals(weapon, "Slayer's staff (e)") && onSlayerTask;
             base = enhanced ? 13 + magicLevel / 6 : 10 + magicLevel / 10;
         }
-        if (spell != null && spell.name != null && spell.name.toLowerCase().contains("bolt")
+        if (spell != null && spell.name != null && spell.name.toLowerCase(java.util.Locale.ROOT).contains("bolt")
             && has(gear, "Chaos gauntlets")) base += 3;
         // Charge is not assumed until its active buff state is exposed by PBIS.
         base += ElementalAmuletEffects.evaluate(gear, spell).flatMaxHit;

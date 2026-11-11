@@ -21,7 +21,7 @@ public final class EquipmentAuditPolicy
 
     public static boolean specialRangedWeapon(String name)
     {
-        if(name==null)return false; String n=name.toLowerCase();
+        if(name==null)return false; String n=name.toLowerCase(java.util.Locale.ROOT);
         return n.contains("twisted bow")||n.contains("bow of faerdhinen")||n.contains("crystal bow")
             ||n.contains("blowpipe")||n.contains("dragon hunter crossbow")||n.contains("webweaver")
             ||n.contains("craw's bow")||n.contains("venator bow")||n.contains("dark bow")

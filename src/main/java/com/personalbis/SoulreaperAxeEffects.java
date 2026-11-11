@@ -8,7 +8,7 @@ public final class SoulreaperAxeEffects {
 
     public static boolean isSoulreaper(EquipmentCandidate w){
         if(w==null||w.getItem()==null||w.getItem().getName()==null)return false;
-        return w.getItem().getName().toLowerCase().contains("soulreaper axe");
+        return ItemNames.lower(w).contains("soulreaper axe");
     }
 
     public static int clampStacks(int stacks){ return Math.max(0,Math.min(MAX_STACKS,stacks)); }

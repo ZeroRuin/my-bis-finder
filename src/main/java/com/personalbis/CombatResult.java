@@ -1,6 +1,6 @@
 package com.personalbis;
 
-public final class CombatResult
+public final class CombatResult implements CombatOutcome
 {
     private final double dps;
     private final double expectedTtkSeconds;

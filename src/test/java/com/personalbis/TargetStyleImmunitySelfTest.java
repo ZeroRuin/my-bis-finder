@@ -48,8 +48,13 @@ public final class TargetStyleImmunitySelfTest
         check(skipped>20&&searches.get()==0,"No immune optimizer supplier executes");
         int result=TargetStyleImmunity.calculate(nylo,AttackStyle.MAGIC,()->{searches.incrementAndGet();return 1;},()->0);
         check(result==1&&searches.get()==1,"Allowed search executes once");
-        MeleeOptimizationReport empty=TargetStyleImmunity.calculate(nylo,AttackStyle.MELEE_SLASH,()->{throw new AssertionError("Unexpected search");},()->new MeleeOptimizationReport(null));
-        check(empty!=null&&empty.getBest()==null,"Immune report is cached as completed empty result");
+        StyleResults results=new StyleResults();
+        OptimizedLoadout empty=results.get(AttackStyle.MELEE_SLASH,nylo,()->{throw new AssertionError("Unexpected search");});
+        check(empty==null,"Immune style is never searched");
+        AtomicInteger kept=new AtomicInteger();
+        for(int i=0;i<2;i++)results.<OptimizedMagicLoadout>get(AttackStyle.MAGIC,nylo,()->{kept.incrementAndGet();return null;});
+        check(kept.get()==1,"A completed empty result is kept rather than searched again");
+        check(results.bestIfComplete(nylo)==null,"No best style until every style has a result");
         Map<AttackStyle,Double> scores=new EnumMap<>(AttackStyle.class);
         for(AttackStyle s:AttackStyle.values())scores.put(s,TargetStyleImmunity.immune(nylo,s)?Double.NEGATIVE_INFINITY:s==AttackStyle.MAGIC?-10.0:-100.0);
         check(BestStyleSelection.best(scores)==AttackStyle.MAGIC,"Immune styles cannot win BEST");

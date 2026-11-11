@@ -26,7 +26,7 @@ public class RangedCombatCalculator {
    if(c.getSlot()==EquipmentSlot.AMMO && !RangedAmmoRules.compatible(weapon,c)) continue;
    atk+=c.getRangedAttack();str+=c.getRangedStrength();
    if(c.getSlot()==EquipmentSlot.WEAPON&&c.getAttackSpeed()>0)speed=c.getAttackSpeed();
-   String n=c.getItem().getName().toLowerCase(); if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
+   String n=ItemNames.lower(c); if(c.getSlot()==EquipmentSlot.HEAD&&(n.contains("slayer helm")||n.contains("slayer helmet")||n.contains("black mask"))&&(n.contains("(i)")||n.contains("imbued")))slayer=true;}
   // transform(str, rangedStr, magicAttack, magicDamage, rangedAttack): ranged
   // strength must occupy the second numeric channel. Passing it as melee Str
   // zeroed every weapon/ammo Ranged Strength during the exact final evaluation.
@@ -72,7 +72,7 @@ public class RangedCombatCalculator {
   double expectedDamage=WikiPlayerVsNpcCalc.expectedDamage(rangedDist);
   double dps=WikiPlayerVsNpcCalc.dps(rangedDist,actualSpeed);
   int targetHp=m==null?1:Math.max(1,m.getHitpoints());
-  boolean ruby=ammo!=null&&ammo.getItem()!=null&&ammo.getItem().getName().toLowerCase().contains("ruby");
+  boolean ruby=ammo!=null&&ammo.getItem()!=null&&ItemNames.lower(ammo).contains("ruby");
   Map<Integer,HitDistribution.AttackDistribution> hpDists=ruby?new HashMap<>():null;
   HitDistribution rubyBase=ruby?WikiPlayerVsNpcCalc.rangedRubyBaseDistribution(
       m,level,normalMin,normalMax,acc,account.isKandarinHardCompleted()):null;

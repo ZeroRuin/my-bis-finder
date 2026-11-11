@@ -1,6 +1,6 @@
 package com.personalbis;
 import java.util.*;
-public final class OptimizedRangedLoadout {
+public final class OptimizedRangedLoadout implements StyleLoadout {
  private final Map<EquipmentSlot,EquipmentCandidate> items; private final RangedCombatResult result; private final EquipmentCandidate loadedAmmo;
  public OptimizedRangedLoadout(Map<EquipmentSlot,EquipmentCandidate>i,RangedCombatResult r){this(i,r,null);}
  public OptimizedRangedLoadout(Map<EquipmentSlot,EquipmentCandidate>i,RangedCombatResult r,EquipmentCandidate a){items=Collections.unmodifiableMap(new EnumMap<>(i));result=r;loadedAmmo=a;}

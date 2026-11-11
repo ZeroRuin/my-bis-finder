@@ -41,7 +41,7 @@ public class WikiDataPack
         Map<Integer, WikiEquipment> byId = new HashMap<>();
         for (WikiEquipment item : equipment)
         {
-            if (item.id == 34607) continue; // Deadman-only cape is not supported.
+            if (item.id == com.personalbis.ItemIds.DEADMAN_CAPE) continue; // Deadman-only cape is not supported.
             WikiEquipment current = byId.get(item.id);
             if (current == null || preferredVersion(item.version, current.version))
             {

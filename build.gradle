@@ -30,7 +30,7 @@ dependencies {
 }
 
 group = 'com.personalbis'
-version = '0.9.7.3'
+version = '0.9.7.4'
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
@@ -283,5 +283,30 @@ tasks.register('fracturedArchiveSelfTest', JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.personalbis.FracturedArchiveSelfTest'
     systemProperty 'java.awt.headless', 'true'
+    enableAssertions = true
+}
+
+// Prints search results for fixed random banks; compare the output before and after a search change.
+tasks.register('searchSnapshot', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.SearchSnapshot'
+    args = [(project.findProperty('snapshotFile') ?: "${buildDir}/search-snapshot.txt"), (project.findProperty('snapshotCases') ?: '300')]
+}
+
+// Compares the search with an exhaustive search on small fixed-seed banks.
+tasks.register('searchBruteForceSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.SearchBruteForceSelfTest'
+    enableAssertions = true
+    if (project.hasProperty('bruteArgs')) args project.property('bruteArgs').split(',')
+}
+
+// What the searches recommend for hand-built banks.
+tasks.register('searchBehaviourSelfTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.personalbis.SearchBehaviourSelfTest'
     enableAssertions = true
 }

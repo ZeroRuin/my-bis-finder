@@ -30,13 +30,13 @@ public final class RangedLoadoutEffects {
  }
  public static double voidAccuracy(Map<EquipmentSlot,EquipmentCandidate> g){return voidRanged(g)?1.10:1.0;}
  public static double voidDamage(Map<EquipmentSlot,EquipmentCandidate> g){return voidRanged(g)?1.10:1.0;}
- public static boolean synergy(EquipmentCandidate c){if(c==null)return false;String n=c.getItem().getName().toLowerCase();
+ public static boolean synergy(EquipmentCandidate c){if(c==null)return false;String n=ItemNames.lower(c);
   return n.contains("crystal helm")||n.contains("crystal body")||n.contains("crystal legs")||n.contains("void ranger helm")||
    n.contains("void knight top")||n.contains("elite void top")||n.contains("void knight robe")||n.contains("elite void robe")||
    n.contains("void knight gloves")||n.contains("salve amulet(i)")||n.contains("salve amulet (i)")||
    n.contains("salve amulet(ei)")||n.contains("salve amulet (ei)")||n.contains("karil's coif")||
    n.contains("karil's leathertop")||n.contains("karil's leatherskirt")||n.contains("amulet of the damned");}
- private static boolean named(EquipmentCandidate c,String n){return c!=null&&c.getItem().getName().toLowerCase().contains(n);}
+ private static boolean named(EquipmentCandidate c,String n){return c!=null&&ItemNames.lower(c).contains(n);}
 
  public static double salveAccuracy(Map<EquipmentSlot,EquipmentCandidate> gear, MonsterDefinition m){
   if(!isUndead(m)) return 1.0;
@@ -56,6 +56,6 @@ public final class RangedLoadoutEffects {
  }
  private static String neckName(Map<EquipmentSlot,EquipmentCandidate> gear){
   EquipmentCandidate c=gear.get(EquipmentSlot.NECK);
-  return c==null?"":c.getItem().getName().toLowerCase();
+  return c==null?"":ItemNames.lower(c);
  }
 }

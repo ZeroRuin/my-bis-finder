@@ -63,16 +63,16 @@ public final class WikiRangedEffects {
  public static boolean isTonalztics(EquipmentCandidate w){return w!=null&&w.getItem()!=null&&
    w.getItem().getName().equalsIgnoreCase("Tonalztics of Ralos");}
  public static boolean isChinchompa(EquipmentCandidate w){return w!=null&&w.getItem()!=null&&
-   w.getItem().getName().toLowerCase().contains("chinchompa");}
+   ItemNames.lower(w).contains("chinchompa");}
  public static boolean isWildernessTarget(MonsterDefinition m){
-  if(m==null)return false;String n=m.getName().toLowerCase(),v=m.getVersion().toLowerCase();
+  if(m==null)return false;String n=m.getName().toLowerCase(java.util.Locale.ROOT),v=m.getVersion().toLowerCase(java.util.Locale.ROOT);
   if(n.startsWith("revenant")||n.contains("callisto")||n.contains("artio")||n.contains("venenatis")||
     n.contains("spindel")||n.contains("vet'ion")||n.contains("calvar'ion")||n.contains("scorpia")||
     n.contains("chaos elemental")||n.contains("chaos fanatic")||n.contains("crazy archaeologist"))return true;
   return n.contains("wilderness")||v.contains("wilderness");
  }
  private static boolean avariceRevenant(Collection<EquipmentCandidate> gear,MonsterDefinition m){
-  return m!=null&&m.getName().toLowerCase().startsWith("revenant")&&has(gear,"Amulet of avarice");
+  return m!=null&&m.getName().toLowerCase(java.util.Locale.ROOT).startsWith("revenant")&&has(gear,"Amulet of avarice");
  }
  private static boolean has(Collection<EquipmentCandidate> gear,String name){if(gear!=null)for(EquipmentCandidate c:gear)
   if(c!=null&&c.getItem()!=null&&c.getItem().getName().equalsIgnoreCase(name))return true;return false;}

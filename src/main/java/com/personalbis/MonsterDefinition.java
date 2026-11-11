@@ -54,7 +54,7 @@ public final class MonsterDefinition
         this.standardDefence=standardDefence; this.heavyDefence=heavyDefence;
         this.attributes=attributes == null ? Collections.emptyList() : Collections.unmodifiableList(attributes);
         this.size=Math.max(1,size);
-        this.weaknessElement=weaknessElement==null?"":weaknessElement.toLowerCase();
+        this.weaknessElement=weaknessElement==null?"":weaknessElement.toLowerCase(java.util.Locale.ROOT);
         this.weaknessSeverity=Math.max(0,weaknessSeverity);
     }
 
@@ -68,7 +68,7 @@ public final class MonsterDefinition
         this.rangedLevel=rangedLevel; this.hitpoints=hitpoints; this.magicAttack=magicAttack; this.stabDefence=stabDefence; this.slashDefence=slashDefence;
         this.crushDefence=crushDefence; this.magicDefence=magicDefence; this.lightDefence=lightDefence; this.standardDefence=standardDefence; this.heavyDefence=heavyDefence;
         this.attributes=attributes == null ? Collections.emptyList() : Collections.unmodifiableList(attributes); this.size=Math.max(1,size);
-        this.weaknessElement=weaknessElement==null?"":weaknessElement.toLowerCase(); this.weaknessSeverity=Math.max(0,weaknessSeverity);
+        this.weaknessElement=weaknessElement==null?"":weaknessElement.toLowerCase(java.util.Locale.ROOT); this.weaknessSeverity=Math.max(0,weaknessSeverity);
     }
 
     public int getId(){return id;} public String getName(){return name;} public String getVersion(){return version;} public int getCombatLevel(){return combatLevel;}
@@ -82,6 +82,6 @@ public final class MonsterDefinition
     public int defenceFor(AttackStyle style){ switch(style){case MELEE_STAB:return stabDefence;case MELEE_SLASH:return slashDefence;case MELEE_CRUSH:return crushDefence;case MAGIC:return magicDefence;default:return standardDefence;} }
     public boolean hasAttribute(String a){ for(String x:attributes) if(x!=null && x.equalsIgnoreCase(a)) return true; return false; }
     /** Wiki defensive.flat_armour, encoded into the bundled attribute list during import. */
-    public int getFlatArmour(){ for(String x:attributes){ if(x!=null && x.toLowerCase().startsWith("flat_armour:")){ try{return Integer.parseInt(x.substring(x.indexOf(':')+1));}catch(Exception ignored){} } } return 0; }
+    public int getFlatArmour(){ for(String x:attributes){ if(x!=null && x.toLowerCase(java.util.Locale.ROOT).startsWith("flat_armour:")){ try{return Integer.parseInt(x.substring(x.indexOf(':')+1));}catch(Exception ignored){} } } return 0; }
     @Override public String toString(){String v=version.isEmpty()?"":" — "+version; return combatLevel>0?name+v+" (level "+combatLevel+")":name+v;}
 }

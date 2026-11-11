@@ -16,7 +16,7 @@ public final class AncientSpellEffects {
  }
  public static int startingPoison(MagicSpell s){return isAncient(s)&&s.name.startsWith("Smoke ")?4:0;}
  public static boolean isAncientSceptre(String weapon){
-  String w=weapon==null?"":weapon.toLowerCase();return w.equals("ancient sceptre")||w.contains("ancient sceptre (l)")
+  String w=weapon==null?"":weapon.toLowerCase(java.util.Locale.ROOT);return w.equals("ancient sceptre")||w.contains("ancient sceptre (l)")
    ||w.startsWith("blood ancient sceptre")||w.startsWith("ice ancient sceptre")
    ||w.startsWith("shadow ancient sceptre")||w.startsWith("smoke ancient sceptre");
  }
@@ -26,7 +26,7 @@ public final class AncientSpellEffects {
  public static String note(MagicSpell s){return note(s,null);}
  public static String note(MagicSpell s,String weapon){
   if(!isAncient(s))return "";
-  String w=weapon==null?"":weapon.toLowerCase();
+  String w=weapon==null?"":weapon.toLowerCase(java.util.Locale.ROOT);
   StringBuilder n=new StringBuilder("Ancient");
   if(isMultiTarget(s))n.append(": up to 9 targets");
   if(bloodHealFraction(s)>0)n.append(isMultiTarget(s)?", heals ":"; heals ").append(trim(bloodHealFraction(s,weapon)*100)).append("% damage");

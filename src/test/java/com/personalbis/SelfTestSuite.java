@@ -47,6 +47,7 @@ class SelfTestSuite
     private static final Set<String> NOT_SELF_TESTS = Set.of(
         "SelfTestSuite",           // this file
         "PersonalBisPluginTest",   // launches the RuneLite dev client
+        "SearchSnapshot",          // prints search results for before/after comparison
         "SlayerLocationCoverage",  // writes a coverage report
         "SlayerUnresolvedAudit");  // writes an audit file
 
@@ -74,6 +75,8 @@ class SelfTestSuite
             new SelfTest(RaidOptionsSelfTest.class),
             new SelfTest(ReviewedSlayerLocationsSelfTest.class),
             new SelfTest(SalveRoundingSelfTest.class),
+            new SelfTest(SearchBehaviourSelfTest.class),
+            new SelfTest(SearchBruteForceSelfTest.class),
             new SelfTest(SlayerGsonSelfTest.class),
             new SelfTest(SlayerTaskSelfTest.class),
             new SelfTest(SpecialAttackSelfTest.class),

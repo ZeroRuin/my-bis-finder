@@ -11,9 +11,9 @@ public final class PoweredStaff {
   if("Warped sceptre".equals(label)) return Math.max(1,(8*visibleMagic+96)/37);
   return Math.max(minHit,(visibleMagic/3)+offset);
  }
- public static boolean requiresContext(String raw){String n=raw==null?"":raw.toLowerCase();return n.contains("accursed sceptre")||n.contains("thammaron");}
+ public static boolean requiresContext(String raw){String n=raw==null?"":raw.toLowerCase(java.util.Locale.ROOT);return n.contains("accursed sceptre")||n.contains("thammaron");}
  public static PoweredStaff forWeapon(String raw){
-  if(raw==null)return null;String n=raw.toLowerCase();
+  if(raw==null)return null;String n=raw.toLowerCase(java.util.Locale.ROOT);
   if(n.contains("trident of the swamp"))return new PoweredStaff("Trident of the swamp",78,4,-2,23);
   if(n.contains("trident of the seas"))return new PoweredStaff("Trident of the seas",75,4,-5,20);
   if(n.contains("sanguinesti staff")||n.contains("holy sanguinesti staff"))return new PoweredStaff("Sanguinesti staff",82,4,-1,6);

@@ -10,7 +10,7 @@ public final class MagicLoadoutEffects {
  public static Effect evaluate(Collection<EquipmentCandidate> gear,MonsterDefinition m,boolean onTask,MagicSpell spell){
   List<String> names=new ArrayList<>();if(gear!=null)for(EquipmentCandidate e:gear)if(e!=null&&e.getItem()!=null)names.add(e.getItem().getName());
   Effect e=evaluateNames(names,m,onTask);
-  if(spell!=null&&"ancient".equals(spell.spellbook)){int pieces=0;for(String n:names)if(n!=null&&n.toLowerCase().startsWith("virtus "))pieces++;if(pieces>0)return new Effect(e.accuracy,e.damage*(1.0+0.05*pieces),e.note+(e.note.isEmpty()?"":" | ")+"Virtus Ancient: +"+(pieces*5)+"% damage");}
+  if(spell!=null&&"ancient".equals(spell.spellbook)){int pieces=0;for(String n:names)if(n!=null&&n.toLowerCase(java.util.Locale.ROOT).startsWith("virtus "))pieces++;if(pieces>0)return new Effect(e.accuracy,e.damage*(1.0+0.05*pieces),e.note+(e.note.isEmpty()?"":" | ")+"Virtus Ancient: +"+(pieces*5)+"% damage");}
   return e;
  }
  static Effect evaluateNames(Collection<String> names,MonsterDefinition m,boolean onTask){
@@ -31,7 +31,7 @@ public final class MagicLoadoutEffects {
  }
  public static boolean synergy(EquipmentCandidate c){
   if(c==null||c.getItem()==null)return false;
-  String n=c.getItem().getName().toLowerCase();
+  String n=ItemNames.lower(c);
   return n.contains("salve amulet")||n.contains("slayer helmet")||n.contains("slayer helm")||n.contains("black mask")||
    n.contains("void mage helm")||n.contains("void knight gloves")||n.contains("void knight top")||
    n.contains("elite void top")||n.contains("void knight robe")||n.contains("elite void robe")||

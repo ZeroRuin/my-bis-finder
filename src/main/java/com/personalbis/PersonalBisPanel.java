@@ -173,46 +173,24 @@ public class PersonalBisPanel extends PluginPanel
     });
     private final AtomicLong calculationGeneration=new AtomicLong();
 
-    // alpha50.4.20: cache completed optimiser reports for the current combat
-    // inputs. Switching the visible attack style must not recompute the same
-    // five expensive searches when target/account/bank/Slayer state is unchanged.
-    private volatile String optimizerCacheKey;
-    private final Map<AttackStyle, MeleeOptimizationReport> cachedMeleeReports = new ConcurrentHashMap<>();
-    private final Map<AttackStyle, RangedOptimizationReport> cachedRangedReports = new ConcurrentHashMap<>();
-    private final Map<AttackStyle, MagicOptimizationReport> cachedMagicReports = new ConcurrentHashMap<>();
+    private final StyleResults styleResults = new StyleResults();
 
     private void invalidateOptimizerCache()
     {
-        optimizerCacheKey = null;
-        cachedMeleeReports.clear();
-        cachedRangedReports.clear();
-        cachedMagicReports.clear();
+        styleResults.invalidate();
     }
 
-    private String optimizerCacheKey(MonsterDefinition monster, List<BankItem> bank, boolean slayer)
+    private String searchInputs(MonsterDefinition monster, List<BankItem> owned, boolean slayer)
     {
-        StringBuilder k = new StringBuilder(256);
-        k.append(monster == null ? -1 : monster.getId())
-            .append('|').append(monster == null ? 1 : monster.getSize())
-            .append('|').append(monster == null ? "" : monster.getVersion())
-            .append('|').append(slayer).append('|').append(includeRubyBoltsEnabled);
-        k.append('|').append(fillPreference.name()).append('|').append(manualDefenceReduction.encode());
-        k.append('|').append(BlowpipeAmmoPlan.encode(blowpipeAmmoSelections));
-        k.append('|').append(MonsterDatabase.combatKey(monster));
-        Skill[] combatSkills = {Skill.ATTACK, Skill.STRENGTH, Skill.DEFENCE, Skill.RANGED, Skill.MAGIC, Skill.PRAYER, Skill.HITPOINTS, Skill.MINING};
-        for (Skill skill : combatSkills)
-            k.append('|').append(account.real(skill)).append('/').append(account.boosted(skill));
-        k.append('|').append(account.isZealUnlocked()).append(account.fragmentKey());
-        k.append('|').append(account.isPietyUnlocked()).append(account.isChivalryUnlocked())
-            .append(account.isRigourUnlocked()).append(account.isAuguryUnlocked())
-            .append(account.isDeadeyeUnlocked()).append(account.isMysticVigourUnlocked())
-            .append(account.isAncientMagicksUnlocked()).append(account.isKingdomDividedUnlocked())
-            .append(account.isKandarinHardCompleted());
-        // BankScanner order is stable for a snapshot; include quantities because
-        // runes/ammo availability can change an otherwise identical loadout.
-        for (BankItem item : bank)
-            k.append('|').append(item.getItemId()).append(':').append(item.getQuantity());
-        return k.toString();
+        String options = includeRubyBoltsEnabled + "|" + fillPreference.name() + "|" + manualDefenceReduction.encode()
+            + "|" + BlowpipeAmmoPlan.encode(blowpipeAmmoSelections);
+        return StyleResults.inputs(monster, owned, slayer, options, account);
+    }
+
+    private MonsterDefinition selectedTarget()
+    {
+        Object selected = monsterBox.getSelectedItem();
+        return selected instanceof MonsterDefinition ? (MonsterDefinition) selected : null;
     }
 
     @Inject
@@ -830,7 +808,7 @@ content.add(Box.createVerticalStrut(5));
     private int prayerSpriteId(String prayer)
     {
         if (prayer == null) return -1;
-        String p = prayer.toLowerCase();
+        String p = prayer.toLowerCase(java.util.Locale.ROOT);
         if (p.contains("zeal")) return SpriteID.Prayeron.ZEAL;
         if (p.contains("piety")) return SpriteID.Prayeron.PIETY;
         if (p.contains("chivalry")) return SpriteID.Prayeron.CHIVALRY;
@@ -854,13 +832,6 @@ content.add(Box.createVerticalStrut(5));
             case MAGIC:return "Magic";
             default:return style.toString();
         }
-    }
-
-    private String displayTtk(double seconds)
-    {
-        if(!Double.isFinite(seconds))return "—";
-        if(seconds<60.0)return String.format(java.util.Locale.ROOT,"%.1fs",seconds);
-        return String.format(java.util.Locale.ROOT,"%dm %.1fs",(int)(seconds/60.0),seconds%60.0);
     }
 
     private void clearStyleSelection()
@@ -1638,44 +1609,15 @@ content.add(Box.createVerticalStrut(5));
         assumptions.entrySet().removeIf(entry->generationExclusions.excludes(entry.getValue().label,entry.getValue().label));
         final Set<BlowpipeAmmoPlan.Pipe> pipes=BlowpipeAmmoPlan.scannedPipes(planningBank());
         rankPlanningSnapshot(generation,ownedGearSnapshot,scaledMonster,requestedSlayerMode,includeRuby,rankedSnapshot->{
-            final MonsterDefinition monster=applyPlanningReduction(scaledMonster,selectedReduction,
-                rankedSnapshot);
+            final MonsterDefinition monster=selectedReduction.applyWhereUsable(scaledMonster,rankedSnapshot);
             final String cacheKey=calculateAllStyles
-                ? optimizerCacheKey(monster,ownedGearSnapshot,requestedSlayerMode):optimizerCacheKey;
+                ? searchInputs(monster,ownedGearSnapshot,requestedSlayerMode):styleResults.key();
             Map<EquipmentSlot,List<EquipmentCandidate>> ranged=rankedSnapshot.get(AttackStyle.RANGED);
             if(ranged!=null&&!ranged.isEmpty())rankedSnapshot.put(AttackStyle.RANGED,
                 BlowpipeAmmoCandidates.withAssumptions(ranged,assumptions,pipes));
             optimizerExecutor.execute(() -> CalculationCancellation.runWhile(()->generation==calculationGeneration.get(),
                 ()->calculateRecommendations(generation,ownedGearSnapshot,bankSnapshot,rankedSnapshot,monster,requestedStyle,requestedSlayerMode,calculateAllStyles,cacheKey)));
         });
-    }
-
-    private MonsterDefinition applyPlanningReduction(MonsterDefinition target,
-        DefenceReductionPlan selectedReduction,Map<AttackStyle,Map<EquipmentSlot,List<EquipmentCandidate>>> ranked)
-    {
-        Set<DefenceReductionPlan.Type> eligible=EnumSet.noneOf(DefenceReductionPlan.Type.class);
-        for(DefenceReductionPlan.Type type:DefenceReductionPlan.Type.values()){
-            if(selectedReduction.amount(type)==0)continue;
-            if(type==DefenceReductionPlan.Type.VULNERABILITY){eligible.add(type);continue;}
-            AttackStyle style=type==DefenceReductionPlan.Type.ACCURSED||type==DefenceReductionPlan.Type.AYAK?AttackStyle.MAGIC
-                :type==DefenceReductionPlan.Type.SEERCULL||type==DefenceReductionPlan.Type.TONALZTICS?AttackStyle.RANGED
-                :type==DefenceReductionPlan.Type.MAUL||type==DefenceReductionPlan.Type.DWH?AttackStyle.MELEE_CRUSH:AttackStyle.MELEE_SLASH;
-            Map<EquipmentSlot,List<EquipmentCandidate>> gear=ranked.getOrDefault(style,Collections.emptyMap());
-            for(EquipmentCandidate weapon:gear.getOrDefault(EquipmentSlot.WEAPON,Collections.emptyList())){
-                if(!type.matches(weapon.getItem().getItemId())||weapon.getRequirementResult().isBlocked())continue;
-                boolean shieldRequired=SlayerTargetRequirements.requiredEquipmentSlot(target)==EquipmentSlot.SHIELD;
-                if(shieldRequired&&(RangedAmmoRules.occupiesBothHands(weapon)||SlayerTargetRequirements.firstRequiredEquipment(target,gear.get(EquipmentSlot.SHIELD))==null))continue;
-                boolean canLand;
-                if(style==AttackStyle.MAGIC)canLand=WikiTargetEligibility.magicCanDamage(target)&&LeafyTargetRules.poweredMagicCanDamage(target);
-                else if(style==AttackStyle.RANGED)canLand=WikiTargetEligibility.rangedCanDamage(target)&&!LeafyTargetRules.restricted(target)&&!target.hasAttribute("vampyre3");
-                else {
-                    Map<EquipmentSlot,EquipmentCandidate> weaponOnly=new EnumMap<>(EquipmentSlot.class);weaponOnly.put(EquipmentSlot.WEAPON,weapon);
-                    canLand=WikiTargetEligibility.meleeCanDamage(target,weapon)&&LeafyTargetRules.meleeCanDamage(target,weapon)&&VampyreTargetRules.canDamageMelee(weaponOnly,weapon,target);
-                }
-                if(canLand&&!WikiTargetEligibility.styleImmune(target,style)){eligible.add(type);break;}
-            }
-        }
-        return selectedReduction.apply(target,eligible);
     }
 
     /** ItemManager/requirement reads stay on the client thread, with a small work
@@ -1724,13 +1666,7 @@ content.add(Box.createVerticalStrut(5));
         Map<AttackStyle, OptimizedRangedLoadout> rangedLoads = new EnumMap<>(AttackStyle.class);
         Map<AttackStyle, OptimizedMagicLoadout> magicLoads = new EnumMap<>(AttackStyle.class);
         Map<EquipmentSlot, List<EquipmentCandidate>> selectedRanked = null;
-        final boolean optimizerCacheHit = cacheKey.equals(optimizerCacheKey);
-        if (!optimizerCacheHit)
-        {
-            cachedMeleeReports.clear();
-            cachedRangedReports.clear();
-            cachedMagicReports.clear();
-        }
+        styleResults.prepareFor(cacheKey);
 
         // alpha50.4.49.1: Best Style must use the same post-mechanics DPS that
         // the individual style panels display.  The old quick equipment score could
@@ -1748,21 +1684,21 @@ content.add(Box.createVerticalStrut(5));
             List<Integer> ids;
             if (isMelee(style))
             {
-                OptimizedLoadout load = meleeReport(style, ranked, monster, requestedSlayerMode).getBest();
+                OptimizedLoadout load = searchMelee(style, ranked, monster, requestedSlayerMode);
                 if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.melee(load,ranked,monster,requestedSlayerMode,account);
                 meleeLoads.put(style, load);
                 ids = load == null ? new ArrayList<>() : load.itemIds();
             }
             else if (style == AttackStyle.RANGED)
             {
-                OptimizedRangedLoadout load = rangedReport(ranked, monster, requestedSlayerMode).getBest();
+                OptimizedRangedLoadout load = searchRanged(ranked, monster, requestedSlayerMode);
                 if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.ranged(load,ranked,monster,requestedSlayerMode,account);
                 rangedLoads.put(style, load);
                 ids = load == null ? new ArrayList<>() : load.itemIds();
             }
             else
             {
-                OptimizedMagicLoadout load = magicReport(ownedGearSnapshot, ranked, monster, requestedSlayerMode).getBest();
+                OptimizedMagicLoadout load = searchMagic(ownedGearSnapshot, ranked, monster, requestedSlayerMode);
                 if(requestedFill==FillPreference.DEFENCE)load=LoadoutDefenceFiller.magic(load,ranked,monster,requestedSlayerMode,account,ownedGearSnapshot);
                 magicLoads.put(style, load);
                 ids = load == null ? new ArrayList<>() : load.itemIds();
@@ -1770,11 +1706,11 @@ content.add(Box.createVerticalStrut(5));
             styleRecommendations.put(style, ids);
         }
         if(generation!=calculationGeneration.get())return;
-        optimizerCacheKey = cacheKey;
+        styleResults.accept(cacheKey);
         // A selected-style result is rendered immediately for sub-tick responsiveness.
         // Only label a style "best" once exact reports exist for all five styles;
         // otherwise the sole selected style would inevitably (and incorrectly) win.
-        final AttackStyle resultBestStyle=cachedBestStyleIfComplete();
+        final AttackStyle resultBestStyle=styleResults.bestIfComplete(selectedTarget());
 
         // Bank mode follows the explicit sidebar choice. Style sections may use
         // zero-quantity placeholders for gear that is currently worn or carried;
@@ -1805,7 +1741,7 @@ content.add(Box.createVerticalStrut(5));
             OptimizedMagicLoadout ml=magicLoads.get(requestedStyle);selectedGear.putAll(ml.getItems());selectedCombat=null;selectedRanged=null;
         }
         else if(TargetStyleImmunity.immune(monster,requestedStyle)){selectedCombat=null;selectedRanged=null;}
-        else {if(selectedRanked==null)selectedRanked=rankedSnapshot.get(requestedStyle);selectedRanked=SlayerTargetRequirements.constrainRanked(monster,selectedRanked);for(EquipmentSlot s:EquipmentSlot.values()){EquipmentCandidate c=firstUsable(selectedRanked.get(s));if(c!=null)selectedGear.put(s,c);}selectedCombat=null;selectedRanged=null;}
+        else {if(selectedRanked==null)selectedRanked=rankedSnapshot.get(requestedStyle);selectedRanked=SlayerTargetRequirements.constrainRanked(monster,selectedRanked);for(EquipmentSlot s:EquipmentSlot.values()){List<EquipmentCandidate> usable=LoadoutSearch.allUsable(selectedRanked.get(s));if(!usable.isEmpty())selectedGear.put(s,usable.get(0));}selectedCombat=null;selectedRanged=null;}
         String prayer=account.recommendedPrayer(requestedStyle);
         final OptimizedRangedLoadout selectedRangedLoad = rangedLoads.get(requestedStyle);
         final RangedCombatResult uiRanged = selectedRangedLoad == null ? selectedRanged : selectedRangedLoad.getResult();
@@ -1906,50 +1842,13 @@ content.add(Box.createVerticalStrut(5));
                 slayerItemWarning.setText("");
                 slayerItemWarning.setVisible(false);
             }
-            if (selectedCombat != null)
-            {
-                summary.append(String.format("DPS: %.4f%n", selectedCombat.getDps()));
-                summary.append("Estimated TTK: ").append(displayTtk(selectedCombat.getExpectedTtkSeconds())).append(System.lineSeparator());
-                summary.append(String.format("Max Hit: %d%n", selectedCombat.getMaxHit()));
-                summary.append(String.format("Accuracy: %.2f%%%n", selectedCombat.getAccuracy() * 100.0));
-                summary.append(String.format("Style: %s%n", CombatStyleLabels.description(selectedGear.get(EquipmentSlot.WEAPON),requestedStyle,selectedCombat.getStance())));
-                summary.append(String.format("Prayer Bonus: %+d", prayerBonus));
-            }
-            else if (uiRanged != null)
-            {
-                summary.append(String.format("DPS: %.4f%n", uiRanged.getDps()));
-                summary.append("Estimated TTK: ").append(displayTtk(uiRanged.getExpectedTtkSeconds())).append(System.lineSeparator());
-                summary.append(String.format("Max Hit: %d%n", uiRanged.getMaxHit()));
-                summary.append(String.format("Accuracy: %.2f%%%n", uiRanged.getAccuracy() * 100.0));
-                summary.append(String.format("Style: %s%n", CombatStyleLabels.ranged(selectedGear.get(EquipmentSlot.WEAPON)==null?"":selectedGear.get(EquipmentSlot.WEAPON).getWeaponCategory(),uiRanged.getStance())));
-                summary.append(String.format("Prayer Bonus: %+d", prayerBonus));
-            }
-            else if (uiMagic != null)
-            {
-                summary.append(String.format("DPS: %.4f%n", uiMagic.getDps()));
-                summary.append("Estimated TTK: ").append(displayTtk(uiMagic.getExpectedTtkSeconds())).append(System.lineSeparator());
-                summary.append(String.format("Max Hit: %d%n", uiMagic.getMaxHit()));
-                summary.append(String.format("Accuracy: %.2f%%%n", uiMagic.getAccuracy() * 100.0));
-                summary.append(String.format("Style: %s%n", uiMagic.getSpell()));
-                summary.append(String.format("Prayer Bonus: %+d", prayerBonus));
-            }
-            else
-            {
-                summary.append(requestedStyle == AttackStyle.MAGIC
-                    ? "No castable combat spell found with your current Magic level and bank runes."
-                    : "No calculated loadout is available for this style.");
-            }
-            StringBuilder context=new StringBuilder("Normal attacks only; specials excluded.");
-            if(VardorvisRules.supported(monster))context.append(" Accuracy/DPS use selected target HP; TTK scales Defence as HP falls.");
-            if(SoulreaperAxeEffects.isSoulreaper(selectedGear.get(EquipmentSlot.WEAPON)))context.append(" Soulreaper starts at zero stacks.");
-            if(selectedRangedLoad!=null&&selectedRangedLoad.getLoadedAmmo()!=null)context.append(" Assumed internal ammo: ").append(selectedRangedLoad.getLoadedAmmo().getItem().getName()).append("; quantity unknown.");
-            String drainContext=ManualDefenceReduction.note(monster);if(!drainContext.isEmpty())context.append(" ").append(drainContext);
-            if(requestedFill==FillPreference.DEFENCE)context.append(" Defence fill: ").append(DefenceFillPolicy.profile(monster).description).append("; equipment bonuses only.");
-            if(EquipmentSetRules.dharok(selectedGear))context.append(" Dharok uses your Hitpoints snapshot at generation; regenerate after HP changes.");
-            if(EquipmentSetRules.strengthRanged(selectedGear.get(EquipmentSlot.WEAPON)))context.append(" Damage uses Strength level and melee Strength bonus.");
-            if(WikiTargetEligibility.isGuardian(monster))context.append(" Guardian damage uses Mining level and pickaxe tier.");
-            String raidContext=RaidTargetVariants.note(monster);if(!raidContext.isEmpty())context.append(" ").append(raidContext);
-            meleeValidation.setToolTipText("<html><body style='width:240px'>"+context.toString().replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")+"</body></html>");
+            EquipmentCandidate shownWeapon=selectedGear.get(EquipmentSlot.WEAPON);
+            CombatOutcome outcome=selectedCombat!=null?selectedCombat:uiRanged!=null?uiRanged:uiMagic;
+            String styleLabel=selectedCombat!=null?CombatStyleLabels.description(shownWeapon,requestedStyle,selectedCombat.getStance())
+                :uiRanged!=null?CombatStyleLabels.ranged(shownWeapon==null?"":shownWeapon.getWeaponCategory(),uiRanged.getStance())
+                :uiMagic!=null?uiMagic.getSpell():"";
+            summary.append(LoadoutSummaryText.stats(outcome,styleLabel,prayerBonus,requestedStyle));
+            meleeValidation.setToolTipText(LoadoutSummaryText.assumptions(monster,selectedGear,selectedRangedLoad,requestedFill));
             meleeValidation.setText(summary.toString());
             meleeValidation.setCaretPosition(0);
 
@@ -2002,62 +1901,24 @@ content.add(Box.createVerticalStrut(5));
         actionRow.style.setToolTipText("<html>Recommended normal attack: "+label+"<br>"+type+", "+stance+"</html>");
     }
 
-    private AttackStyle cachedBestStyleIfComplete()
-    {
-        Map<AttackStyle,Double> scores=new EnumMap<>(AttackStyle.class);
-        for(AttackStyle style:AttackStyle.values())
-        {
-            double ttk=Double.POSITIVE_INFINITY,dps=0;
-            if(isMelee(style))
-            {
-                MeleeOptimizationReport report=cachedMeleeReports.get(style);
-                if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null){ttk=report.getBest().getResult().getExpectedTtkSeconds();dps=report.getBest().getResult().getDps();}
-            }
-            else if(style==AttackStyle.RANGED)
-            {
-                RangedOptimizationReport report=cachedRangedReports.get(style);
-                if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null){ttk=report.getBest().getResult().getExpectedTtkSeconds();dps=report.getBest().getResult().getDps();}
-            }
-            else
-            {
-                MagicOptimizationReport report=cachedMagicReports.get(style);
-                if(report==null)return null;
-                if(report.getBest()!=null&&report.getBest().getResult()!=null){ttk=report.getBest().getResult().getExpectedTtkSeconds();dps=report.getBest().getResult().getDps();}
-            }
-            scores.put(style,FracturedArchiveRules.blade(monsterBox.getSelectedItem() instanceof MonsterDefinition?(MonsterDefinition)monsterBox.getSelectedItem():null)?dps:Double.isFinite(ttk)?-ttk:Double.NEGATIVE_INFINITY);
-        }
-        return BestStyleSelection.best(scores);
-    }
-
     private static boolean isMelee(AttackStyle style)
     {
         return style == AttackStyle.MELEE_STAB || style == AttackStyle.MELEE_SLASH || style == AttackStyle.MELEE_CRUSH;
     }
 
-    /** A style's cached optimiser report, calculated on first use. */
-    private static <R> R cachedReport(Map<AttackStyle,R> cache, AttackStyle style, MonsterDefinition monster,
-        java.util.function.Supplier<R> search, java.util.function.Supplier<R> immune)
+    private OptimizedLoadout searchMelee(AttackStyle style, Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
     {
-        R report = cache.get(style);
-        if (report == null) cache.put(style, report = TargetStyleImmunity.calculate(monster, style, search, immune));
-        return report;
+        return styleResults.get(style, monster, () -> meleeOptimizer.optimize(ranked, style, monster, slayer));
     }
 
-    private MeleeOptimizationReport meleeReport(AttackStyle style, Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
+    private OptimizedRangedLoadout searchRanged(Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
     {
-        return cachedReport(cachedMeleeReports, style, monster, () -> meleeOptimizer.optimizeWithReportRanked(ranked, style, monster, slayer), () -> new MeleeOptimizationReport(null));
+        return styleResults.get(AttackStyle.RANGED, monster, () -> rangedOptimizer.optimize(ranked, monster, slayer));
     }
 
-    private RangedOptimizationReport rangedReport(Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
+    private OptimizedMagicLoadout searchMagic(List<BankItem> owned, Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
     {
-        return cachedReport(cachedRangedReports, AttackStyle.RANGED, monster, () -> rangedOptimizer.optimizeWithReportRanked(ranked, monster, slayer), () -> new RangedOptimizationReport(null));
-    }
-
-    private MagicOptimizationReport magicReport(List<BankItem> owned, Map<EquipmentSlot,List<EquipmentCandidate>> ranked, MonsterDefinition monster, boolean slayer)
-    {
-        return cachedReport(cachedMagicReports, AttackStyle.MAGIC, monster, () -> magicOptimizer.optimizeWithReportRanked(owned, ranked, monster, slayer), () -> new MagicOptimizationReport(null));
+        return styleResults.get(AttackStyle.MAGIC, monster, () -> magicOptimizer.optimize(owned, ranked, monster, slayer));
     }
 
     private void calculateMissingBestStyles(long generation,String cacheKey,List<BankItem> bankSnapshot,
@@ -2066,14 +1927,14 @@ content.add(Box.createVerticalStrut(5));
     {
         for(AttackStyle style:AttackStyle.values())
         {
-            if(generation!=calculationGeneration.get()||!cacheKey.equals(optimizerCacheKey))return;
+            if(generation!=calculationGeneration.get()||!styleResults.isFor(cacheKey))return;
             Map<EquipmentSlot,List<EquipmentCandidate>> ranked=rankedSnapshot.get(style);
-            if(isMelee(style))meleeReport(style,ranked,monster,requestedSlayerMode);
-            else if(style==AttackStyle.RANGED)rangedReport(ranked,monster,requestedSlayerMode);
-            else magicReport(bankSnapshot,ranked,monster,requestedSlayerMode);
+            if(isMelee(style))searchMelee(style,ranked,monster,requestedSlayerMode);
+            else if(style==AttackStyle.RANGED)searchRanged(ranked,monster,requestedSlayerMode);
+            else searchMagic(bankSnapshot,ranked,monster,requestedSlayerMode);
         }
-        AttackStyle best=cachedBestStyleIfComplete();
-        if(best==null||generation!=calculationGeneration.get()||!cacheKey.equals(optimizerCacheKey))return;
+        AttackStyle best=styleResults.bestIfComplete(selectedTarget());
+        if(best==null||generation!=calculationGeneration.get()||!styleResults.isFor(cacheKey))return;
         clientThread.invokeLater(() -> bankFilter.setBestStyle(best));
         SwingUtilities.invokeLater(() ->
         {
@@ -2082,45 +1943,4 @@ content.add(Box.createVerticalStrut(5));
             updateStyleHighlight();
         });
     }
-
-    private EquipmentCandidate firstUsable(List<EquipmentCandidate> candidates)
-    {
-        if (candidates == null)
-        {
-            return null;
-        }
-        for (EquipmentCandidate c : candidates)
-        {
-            if (!c.getRequirementResult().isBlocked())
-            {
-                return c;
-            }
-        }
-        return null;
-    }
-
-
-    private class MonsterRenderer extends DefaultListCellRenderer
-    {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus)
-        {
-            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            label.setToolTipText(value == null ? null : value.toString());
-            label.setFont(FontManager.getRunescapeFont());
-            label.setBorder(new EmptyBorder(4, 5, 4, 5));
-            if (isSelected)
-            {
-                label.setBackground(SidebarStyle.BORDER);
-                label.setForeground(Color.WHITE);
-            }
-            else
-            {
-                label.setBackground(ColorScheme.DARK_GRAY_COLOR);
-                label.setForeground(SidebarStyle.TEXT);
-            }
-            return label;
-        }
-    }
-
 }

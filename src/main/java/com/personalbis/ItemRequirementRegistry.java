@@ -28,7 +28,7 @@ public class ItemRequirementRegistry
 
     public RequirementResult check(BankItem item, EquipmentSlot slot)
     {
-        String name = item.getName().toLowerCase();
+        String name = item.getName().toLowerCase(java.util.Locale.ROOT);
         Map<Skill, Integer> required = inferCommonLevelRequirements(name, slot);
 
         for (Map.Entry<Skill, Integer> requirement : required.entrySet())
@@ -174,7 +174,7 @@ public class ItemRequirementRegistry
 
     private String pretty(Skill skill)
     {
-        String lower = skill.name().toLowerCase();
+        String lower = skill.name().toLowerCase(java.util.Locale.ROOT);
         return Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
     }
 

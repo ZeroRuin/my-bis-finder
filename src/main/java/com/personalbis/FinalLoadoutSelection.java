@@ -19,4 +19,18 @@ public final class FinalLoadoutSelection
         int ttk = Double.compare(candidateTtk,currentTtk);
         return ttk < 0 || (ttk == 0 && better(candidateDps,currentDps));
     }
+
+    /** True when the candidate kills faster than the current result (or there is no current result). */
+    public static boolean faster(CombatOutcome candidate, CombatOutcome current)
+    {
+        return current == null || betterTtk(candidate.getExpectedTtkSeconds(), candidate.getDps(),
+            current.getExpectedTtkSeconds(), current.getDps());
+    }
+
+    /** Faster, or exactly as fast with a higher Prayer bonus. */
+    public static boolean preferred(CombatOutcome candidate, int candidatePrayer, CombatOutcome current, int currentPrayer)
+    {
+        return faster(candidate, current)
+            || (Double.compare(candidate.getExpectedTtkSeconds(), current.getExpectedTtkSeconds()) == 0 && candidatePrayer > currentPrayer);
+    }
 }

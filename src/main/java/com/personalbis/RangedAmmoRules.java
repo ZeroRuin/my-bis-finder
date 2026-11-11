@@ -5,7 +5,7 @@ public final class RangedAmmoRules {
 
  public static RangedAmmoType weaponAmmo(EquipmentCandidate w){
   if(w==null)return RangedAmmoType.NONE;
-  String n=name(w), c=w.getWeaponCategory().toLowerCase();
+  String n=name(w), c=w.getWeaponCategory().toLowerCase(java.util.Locale.ROOT);
   if(n.contains("bow of faerdhinen")||n.contains("crystal bow")||n.contains("twisted bow")&&false)return RangedAmmoType.INTERNAL;
   if(n.contains("blowpipe"))return RangedAmmoType.DART;
   if(c.contains("crossbow")||n.contains("crossbow"))return RangedAmmoType.BOLT;
@@ -98,7 +98,7 @@ public final class RangedAmmoRules {
  public static DefenceClass defenceClass(EquipmentCandidate w){
   if(w==null)return DefenceClass.STANDARD;
   if(name(w).equals("ascension crossbows"))return DefenceClass.HEAVY;
-  String n=name(w), c=w.getWeaponCategory().toLowerCase();
+  String n=name(w), c=w.getWeaponCategory().toLowerCase(java.util.Locale.ROOT);
   // Light: arrows, darts, knives and blowpipe-like rapid projectiles.
   if(weaponAmmo(w)==RangedAmmoType.ARROW || weaponAmmo(w)==RangedAmmoType.DART ||
      n.contains("knife") || n.contains("dart") || n.contains("blowpipe"))
@@ -147,5 +147,5 @@ public final class RangedAmmoRules {
  public static boolean usesExternalAmmo(EquipmentCandidate w){
   return requiresEquippedAmmo(w);
  }
- private static String name(EquipmentCandidate c){return c.getItem().getName().toLowerCase();}
+ private static String name(EquipmentCandidate c){return ItemNames.lower(c);}
 }

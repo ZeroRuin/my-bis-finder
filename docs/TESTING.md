@@ -62,7 +62,7 @@ Run every self-test before releasing a code change:
 gradle test
 ```
 
-This compiles the plugin and runs all 31 self-tests through JUnit (`SelfTestSuite`),
+This compiles the plugin and runs all 33 self-tests through JUnit (`SelfTestSuite`),
 each in its own JVM. The **CI** workflow runs the same command, plus the Python
 checks, on every push to `main` and every pull request. A new self-test with a
 `main()` must be added to `SelfTestSuite.selfTests()`; the suite fails if one is missing.
@@ -104,8 +104,24 @@ gradle --continue \
   voidLoadoutFamiliesSelfTest \
   defenceReductionBankItemsSelfTest \
   bankWithdrawalSelfTest \
-  fracturedArchiveSelfTest
+  fracturedArchiveSelfTest \
+  searchBehaviourSelfTest \
+  searchBruteForceSelfTest
 ```
+
+### Checking a change to the search
+
+Three tools run the real melee, ranged and magic searches from the bundled Wiki data,
+with a maxed account and no game client (`SearchFixture`):
+
+- `searchBehaviourSelfTest` checks what the searches recommend for hand-built banks:
+  empty slots, set effects, Barrows charge states, ammunition and supplies.
+- `searchBruteForceSelfTest` compares each search with an exhaustive search on small
+  random banks with fixed seeds. It runs 25 cases by default; pass
+  `-PbruteArgs=<cases>,<first seed>` for a longer run.
+- `searchSnapshot` prints one line per search for 300 larger random banks. Run it before
+  and after a change (`-PsnapshotFile=<file>`, `-PsnapshotCases=<n>`) and compare the two
+  files: any difference is a change in what the plugin recommends.
 
 To build against a fixed RuneLite version instead of `latest.release`, add
 `-PruneLiteVersion=<version>` to any Gradle command. Plugin Hub builds use the default.
