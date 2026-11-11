@@ -152,6 +152,20 @@ public final class SearchBehaviourSelfTest
             for (List<EquipmentCandidate> slot : FIXTURE.intelligence.rank(broken, style, false).values())
                 for (EquipmentCandidate c : slot) require(!c.getItem().getName().endsWith(" 0"), "fully degraded " + c.getItem().getName() + " is never a candidate for " + style);
 
+        // Items broken on death are recognised by their id in the Wiki data, or by their in-game name.
+        List<BankItem> brokenOnDeath = bank("Abyssal whip", "Dragon defender");
+        int brokenIds = 0;
+        for (WikiEquipment item : FIXTURE.pack.getEquipment())
+            if ("Broken".equals(item.version) && FIXTURE.pack.getEquipment(item.id) == item) { brokenOnDeath.add(new BankItem(item.id, 1, item.name)); brokenIds++; }
+        brokenOnDeath.add(new BankItem(FIXTURE.bankItem("Infernal cape").getItemId(), 1, "Infernal cape (broken)"));
+        require(brokenIds > 50, "the data lists broken versions (" + brokenIds + ")");
+        for (AttackStyle style : AttackStyle.values())
+        {
+            int candidates = 0;
+            for (List<EquipmentCandidate> slot : FIXTURE.intelligence.rank(brokenOnDeath, style, false).values()) candidates += slot.size();
+            require(candidates == 2, "no broken item is a candidate for " + style + " (only the whip and defender remain)");
+        }
+
         for (String charge : new String[]{" 100", " 75", " 50", " 25"})
         {
             String[] karils = {"Karil's crossbow" + charge, "Bolt rack", "Karil's coif" + charge, "Karil's leathertop" + charge, "Karil's leatherskirt" + charge, "Amulet of the damned"};

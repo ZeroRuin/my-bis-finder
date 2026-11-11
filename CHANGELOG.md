@@ -1,8 +1,8 @@
 # Changelog
 
-## 0.9.7.4 — Barrows Charge States, Melee Search Fix and Search Clean-up
+## 0.9.7.4 — Broken Items, Barrows Charge States, Melee Search Fix and Search Clean-up
 
-- Barrows pieces at 0 charge are never recommended; they have no stats or set effect until repaired.
+- Broken items, such as a Fire cape (broken) or Avernic defender (broken), and Barrows pieces at 0 charge are never recommended; they cannot be equipped until repaired.
 - Barrows pieces at 100, 75, 50 and 25 charge keep their set effects in every style. Karil's, Ahrim's and Verac's sets previously only counted when undamaged.
 - Ahrim's staff at any working charge can autocast its spells.
 - Fix melee recommendations missing a faster setup when many owned items had no effect on damage: equal lines no longer crowd better ones out of the search.

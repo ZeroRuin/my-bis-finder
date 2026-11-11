@@ -29,6 +29,12 @@ final class ItemNames
         return name == null ? null : BARROWS_CHARGE.matcher(name).replaceFirst("");
     }
 
+    /** An item broken on death, such as "Fire cape (broken)": it cannot be equipped until repaired. */
+    static boolean broken(String name)
+    {
+        return name != null && name.toLowerCase(Locale.ROOT).endsWith("(broken)");
+    }
+
     /**
      * True when the candidate is the named item. A Barrows piece matches at any working
      * charge ("Karil's coif 75" is "Karil's coif"), Void pieces match with their ornament
