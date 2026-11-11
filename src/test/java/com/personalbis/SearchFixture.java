@@ -170,7 +170,8 @@ final class SearchFixture
     BankItem bankItem(String name)
     {
         for (WikiEquipment item : pack.getEquipment())
-            if (pack.getEquipment(item.id) == item && bankName(item).equalsIgnoreCase(name)) return new BankItem(item.id, 1, bankName(item));
+            if (pack.getEquipment(item.id) == item && !"Broken".equals(item.version) && bankName(item).equalsIgnoreCase(name))
+                return new BankItem(item.id, 1, bankName(item));
         throw new IllegalArgumentException("No equipment named " + name);
     }
 

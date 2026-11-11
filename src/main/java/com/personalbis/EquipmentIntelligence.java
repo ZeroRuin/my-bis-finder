@@ -44,8 +44,9 @@ public class EquipmentIntelligence
         {
             int canonicalId = canonicalize(bankItem.getItemId());
             if (canonicalId == ItemIds.DEADMAN_CAPE || bankItem.getItemId() == ItemIds.DEADMAN_CAPE) continue;
-            // A Barrows piece at 0 charge has no stats or set effect until it is repaired.
-            if (ItemNames.fullyDegraded(bankItem.getName())) continue;
+            // Broken items, and Barrows pieces at 0 charge, cannot be equipped until they are repaired.
+            if (ItemNames.fullyDegraded(bankItem.getName()) || ItemNames.broken(bankItem.getName())
+                || brokenVersion(bankItem.getItemId()) || brokenVersion(canonicalId)) continue;
             ItemStats itemStats = itemStats(canonicalId);
             if (itemStats == null || !itemStats.isEquipable() || itemStats.getEquipment() == null)
             {
@@ -84,6 +85,12 @@ public class EquipmentIntelligence
 
         sortRanked(ranked);
         return ranked;
+    }
+
+    private boolean brokenVersion(int itemId)
+    {
+        WikiEquipment wiki = wikiDataPack.getEquipment(itemId);
+        return wiki != null && "Broken".equalsIgnoreCase(wiki.version);
     }
 
     /** Item lookups go through these two methods so tests can supply item data without a game client. */
