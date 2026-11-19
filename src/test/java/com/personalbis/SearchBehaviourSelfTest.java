@@ -59,7 +59,7 @@ public final class SearchBehaviourSelfTest
         // Only leaf-bladed weapons damage a Kurask, and the sword ranks below every other weapon here.
         MonsterDefinition kurask = FIXTURE.monster("Kurask");
         List<BankItem> bank = bank("Leaf-bladed sword", "Abyssal whip", "Dragon scimitar", "Abyssal tentacle", "Blade of saeldor", "Dragon longsword", "Rune scimitar",
-            "Saradomin sword", "Dragon sword", "Abyssal dagger", "Dragon dagger", "Osmumten's fang", "Ghrazi rapier", "Zamorakian hasta", "Dragon hasta");
+            "Saradomin sword", "Dragon shortsword", "Abyssal dagger", "Dragon dagger", "Osmumten's fang", "Ghrazi rapier", "Zamorakian hasta", "Dragon hasta");
         for (AttackStyle style : new AttackStyle[]{AttackStyle.MELEE_STAB, AttackStyle.MELEE_SLASH})
         {
             OptimizedLoadout best = FIXTURE.melee(bank, style, kurask, true);

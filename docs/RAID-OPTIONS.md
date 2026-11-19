@@ -104,9 +104,12 @@ The provisional HP multiplier is 1 at two players, then
 `(145 + 42 * (partySize - 3)) / 100`, rounding HP to the nearest ten, ties upward.
 It fits all 70 supplied populated table cells; Ezekiel at eight players (10,650)
 and Dreadnoth at seven (6,570) remain inferred. HP scaling is applied to Archive
-Guardian (550 flying/1,100 grounded), Ezekiel (3,000), Bork (1,500), Smorks (600),
-Dreadnoth (2,100), Xarth (2,600), Ocellus phase 1 (2,500) and phase 3/remainder
-(5,250). Other targets retain bundled HP. No offensive or defensive stat scaling
+Guardian (550 flying/1,100 grounded), Ezekiel (3,000), Bork (1,650), Smorks (650),
+Dreadnoth (2,100), Xarth (2,450), Ocellus phase 1 (2,500) and phase 3/remainder
+(5,250). Bork, Smorks and Xarth use their base HP from the 11 November 2026 game
+update; the supplied tables predate it, so their party HP comes from the formula
+alone.
+Other targets retain bundled HP. No offensive or defensive stat scaling
 is inferred. Defence floors follow the supplied reduction table.
 
 The Blade is DPS-only: no finite TTK, phase duration or 50% damage transfer is
@@ -133,8 +136,9 @@ charging and Shield Slam are excluded. Zeal requires its permanent unlock and
 84 Prayer/75 Attack/75 Strength; elemental fragments require their permanent
 unlocks and each add two base damage to standard spells of that element.
 
-The bundled equipment and monster records match the supplied November 2026
-OSRS DPS Calculator archive. The party HP estimates still use the supplied
+The bundled equipment and monster records match the published OSRS DPS Calculator
+data of 11 November 2026, with Bork, Smorks and Xarth base HP set from the game
+update post (see `localOverrides` in the data manifest). The party HP estimates still use the supplied
 Wiki tables. See WIKI-DATA-NOTES.txt for data provenance.
 
 Bork appears once in the target picker. The phase dropdown below it sets the
