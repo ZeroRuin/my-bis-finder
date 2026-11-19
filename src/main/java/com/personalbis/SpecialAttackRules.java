@@ -9,19 +9,19 @@ final class SpecialAttackRules
     private SpecialAttackRules() {}
     static final Set<String> MELEE=new HashSet<>(Arrays.asList("Dragon dagger","Abyssal dagger","Dragon claws",
         "Armadyl godsword","Bandos godsword","Saradomin godsword","Zamorak godsword","Voidwaker",
-        "Dragon mace","Dragon sword","Dragon longsword","Dragon scimitar","Abyssal whip","Dragon warhammer",
+        "Dragon mace","Dragon shortsword","Dragon longsword","Dragon scimitar","Abyssal whip","Dragon warhammer",
         "Elder maul","Barrelchest anchor","Dragon halberd","Crystal halberd","Granite hammer","Osmumten's fang"));
     static int attackPercent(String name){
         if(name.endsWith("godsword")||name.equals("Barrelchest anchor"))return 200;
         if(name.equals("Osmumten's fang")||name.equals("Granite hammer"))return 150;
         if(name.equals("Dragon dagger"))return 115;
-        if(Arrays.asList("Elder maul","Dragon mace","Dragon sword","Dragon scimitar","Abyssal whip","Abyssal dagger").contains(name))return 125;
+        if(Arrays.asList("Elder maul","Dragon mace","Dragon shortsword","Dragon scimitar","Abyssal whip","Abyssal dagger").contains(name))return 125;
         return 100;
     }
     static int maxHit(String name,int max){
         if(name.endsWith("godsword"))max=max*11/10;
         if(name.equals("Bandos godsword"))return max*11/10;
-        if(Arrays.asList("Armadyl godsword","Dragon sword","Dragon longsword").contains(name))return max*5/4;
+        if(Arrays.asList("Armadyl godsword","Dragon shortsword","Dragon longsword").contains(name))return max*5/4;
         if(name.equals("Dragon mace")||name.equals("Dragon warhammer"))return max*3/2;
         if(name.equals("Dragon dagger"))return max*23/20;
         if(name.equals("Abyssal dagger"))return max*17/20;

@@ -33,6 +33,15 @@ public final class FracturedArchiveSelfTest {
         for(int[] t:tables)for(int n=1;n<=8;n++)check(FracturedArchiveRules.hp(t[0],n)==t[n],"HP table "+t[0]+" n="+n);
         MonsterDefinition flying=find(all,16659,"Flying"),ground=find(all,16659,"Grounded"),blade=find(all,16675,null);
         RaidSettings eight=new RaidSettings(99,126,1,false,0,0,1,false,99,8);
+        // 11 November 2026 game update: bundled base stats, with party HP from the provisional formula.
+        MonsterDefinition xarth=find(all,16684,null);
+        check(flying.getLightDefence()==55&&flying.getMagicDefence()==130,"flying Guardian light defence");
+        check(ground.getMagicDefence()==50&&"fire".equals(ground.getWeaknessElement())&&ground.getWeaknessSeverity()==80,"grounded Guardian magic defence and fire weakness");
+        check(find(all,16640,null).getHitpoints()==1650&&find(all,16641,null).getHitpoints()==650,"Bork and Smorks base HP");
+        check(xarth.getHitpoints()==2450&&xarth.getStabDefence()==60,"Xarth base HP and stab defence");
+        check(RaidScaling.apply(find(all,16640,null),eight).getHitpoints()==5860,"Bork party HP");
+        check(RaidScaling.apply(find(all,16641,null),eight).getHitpoints()==2310,"Smorks party HP");
+        check(RaidScaling.apply(xarth,eight).getHitpoints()==8700,"Xarth party HP");
         check(RaidScaling.apply(ground,eight).getHitpoints()==3910,"grounded base override");
         check(RaidScaling.apply(flying,eight).getDefenceLevel()==260,"HP scaling does not invent Defence scaling");
         check(RaidScaling.apply(blade,eight).getHitpoints()==1000,"Blade does not inherit HP formula");

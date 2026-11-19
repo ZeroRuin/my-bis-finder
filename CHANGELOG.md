@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.9.7.5 — The Fractured Archive Balance Changes and Wiki Data Update
+
+- Update The Fractured Archive targets for the 11 November 2026 game update.
+- Archive Guardian: flying form light ranged defence 75 to 55; grounded form magic defence 130 to 50 and fire weakness 40% to 80%.
+- Bork base HP 1,500 to 1,650; The Smorks base HP 600 to 650.
+- Xarth base HP 2,600 to 2,450; stab defence 115 to 60.
+- Party HP for Bork, The Smorks and Xarth follows the existing provisional formula from the new base HP.
+- Update the bundled OSRS Wiki data to 11 November 2026: Undead binder gains its real stats (undead, fire weakness), Jhallan's stats are corrected, and the new Amulet of sight, Painted kiteshield, Painted shortsword, Painted shortbow and Mudfoot's Big Adventure outlaws are added.
+- Follow the game's rename of swords to shortswords; the Dragon shortsword keeps its special attack.
+
 ## 0.9.7.4 — Broken Items, Barrows Charge States, Melee Search Fix and Search Clean-up
 
 - Broken items, such as a Fire cape (broken) or Avernic defender (broken), and Barrows pieces at 0 charge are never recommended; they cannot be equipped until repaired.

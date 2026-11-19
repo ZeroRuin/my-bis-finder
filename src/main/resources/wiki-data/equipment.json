@@ -6355,12 +6355,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Adamant sword",
+    "name": "Adamant shortsword",
     "id": 1287,
     "weight": 2.041,
     "version": "",
     "slot": "weapon",
-    "image": "Adamant sword.png",
+    "image": "Adamant shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -22630,12 +22630,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Black sword",
+    "name": "Black shortsword",
     "id": 1283,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Black sword.png",
+    "image": "Black shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -31124,12 +31124,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Bronze sword",
+    "name": "Bronze shortsword",
     "id": 1277,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Bronze sword.png",
+    "image": "Bronze shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -55180,12 +55180,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Dragon sword",
+    "name": "Dragon shortsword",
     "id": 21009,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Dragon sword.png",
+    "image": "Dragon shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -55211,12 +55211,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Dragon sword (cr)",
+    "name": "Dragon shortsword (cr)",
     "id": 28029,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Dragon sword (cr).png",
+    "image": "Dragon shortsword (cr).png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -83979,12 +83979,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Iron sword",
+    "name": "Iron shortsword",
     "id": 1279,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Iron sword.png",
+    "image": "Iron shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -94209,12 +94209,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Mithril sword",
+    "name": "Mithril shortsword",
     "id": 1285,
     "weight": 1.587,
     "version": "",
     "slot": "weapon",
-    "image": "Mithril sword.png",
+    "image": "Mithril shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -117304,12 +117304,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Rune sword",
+    "name": "Rune shortsword",
     "id": 1289,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Rune sword.png",
+    "image": "Rune shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -132772,12 +132772,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Steel sword",
+    "name": "Steel shortsword",
     "id": 1281,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Steel sword.png",
+    "image": "Steel shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -139964,12 +139964,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Training bow",
+    "name": "Training shortbow",
     "id": 9705,
     "weight": 1.36,
     "version": "",
     "slot": "weapon",
-    "image": "Training bow.png",
+    "image": "Training shortbow.png",
     "speed": 4,
     "category": "Bow",
     "bonuses": {
@@ -140026,12 +140026,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Training sword",
+    "name": "Training shortsword",
     "id": 9703,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Training sword.png",
+    "image": "Training shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -150256,12 +150256,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "White sword",
+    "name": "White shortsword",
     "id": 6605,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "White sword.png",
+    "image": "White shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -151651,12 +151651,12 @@
     "isTwoHanded": false
   },
   {
-    "name": "Wooden sword",
+    "name": "Wooden shortsword",
     "id": 7675,
     "weight": 1.814,
     "version": "",
     "slot": "weapon",
-    "image": "Wooden sword.png",
+    "image": "Wooden shortsword.png",
     "speed": 4,
     "category": "Stab Sword",
     "bonuses": {
@@ -157969,6 +157969,130 @@
       "stab": 0,
       "slash": 0,
       "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Amulet of sight",
+    "id": 34762,
+    "weight": 0.01,
+    "version": "",
+    "slot": "neck",
+    "image": "Amulet of sight.png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 10
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Painted kiteshield",
+    "id": 34769,
+    "weight": 5.443,
+    "version": "",
+    "slot": "shield",
+    "image": "Painted kiteshield.png",
+    "speed": 0,
+    "category": "",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": -8,
+      "ranged": -3
+    },
+    "defensive": {
+      "stab": 5,
+      "slash": 7,
+      "crush": 6,
+      "magic": -1,
+      "ranged": 6
+    },
+    "isTwoHanded": false
+  },
+  {
+    "name": "Painted shortbow",
+    "id": 34772,
+    "weight": 1.36,
+    "version": "",
+    "slot": "weapon",
+    "image": "Painted shortbow.png",
+    "speed": 4,
+    "category": "Bow",
+    "bonuses": {
+      "str": 0,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 8
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 0,
+      "crush": 0,
+      "magic": 0,
+      "ranged": 0
+    },
+    "isTwoHanded": true
+  },
+  {
+    "name": "Painted shortsword",
+    "id": 34766,
+    "weight": 1.814,
+    "version": "",
+    "slot": "weapon",
+    "image": "Painted shortsword.png",
+    "speed": 4,
+    "category": "Stab Sword",
+    "bonuses": {
+      "str": 5,
+      "ranged_str": 0,
+      "magic_str": 0,
+      "prayer": 0
+    },
+    "offensive": {
+      "stab": 4,
+      "slash": 3,
+      "crush": -2,
+      "magic": 0,
+      "ranged": 0
+    },
+    "defensive": {
+      "stab": 0,
+      "slash": 2,
+      "crush": 1,
       "magic": 0,
       "ranged": 0
     },

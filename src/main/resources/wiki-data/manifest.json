@@ -1,16 +1,16 @@
 {
   "packVersion": "0.5.0-alpha2",
   "mode": "bundled-offline",
-  "dataSnapshotDate": "2026-11-06",
-  "source": "User-provided OSRS Wiki DPS Calculator archive; spells retain prior snapshot",
+  "dataSnapshotDate": "2026-11-11",
+  "source": "OSRS Wiki DPS Calculator published JSON; see upstreamFiles for per-file provenance",
   "counts": {
-    "equipment": 5096,
-    "monsters": 2921,
+    "equipment": 5100,
+    "monsters": 2927,
     "spells": 61
   },
   "sha256": {
-    "equipment.json": "d5631642becad1415f15f4f6df45739e43742019256e4380dc8e15cadca9edf1",
-    "monsters.json": "4d98110d9dbf6e1ec8b359e047dd1bfa752389d3c2e6fe8384b2a05a8f2d86f9",
+    "equipment.json": "cf0c5102dc984ad99287cbe1928f41541d2a21f67b00ed172f8339a8764db44a",
+    "monsters.json": "b0a2db1b4f443a3af83744b56e67f29a807dcc71227a5b6e5932e3fab41ce837",
     "spells.json": "40f6920c4cf0493e57c7b6c819c3215c550adc353ed88676297f6bf794c99083"
   },
   "supplements": {
@@ -36,6 +36,27 @@
       "file": "osrs-dps-calc-main (1).zip",
       "sourceSha256": "f2e44f2763ae448fffe30a409b2035334d3779068875b4fd8fe84b043a75890e",
       "commit": "498bd2ae666c83b0af3ac2265076ed237a27d1aa"
+    }
+  },
+  "upstreamFiles": {
+    "equipment.json": {
+      "commit": "880ab3f324ebea2644681d835448ab9d45c04f5c",
+      "changedAt": "2026-11-11"
+    },
+    "monsters.json": {
+      "commit": "880ab3f324ebea2644681d835448ab9d45c04f5c",
+      "changedAt": "2026-11-11"
+    }
+  },
+  "localOverrides": {
+    "monsters.json": {
+      "appliedAt": "2026-11-12",
+      "source": "Old School RuneScape game update post, 11 November 2026",
+      "changes": [
+        "Bork hp 1500 -> 1650",
+        "The Smorks hp 600 -> 650",
+        "Xarth hp 2600 -> 2450"
+      ]
     }
   }
 }
